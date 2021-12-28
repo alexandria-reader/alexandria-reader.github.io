@@ -1,0 +1,196 @@
+<!doctype html><html xmlns=http://www.w3.org/1999/xhtml xml:lang=en-us lang=en-us>
+<head>
+<meta name=generator content="Hugo 0.91.2">
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Alexandria Design Notes</title>
+<link rel="shortcut icon" href=favicon.ico type=image/x-icon>
+<link href="https://fonts.googleapis.com/css?family=Dosis:wght@200;300;400;500;600;700;800&display=swap" rel=stylesheet>
+<link rel=stylesheet href=/css/styles.css>
+<link href=/index.xml rel=alternate type=application/rss+xml title="Design Notes">
+</head>
+<body>
+<div class="sidebar sidebar-default">
+<div class=navigation>
+<div>
+<img src=/images/Alexandria-logo.png alt>
+</div>
+<h1 class=site-title><a href=/>Design Notes</a></h1>
+<nav class=internal>
+<ul>
+<li>
+<a href=#introduction>Introduction</a>
+</li>
+<li>
+<a href=#competitors>Competitor Analysis</a>
+</li>
+<li>
+<a href=#api>API considerations</a>
+</li>
+<li>
+<a href=#database>Database Design</a>
+</li>
+<li>
+<a href=#pageflow>Front end page flow</a>
+</li>
+</ul>
+</nav>
+<nav class=external>
+<div class=external-title>Check out Alexandria:</div>
+<ul id=shortcuts>
+<li>
+<a href=https://tryalaexandria.com target=_blank rel=noopener>Use the app</a>
+</li>
+<li>
+<a href=https://github.com/alexandria-reader/ target=_blank rel=noopener>Visit Alexandria on Github</a>
+</li>
+</ul>
+</nav>
+</div>
+<div class=version>
+generated on Dec 28, 2021
+</div>
+</div>
+<div class=content>
+<section class=page id=introduction>
+<h1>
+<a href=#introduction>Introduction</a>
+</h1>
+<div class=content>
+<p>Once upon a time there were three Launch School core graduates&mldr;</p>
+</div>
+</section>
+<section class=page id=competitors>
+<h1>
+<a href=#competitors>Competitor Analysis</a>
+</h1>
+<div class=content>
+<p>What did we want to do better than the competition?</p>
+</div>
+</section>
+<section class=page id=api>
+<h1>
+<a href=#api>API considerations</a>
+</h1>
+<div class=content>
+<h3 id=resources-and-collections>Resources and collections</h3>
+<ul>
+<li><strong>Resources</strong> are the individual items (rows) of the main database tables (&ldquo;single noun&rdquo; name, coloured in the graph). Each resource has a unique (integer) id within its table.</li>
+<li><strong>Collections</strong> are lists of resources, that can be filtered by criteria such as languages or user.</li>
+</ul>
+<h3 id=general-api-route-pattern-rules>General API route pattern rules</h3>
+<h4 id=basic-access>Basic access</h4>
+<ul>
+<li>The type of the resource that is queried is always the first part of the route.</li>
+<li>This is the case for both individual resources and collections.</li>
+<li>Individual resources are accessed by their id.</li>
+<li>Data from other resources associated with the queried resource might be sent back as well, but querying those happens on the backend and is not exposed via the API.</li>
+<li>Creation, updates and deletion of resources happens via the basic route (ie. without filters).</li>
+</ul>
+<h5 id=examples>Examples</h5>
+<ul>
+<li><code>GET /texts/</code> => a collection of all texts</li>
+<li><code>GET /texts/38422</code> => the text with id <code>38422</code></li>
+<li><code>POST /translations</code> => create a new translation</li>
+<li><code>PUT /users</code> => update user data</li>
+<li><code>DELETE /texts/38422</code>=> removes text with id <code>22533</code></li>
+</ul>
+<h4 id=filtering-collections>Filtering collections</h4>
+<ul>
+<li>If the second part of the route is not an id (ie. not an integer), we are looking for a filtered collection of that resource.</li>
+<li>Filters are indicated by a keyword (in singular) and a unique identifier.</li>
+<li>Filters can be chained.</li>
+<li>Filtering for the logged-in user only requires the <code>user</code> keyword because the id is stored in the active session. The user keyword is always the last in the route.</li>
+</ul>
+<h5 id=examples-1>Examples</h5>
+<ul>
+<li><code>GET /translations/word/22533</code> => all translations (to all languages) for word with id <code>22533</code></li>
+<li><code>GET /translations/language/de/word/22533</code> => all translations to German (unique identifier <code>de</code>) for word with id <code>22533</code></li>
+<li><code>GET /words/text/38422/user</code> => all words in text <code>38422</code> that the user already has marked.</li>
+<li><code>GET /texts/user</code> => all texts belonging to the current user</li>
+<li><code>GET /texts/language/fr/user</code> => all texts in French (unique identifier <code>de</code>) belonging to the current user</li>
+</ul>
+</div>
+</section>
+<section class=page id=database>
+<h1>
+<a href=#database>Database Design</a>
+</h1>
+<div class=content>
+<p>The basic idea was to keep the main tables small and self contained, and work with references (foreign keys) to establish connections and to normalize the database.</p>
+<h3 id=graph>Graph</h3>
+<p>This is the graphical representaion of the Alexandria database.</p>
+<p><a href=https://drawsql.app/marc-s-team/diagrams/alexandria-database-design-1-9>Link to drawSQL</a></p>
+<p><img src=/images/database-design-marc-1.9.png alt></p>
+<h3 id=main-tables-coloured>Main tables (coloured)</h3>
+<table>
+<thead>
+<tr>
+<th>table</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>users</td>
+<td>The people using or administering Alexandria.</td>
+</tr>
+<tr>
+<td>langauges</td>
+<td>A language that is supported by Alexandria.</td>
+</tr>
+<tr>
+<td>texts</td>
+<td>The key entity for learning. Texts are provided by users through forms, files or links. For those who learn best by reading state secrets or erotic literature, texts can be made private. Otherwise they can be used by others for learning as well.</td>
+</tr>
+<tr>
+<td>words</td>
+<td>Translatable entities. Usually single words like <em>cabbage</em>, but also compounds, or phrases, like <em>get up</em>, but also <em>l&rsquo;hôtel</em>. Translations go from source language to target language. Each word must be unique within a source language.</td>
+</tr>
+<tr>
+<td>translations</td>
+<td>Translations of words can be provided or selected by the users, but they exist independently of the users who created them. Translations can also be automatically generated to seed the database with a language&rsquo;s most common words.</td>
+</tr>
+<tr>
+<td>webdictionaries</td>
+<td>Online resources in which the user can look up a word or phrase.</td>
+</tr>
+</tbody>
+</table>
+<h3 id=connecting-tables-grey>Connecting tables (grey)</h3>
+<table>
+<thead>
+<tr>
+<th>table</th>
+<th>purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>users_words</td>
+<td>Word statuses for a usr-word combination are &ldquo;learning&rdquo;, familiar", and &ldquo;learned&rdquo;.User dictionaries could be generated using this table.</td>
+</tr>
+<tr>
+<td>users_translations</td>
+<td>Every translated word orginates in a text, and the surrounding words from that text form the translation&rsquo;s context. Users have their own contexts for every translation. If the translation is not newly provided but simply selected from previous translations, the current context is saved and connected to selected the translation and user.</td>
+</tr>
+<tr>
+<td>webdictionary_preference</td>
+<td>Users can have one favourite dictionary per source language.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class=page id=pageflow>
+<h1>
+<a href=#pageflow>Front end page flow</a>
+</h1>
+<div class=content>
+<h3 id=graph-for-minimum-viable-produt-mvp>Graph for minimum viable produt (MVP)</h3>
+<p><img src=/images/alexandria-mvp-flow-1.png alt></p>
+</div>
+</section>
+</div>
+</body>
+</html>
