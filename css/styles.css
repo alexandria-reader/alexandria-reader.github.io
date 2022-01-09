@@ -238,6 +238,6 @@ tr:nth-child(odd) {
   background-color: #ecf3f8;
 }
 
-td{
-  padding: 10px;
+td, th{
+  padding: 7px;
 }
