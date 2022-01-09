@@ -39,6 +39,7 @@ html, body {
   background-color: #363636;
   display: flex;
   flex-direction: column;
+  text-align: center;
 }
 .sidebar.sidebar-default {
   background-color: #ffffff;
