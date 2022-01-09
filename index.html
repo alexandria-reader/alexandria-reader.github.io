@@ -23,19 +23,16 @@
 <a href=#introduction>Introduction</a>
 </li>
 <li>
-<a href=#competitors>Competitor Analysis</a>
-</li>
-<li>
 <a href=#decisions>Technical decisions</a>
 </li>
 <li>
-<a href=#api>API considerations</a>
-</li>
-<li>
-<a href=#database>Database Design</a>
+<a href=#database-api>Database and API design</a>
 </li>
 <li>
 <a href=#challenges>Challenges and Solutions</a>
+</li>
+<li>
+<a href=#team>Team</a>
 </li>
 </ul>
 </nav>
@@ -61,13 +58,7 @@
 <p>Languages can be learnt in many different ways. Of of them is by reading texts, translating them word by word at first, and over time becoming more and more familiar with the vocubulary.</p>
 <p>Although a number of apps based on that principle exist in either open source or paid form, none of them met the full spectrum of needs based on the checklist of our language-learning enthusiast team member.</p>
 <p>So here we are, with our own web application.</p>
-</div>
-</section>
-<section class=page id=competitors>
-<h1>
-<a href=#competitors>Competitor Analysis</a>
-</h1>
-<div class=content>
+<h3 id=competitor-analysis>Competitor Analysis</h3>
 <p>What did we want to do better than the competition?</p>
 </div>
 </section>
@@ -83,53 +74,9 @@
 <h3 id=heroku--netlify>Heroku + Netlify</h3>
 </div>
 </section>
-<section class=page id=api>
+<section class=page id=database-api>
 <h1>
-<a href=#api>API considerations</a>
-</h1>
-<div class=content>
-<h3 id=resources-and-collections>Resources and collections</h3>
-<ul>
-<li><strong>Resources</strong> are the individual items (rows) of the main database tables (&ldquo;single noun&rdquo; name, coloured in the graph). Each resource has a unique (integer) id within its table.</li>
-<li><strong>Collections</strong> are lists of resources, that can be filtered by criteria such as languages or user.</li>
-</ul>
-<h3 id=general-api-route-pattern-rules>General API route pattern rules</h3>
-<h4 id=basic-access>Basic access</h4>
-<ul>
-<li>The type of the resource that is queried is always the first part of the route.</li>
-<li>This is the case for both individual resources and collections.</li>
-<li>Individual resources are accessed by their id.</li>
-<li>Data from other resources associated with the queried resource might be sent back as well, but querying those happens on the backend and is not exposed via the API.</li>
-<li>Creation, updates and deletion of resources happens via the basic route (ie. without filters).</li>
-</ul>
-<h5 id=examples>Examples</h5>
-<ul>
-<li><code>GET /texts/</code> => a collection of all texts</li>
-<li><code>GET /texts/38422</code> => the text with id <code>38422</code></li>
-<li><code>POST /translations</code> => create a new translation</li>
-<li><code>PUT /users</code> => update user data</li>
-<li><code>DELETE /texts/38422</code>=> removes text with id <code>22533</code></li>
-</ul>
-<h4 id=filtering-collections>Filtering collections</h4>
-<ul>
-<li>If the second part of the route is not an id (ie. not an integer), we are looking for a filtered collection of that resource.</li>
-<li>Filters are indicated by a keyword (in singular) and a unique identifier.</li>
-<li>Filters can be chained.</li>
-<li>Filtering for the logged-in user only requires the <code>user</code> keyword because the id is stored in the active session. The user keyword is always the last in the route.</li>
-</ul>
-<h5 id=examples-1>Examples</h5>
-<ul>
-<li><code>GET /translations/word/22533</code> => all translations (to all languages) for word with id <code>22533</code></li>
-<li><code>GET /translations/language/de/word/22533</code> => all translations to German (unique identifier <code>de</code>) for word with id <code>22533</code></li>
-<li><code>GET /words/text/38422/user</code> => all words in text <code>38422</code> that the user already has marked.</li>
-<li><code>GET /texts/user</code> => all texts belonging to the current user</li>
-<li><code>GET /texts/language/fr/user</code> => all texts in French (unique identifier <code>de</code>) belonging to the current user</li>
-</ul>
-</div>
-</section>
-<section class=page id=database>
-<h1>
-<a href=#database>Database Design</a>
+<a href=#database-api>Database and API design</a>
 </h1>
 <div class=content>
 <p>The basic idea was to keep the main tables small and self contained, and work with references (foreign keys) to establish connections and to normalize the database.</p>
@@ -194,6 +141,43 @@
 </tr>
 </tbody>
 </table>
+<h3 id=resources-and-collections>Resources and collections</h3>
+<ul>
+<li><strong>Resources</strong> are the individual items (rows) of the main database tables (&ldquo;single noun&rdquo; name, coloured in the graph). Each resource has a unique (integer) id within its table.</li>
+<li><strong>Collections</strong> are lists of resources, that can be filtered by criteria such as languages or user.</li>
+</ul>
+<h3 id=general-api-route-pattern-rules>General API route pattern rules</h3>
+<h4 id=basic-access>Basic access</h4>
+<ul>
+<li>The type of the resource that is queried is always the first part of the route.</li>
+<li>This is the case for both individual resources and collections.</li>
+<li>Individual resources are accessed by their id.</li>
+<li>Data from other resources associated with the queried resource might be sent back as well, but querying those happens on the backend and is not exposed via the API.</li>
+<li>Creation, updates and deletion of resources happens via the basic route (ie. without filters).</li>
+</ul>
+<h5 id=examples>Examples</h5>
+<ul>
+<li><code>GET /texts/</code> => a collection of all texts</li>
+<li><code>GET /texts/38422</code> => the text with id <code>38422</code></li>
+<li><code>POST /translations</code> => create a new translation</li>
+<li><code>PUT /users</code> => update user data</li>
+<li><code>DELETE /texts/38422</code>=> removes text with id <code>22533</code></li>
+</ul>
+<h4 id=filtering-collections>Filtering collections</h4>
+<ul>
+<li>If the second part of the route is not an id (ie. not an integer), we are looking for a filtered collection of that resource.</li>
+<li>Filters are indicated by a keyword (in singular) and a unique identifier.</li>
+<li>Filters can be chained.</li>
+<li>Filtering for the logged-in user only requires the <code>user</code> keyword because the id is stored in the active session. The user keyword is always the last in the route.</li>
+</ul>
+<h5 id=examples-1>Examples</h5>
+<ul>
+<li><code>GET /translations/word/22533</code> => all translations (to all languages) for word with id <code>22533</code></li>
+<li><code>GET /translations/language/de/word/22533</code> => all translations to German (unique identifier <code>de</code>) for word with id <code>22533</code></li>
+<li><code>GET /words/text/38422/user</code> => all words in text <code>38422</code> that the user already has marked.</li>
+<li><code>GET /texts/user</code> => all texts belonging to the current user</li>
+<li><code>GET /texts/language/fr/user</code> => all texts in French (unique identifier <code>de</code>) belonging to the current user</li>
+</ul>
 </div>
 </section>
 <section class=page id=challenges>
@@ -205,6 +189,16 @@
 <h3 id=parsing-the-text-for-words-and-phrases>Parsing the text for words and phrases</h3>
 <h3 id=getting-the-most-out-of-postgresql>Getting the most out of PostgreSQL</h3>
 <h3 id=creating-the-ui-for-selecting-phrases>Creating the UI for selecting phrases</h3>
+</div>
+</section>
+<section class=page id=team>
+<h1>
+<a href=#team>Team</a>
+</h1>
+<div class=content>
+<h3 id=dana-chen>Dana Chen</h3>
+<h3 id=eamon-ocallaghan>Eamon O&rsquo;Callaghan</h3>
+<h3 id=marc-hermann>Marc Hermann</h3>
 </div>
 </section>
 </div>
