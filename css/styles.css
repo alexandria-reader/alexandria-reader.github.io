@@ -217,7 +217,8 @@ section div pre {
 }
 
 section code {
-  background-color: #fafafa;
+  font-size: smaller;
+  background-color: #e8e8e8;
 }
 
 section img {
