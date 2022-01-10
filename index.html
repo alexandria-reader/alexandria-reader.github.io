@@ -218,7 +218,9 @@ Over the course of development, this saved us a significant time and frustration
 <p>The basic idea behind the database design was to keep the main tables small and self contained, and work with references (foreign keys) to establish connections where possible in order to normalize the database.</p>
 <h4 id=normalization>Normalization</h4>
 <p>To normalize a database means to organize or structure it in a way that avoids redundancy of data, undesirable dependencies, and inconsistencies.</p>
-<p>In his <a href=https://forum.thethirdmanifesto.com/wp-content/uploads/asgarosforum/987737/00-efc-further-normalization.pdf>paper</a> &ldquo;Further Normalization of the Data Base Relational Model&rdquo;, <a href=https://en.wikipedia.org/wiki/Edgar_F._Codd>Edgar F. Codd</a>, the &ldquo;father&rdquo; of the relational database model, listed these objectives of nomalization:</p>
+<p>In his paper &ldquo;Further Normalization of the Data Base Relational Model"
+<sup><a href=#references>2</a>
+</sup>, Edgar F. Codd, the &ldquo;father&rdquo; of the relational database model, listed these objectives of nomalization:</p>
 <ol>
 <li><em>To free the collection of relations from undesirable insertion, update and deletion dependencies.</em></li>
 <li><em>To reduce the need for restructuring the collection of relations, as new types of data are introduced, and thus increase the life span of application programs.</em></li>
@@ -309,8 +311,12 @@ Over the course of development, this saved us a significant time and frustration
 <p>Reality eventually got the better of us and we decided to cut down the feature list to a more manageable size in line with our time table. We focussed on the single user experience with only the basic groundwork laid for cross-user content, simplified the user profile, and significantly simplified context handling.</p>
 <p>This is what we arrived at for the initial release of Alexandria:</p>
 <p><img src=/images/database-design-marc-1.10.png alt></p>
-<p>As yu can see, for the final design we stripped the connecting tables of their own unique ids, and made composite keys - the combinations of the foreign key columns - the primary keys. This would ensure that the connections are unique and a user cannot have, for example, two statuses for the same word.</p>
+<p>As you can see, for the final design we stripped the connecting tables of their own unique ids, and made composite keys - the combinations of the foreign key columns - the primary keys. This would ensure that the connections are unique and a user cannot have, for example, two statuses for the same word.</p>
 <p>Admittedly it should also have been done for the <code>words</code> table, because each word (ie. combination of letters) is unique in its language. But this occurred to us too late into the project and we stuck to the id as primary key for <code>words</code>.</p>
+<p>It is for this small detail that our database does probably not full satisfy <strong>3NF</strong>, but it is close enough to achieve all the objectives of normalization.</p>
+<h4 id=naming-things>Naming things</h4>
+<p>A useful side effect of designing the database very early in the project was that we had to agree on the names of the entities that we were going to deal with in our code. Eg. what is a word, what is a phrase? (They are actually the same in the database but different for text parsing). Finding that common language was essential for all communication going forward.</p>
+<h4 id=alexandrias-mvp-database-tables>Alexandria&rsquo;s MVP database tables</h4>
 <h5 id=main-tables>Main tables</h5>
 <table>
 <thead>
@@ -329,7 +335,7 @@ Over the course of development, this saved us a significant time and frustration
 <td>The people adminiteing Alexandria. That would be us for now.</td>
 </tr>
 <tr>
-<td>langauges</td>
+<td>languages</td>
 <td>The languages that are supported by Alexandria. For the first release, it is a list of ten. What they have in common is their use of a latin-based alphabet (to avoid surprises with our text parser for now) and their being supported by the PostgreSQL text search. A flag representing the language is saved as a unicode character combination to be used in menus across the application.</td>
 </tr>
 <tr>
@@ -361,7 +367,7 @@ Over the course of development, this saved us a significant time and frustration
 <tbody>
 <tr>
 <td>users_words</td>
-<td>Word statuses for a usr-word combination are &ldquo;learning&rdquo;, familiar", and &ldquo;learned&rdquo;.User dictionaries could be generated using this table.</td>
+<td>Word statuses for a usr-word combination are &ldquo;learning&rdquo;, familiar&rdquo;, and &ldquo;learned&rdquo;.User dictionaries could be generated using this table.</td>
 </tr>
 <tr>
 <td>users_translations</td>
@@ -373,15 +379,20 @@ Over the course of development, this saved us a significant time and frustration
 </tr>
 </tbody>
 </table>
-<h4 id=naming-things>Naming things</h4>
-<p>An useful side effect of designing the database very early in the project was that we had to agree on the names of the entities that we were going to deal with in our code. Eg. what is a word, what is a phrase? (They are actually the same in the database but different for text parsing). Finding that common language was essential for all communication going forward.</p>
-<h3 id=resources-and-collections>Resources and collections</h3>
+<h3 id=api-design>API Design</h3>
+<p>In the design of the API that is queried by the React front end, we tried to follow <a href=https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm>REST</a> principles as well as possible within the constraints of our type of application and of the current state of development.</p>
+<ul>
+<li><strong>Client-Server</strong>: as mentioned previously, this separation came naturally with the decision to create a React-based single page application.</li>
+<li><strong>Stateless</strong>: For security reasons and device inerchangeability, only the user id is stored with the client in a JSON Web token which is sent with every request. Additional information is always drawn from the user state which is kept in a Recoil atom. The request then includes the combined state information and sends it to the server.</li>
+<li></li>
+</ul>
+<h4 id=resources-and-collections>Resources and collections</h4>
 <ul>
 <li><strong>Resources</strong> are the individual items (rows) of the main database tables (&ldquo;single noun&rdquo; name, coloured in the graph). Each resource has a unique (integer) id within its table.</li>
 <li><strong>Collections</strong> are lists of resources, that can be filtered by criteria such as languages or user.</li>
 </ul>
-<h3 id=general-api-route-pattern-rules>General API route pattern rules</h3>
-<h4 id=basic-access>Basic access</h4>
+<h4 id=general-route-pattern-rules>General route pattern rules</h4>
+<h5 id=basic-access>Basic access</h5>
 <ul>
 <li>The type of the resource that is queried is always the first part of the route.</li>
 <li>This is the case for both individual resources and collections.</li>
@@ -389,7 +400,7 @@ Over the course of development, this saved us a significant time and frustration
 <li>Data from other resources associated with the queried resource might be sent back as well, but querying those happens on the backend and is not exposed via the API.</li>
 <li>Creation, updates and deletion of resources happens via the basic route (ie. without filters).</li>
 </ul>
-<h5 id=examples>Examples</h5>
+<h6 id=examples>Examples</h6>
 <ul>
 <li><code>GET /texts/</code> => a collection of all texts</li>
 <li><code>GET /texts/38422</code> => the text with id <code>38422</code></li>
@@ -397,14 +408,14 @@ Over the course of development, this saved us a significant time and frustration
 <li><code>PUT /users</code> => update user data</li>
 <li><code>DELETE /texts/38422</code>=> removes text with id <code>22533</code></li>
 </ul>
-<h4 id=filtering-collections>Filtering collections</h4>
+<h5 id=filtering-collections>Filtering collections</h5>
 <ul>
 <li>If the second part of the route is not an id (ie. not an integer), we are looking for a filtered collection of that resource.</li>
 <li>Filters are indicated by a keyword (in singular) and a unique identifier.</li>
 <li>Filters can be chained.</li>
 <li>Filtering for the logged-in user only requires the <code>user</code> keyword because the id is stored in the active session. The user keyword is always the last in the route.</li>
 </ul>
-<h5 id=examples-1>Examples</h5>
+<h6 id=examples-1>Examples</h6>
 <ul>
 <li><code>GET /translations/word/22533</code> => all translations (to all languages) for word with id <code>22533</code></li>
 <li><code>GET /translations/language/de/word/22533</code> => all translations to German (unique identifier <code>de</code>) for word with id <code>22533</code></li>
@@ -457,7 +468,12 @@ Over the course of development, this saved us a significant time and frustration
 </h1>
 <div class=content>
 <ol>
-<li><a href=https://www.researchgate.net/publication/349255011_Explorations_in_Language_Acquisition_and_Use>https://www.researchgate.net/publication/349255011_Explorations_in_Language_Acquisition_and_Use</a></li>
+<li>
+<p><a href=https://www.researchgate.net/publication/349255011_Explorations_in_Language_Acquisition_and_Use>https://www.researchgate.net/publication/349255011_Explorations_in_Language_Acquisition_and_Use</a></p>
+</li>
+<li>
+<p>Edgar F. Codd (1972): <a href=https://forum.thethirdmanifesto.com/wp-content/uploads/asgarosforum/987737/00-efc-further-normalization.pdf>Further Normalization of the Data Base Relational Model</a></p>
+</li>
 </ol>
 </div>
 </section>

@@ -31,6 +31,12 @@ html, body {
   }
 }
 
+h6 {
+  margin-bottom: 5px;
+  font-size: medium;
+  font-style: italic;
+}
+
 /* Sidebar */
 .sidebar {
   overflow: auto;
@@ -187,7 +193,7 @@ nav {
 
 /* Section of the page */
 section.page {
-  margin-bottom: 3em;
+  padding-bottom: 3em;
 }
 
 section.page h1 {
