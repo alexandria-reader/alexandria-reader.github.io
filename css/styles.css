@@ -80,6 +80,7 @@ html, body {
 }
 
 .site-title {
+  font-family: Dosis;
   margin-top: 0px;
 }
 
@@ -218,7 +219,6 @@ section div pre {
 
 section code {
   font-size: smaller;
-  background-color: #e8e8e8;
 }
 
 section img {
@@ -240,4 +240,9 @@ tr:nth-child(odd) {
 
 td, th{
   padding: 7px;
+  font-size: smaller;
+}
+
+pre {
+  padding: 5px;
 }

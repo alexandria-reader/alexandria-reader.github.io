@@ -14,7 +14,7 @@
 <div class=navigation>
 <div>
 <img src=/images/logo-light.png alt="Alexandria logo">
-<p style=font-size:smaller>Learn languages by translating texts</p>
+<p style=font-size:smaller;font-family:Dosis>Learn languages by translating texts</p>
 </div>
 <h1 class=site-title><a href=/>Alexandria</a></h1>
 <nav class=internal>
@@ -43,7 +43,7 @@
 <div class=external-title>Check out Alexandria:</div>
 <ul id=shortcuts>
 <li>
-<a href=https://alexandria-reader.netlify.app target=_blank rel=noopener>Use the app</a>
+<a href=https://tryalexandria.com target=_blank rel=noopener>Use the app, learn a language</a>
 </li>
 <li>
 <a href=https://github.com/alexandria-reader/ target=_blank rel=noopener>Visit Alexandria on Github</a>
@@ -168,8 +168,8 @@ Over the course of development, this saved us a significant time and frustration
 <a href=#database-api>Database and API design</a>
 </h1>
 <div class=content>
-<p>With the technical decisions settled, it was time to design to vital aspects of the backend architecture: the database and the API.</p>
-<p>While a database of some form would always have been necessary, exposing an API was the result of going with a single page React app that talks to the server via API calls. This also opens the door for alternative front ends at a later stage - a mobile app could use the same back end. It is also in keeping with Alexandria being an open source project and allows for a decoupled contributions to front end or back end.</p>
+<p>With the technical decisions settled, it was time to design two vital aspects of the backend architecture: the database and the API.</p>
+<p>While a database of some form would always have been necessary, exposing an API was the result of going with a single page React app that talks to the server via API calls. This also opens the door for alternative front ends at a later stage - a mobile app could use the same back end. It is also in line with Alexandria being an open source project, allowing for decoupled contributions to front end or back end.</p>
 <h3 id=database-architecture>Database architecture</h3>
 <p>The basic idea behind the database design was to keep the main tables small and self contained, and work with references (foreign keys) to establish connections where possible in order to normalize the database.</p>
 <h4 id=normalization>Normalization</h4>
@@ -196,14 +196,14 @@ Over the course of development, this saved us a significant time and frustration
 <tbody>
 <tr>
 <td>Mark</td>
-<td>hause</td>
+<td>house</td>
 <td>en</td>
 <td>Haus</td>
 <td>de</td>
 </tr>
 <tr>
 <td>Dana</td>
-<td>hause</td>
+<td>house</td>
 <td>en</td>
 <td>maison</td>
 <td>fr</td>
@@ -249,9 +249,13 @@ Over the course of development, this saved us a significant time and frustration
 </tbody>
 </table>
 <p>The first table holds values of four key entities of Alexandria: <code>users</code>, <code>words</code>, <code>translations</code>, and <code>languages</code>. The second table is the <code>users</code> table to go with it.</p>
-<p>There are two independent <code>username</code> columns, an example of redundancy that can lead to so-called &ldquo;update anomalies&rdquo;: It turns out that Marc is not spellt with a &ldquo;k&rdquo; but with a &ldquo;c&rdquo;. If we only change this in the <code>users</code> table, the data will become inconsistent, because it still says &ldquo;Mark&rdquo; in the first table. It is the same situation with the word &ldquo;house&rdquo; that was misspelled as &ldquo;hause&rdquo;. It, too, needs to be updated in too places at once.</p>
+<p>There are two independent <code>username</code> columns, an example of redundancy that can lead to so-called &ldquo;update anomalies&rdquo;: It turns out that Marc is not spellt with a &ldquo;k&rdquo; but with a &ldquo;c&rdquo;. If we only change this in the <code>users</code> table, the data will become inconsistent, because it still says &ldquo;Mark&rdquo; in the first table. The username needs to be updated in two different places which is prone to errors.</p>
 <h5 id=normal-forms>Normal forms</h5>
-<p>Normalization of relational databases is guided by a set of rules that build on each other. They are calle &ldquo;normal forms&rdquo;.</p>
+<p>Normalization of relational databases is guided by rules that build on each other. They are called &ldquo;normal forms&rdquo;.</p>
+<p>To satisfy the the first normal form (<strong>1NF</strong>), data sets must not contain tables themselves, and each data set must have a unique primary key. In the example above, there are no nested tabels, but only the <code>users</code> table has a primary key (<code>id</code>), so not even 1NF is satisfied.</p>
+<p>The second normal form (<strong>2NF</strong>) fulfills the rules of the first normal form, and it also demands every attribute of a dataset is functionally dependent on the primary keys. Those attributes that do not depend on the primary key should go in their own table and be linked with a foreign key instead.</p>
+<p>The third normal form (<strong>3NF</strong>) adds the rule that transitive functional dependencies must be eliminated as well: If B depends on primary key A, but C depends on B, then both B and C should be extracted to their own table.</p>
+<p>There are higher normal forms but they are rarely encountered in the wild. If our database were to satisfy 3NF it would be safe from insertion, update and deletion anomalies. Did we succeed with our design? Let&rsquo;s find out&mldr;</p>
 <h4 id=tables-more-tables-no-sorry-fewer-tables-again>Tables. More tables! No, sorry, fewer tables again.</h4>
 <p>We started out with a couple of fairly basic design. This is the graphical representation of one the first drafts:</p>
 <p><img src=/images/database-design-marc-1.0.png alt></p>
@@ -259,9 +263,10 @@ Over the course of development, this saved us a significant time and frustration
 <p>After a few iterations to allow for more features, especially cross-user content we landed here:</p>
 <p><img src=/images/database-design-marc-1.4.png alt></p>
 <p>Reality eventually got the better of us and we decided to cut down the feature list to a more manageable size in line with our time table. We focussed on the single user experience with only the basic groundwork laid for cross-user content, simplified the user profile, and significantly simplified context handling.</p>
-<p>For the final design we also stripped the connecting tables of their own unique ids, and made the of the foreign key columns (composite keys) the primary keys. This would ensure that the connections are unique and a user cannot have, for example, two statuses for the same word.</p>
-<p>This is what we arrived at for the initial release:</p>
+<p>This is what we arrived at for the initial release of Alexandria:</p>
 <p><img src=/images/database-design-marc-1.10.png alt></p>
+<p>As yu can see, for the final design we stripped the connecting tables of their own unique ids, and made composite keys - the combinations of the foreign key columns - the primary keys. This would ensure that the connections are unique and a user cannot have, for example, two statuses for the same word.</p>
+<p>Admittedly it should also have been done for the <code>words</code> table, because each word (ie. combination of letters) is unique in its language. But this occurred to us too late into the project and we stuck to the id as primary key for <code>words</code>.</p>
 <h5 id=main-tables>Main tables</h5>
 <table>
 <thead>
