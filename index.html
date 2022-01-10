@@ -32,10 +32,10 @@
 <a href=#challenges>Challenges and Solutions</a>
 </li>
 <li>
-<a href=#future>Current State and Future Plans</a>
+<a href=#future>MVP and Future Plans</a>
 </li>
 <li>
-<a href=#team>Team</a>
+<a href=#team>Meet the Team</a>
 </li>
 <li>
 <a href=#references>References</a>
@@ -455,9 +455,33 @@ Over the course of development, this saved us a significant time and frustration
 <a href=#challenges>Challenges and Solutions</a>
 </h1>
 <div class=content>
-<p>What challenges we faced and how we solved them.</p>
-<h3 id=parsing-the-text-for-words-and-phrases>Parsing the text for words and phrases</h3>
-<h3 id=getting-the-most-out-of-postgresql>Getting the most out of PostgreSQL</h3>
+<p>While the designing database and API were challenging in and by themselves, and the thorough preparation definitely paid of during the coding stage, there were, of course, still hurdles to overcome, problems to solve, solutions to find.</p>
+<h3 id=finding-the-users-words-and-phrases-in-the-text>Finding the user&rsquo;s words and phrases in the text</h3>
+<p>We have already discussed why we chose to work with a relational database as opposed to a document-based one. But our decision to use PostgreSQL brought another benefit with it, and that is the build in full text search which we put to good use to solve.</p>
+<p>On the front end, Alexandia highlights all the words and phrases that the user has already encountered. To find out whether a text contains words or phrases that the user has already marked, the words of the text have to be compared to all the user&rsquo;s words and phrases saved in the database.</p>
+<p>We were already working on a search algorithm using <a href=https://en.wikipedia.org/wiki/Trie><em>tries</em></a>, when we had a closer look at the PostgreSQL documentation and decided that its full text search was just what we needed, and that using it would bring a couple of advantages with it:</p>
+<ul>
+<li>It is written in C and most likely faster than anything we would implement in TypeScript.</li>
+<li>It is happening at the starting point of the data chain, so no unnecessary data has to be transferred and processed by neither the server nor the client.</li>
+</ul>
+<p>PostgreSQL text search works by parsing and normalizing a text into a <em>text search vector</em> of the <code>tsvector</code> data type. Search terms on the other hand are parsed and normalized into <em>text search queries</em> of the <code>tsquery</code> type. The parser breaks a string (text or search term) into individual tokens, mostly words in our case.</p>
+<p>The normalization then removes common small words from the tokens and reduces the words to their stems according to language specific dictionaries. Heroku&rsquo;s PostgreSQL installation came with support for twenty languages.</p>
+<p>While this normalization step is very powerful, it is obviously geared for full text search, allowing for results like &ldquo;handling&rdquo; and &ldquo;handlebar&rdquo; when search term is &ldquo;handle&rdquo;. But this was a bit too lenient for our purpose. For the language learner &ldquo;handle&rdquo;, and &ldquo;handling&rdquo; should be considered as two words. Luckily, PostgreSQL also ships with a <code>simple</code> configuration that simple parses the text but leaves the tokens as they are, and that is the configuration we used.</p>
+<p>To save processing time, each text is parsed immediately into a <code>tsvector</code> when it is added to the database (or modified later). The vector is saved in a column of the <code>texts</code> table defined like this:</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sql data-lang=sql><span style=color:#111>tsvector_simple</span> <span style=color:#111>tsvector</span> <span style=color:#00a8c8>GENERATED</span> <span style=color:#111>ALWAYS</span> <span style=color:#00a8c8>AS</span> <span style=color:#111>(</span><span style=color:#111>to_tsvector</span><span style=color:#111>(</span><span style=color:#d88200>&#39;simple&#39;</span><span style=color:#111>,</span> <span style=color:#111>title</span> <span style=color:#f92672>||</span> <span style=color:#d88200>&#39; &#39;</span> <span style=color:#f92672>||</span> <span style=color:#111>body</span><span style=color:#111>))</span> <span style=color:#111>STORED</span>
+</code></pre></div><p>In a similar fashion, every word or phrase added to the database also gets a column in which the parsed <code>tsquery</code> is saved.</p>
+<p>We then find all the words in text <code>5</code> that user <code>1</code> has in his vocabulary with this SQL query:</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sql data-lang=sql>  <span style=color:#00a8c8>SELECT</span> <span style=color:#111>w</span><span style=color:#111>.</span><span style=color:#111>id</span><span style=color:#111>,</span> <span style=color:#111>w</span><span style=color:#111>.</span><span style=color:#111>word</span><span style=color:#111>,</span> <span style=color:#111>uw</span><span style=color:#111>.</span><span style=color:#111>word_status</span>
+    <span style=color:#00a8c8>FROM</span> <span style=color:#111>words</span> <span style=color:#00a8c8>AS</span> <span style=color:#111>w</span> 
+    <span style=color:#00a8c8>JOIN</span> <span style=color:#111>users_words</span> <span style=color:#00a8c8>AS</span> <span style=color:#111>uw</span> <span style=color:#00a8c8>ON</span> <span style=color:#111>w</span><span style=color:#111>.</span><span style=color:#111>id</span> <span style=color:#f92672>=</span> <span style=color:#111>uw</span><span style=color:#111>.</span><span style=color:#111>word_id</span> 
+   <span style=color:#00a8c8>WHERE</span> <span style=color:#111>uw</span><span style=color:#111>.</span><span style=color:#111>user_id</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span> 
+         <span style=color:#00a8c8>AND</span>
+         <span style=color:#111>w</span><span style=color:#111>.</span><span style=color:#111>language_id</span> <span style=color:#f92672>=</span> <span style=color:#111>(</span><span style=color:#00a8c8>SELECT</span> <span style=color:#111>t</span><span style=color:#111>.</span><span style=color:#111>language_id</span> <span style=color:#00a8c8>FROM</span> <span style=color:#111>texts</span> <span style=color:#00a8c8>AS</span> <span style=color:#111>t</span> 
+                           <span style=color:#00a8c8>WHERE</span> <span style=color:#111>t</span><span style=color:#111>.</span><span style=color:#111>id</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>5</span><span style=color:#111>)</span>
+         <span style=color:#00a8c8>AND</span>
+         <span style=color:#111>w</span><span style=color:#111>.</span><span style=color:#111>tsquery_simple</span> <span style=color:#f92672>@@</span> <span style=color:#111>(</span><span style=color:#00a8c8>SELECT</span> <span style=color:#111>t</span><span style=color:#111>.</span><span style=color:#111>tsvector_simple</span> <span style=color:#00a8c8>FROM</span> <span style=color:#111>texts</span> <span style=color:#00a8c8>AS</span> <span style=color:#111>t</span> 
+                               <span style=color:#00a8c8>WHERE</span> <span style=color:#111>t</span><span style=color:#111>.</span><span style=color:#111>id</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>5</span><span style=color:#111>);</span>        
+</code></pre></div><h3 id=highlighting-words-and-phrases-in-the-ui>Highlighting words and phrases in the UI</h3>
 <h3 id=creating-the-ui-for-selecting-phrases>Creating the UI for selecting phrases</h3>
 <p>One of the most important features of our app is allowing users to select and save phrases along with its translation. This ended up being more challenging than expected due to the way our texts are displayed. Each word in a user text has its own state, and resides in its own span. When a user clicks on a word, it is added to the <code>currentWord</code> state, which then triggers a re-render of the translation input component, which contains the current word, existing translations, links to dictionaries and translations, as well as the option for the user to set their level of familiarity with the word.</p>
 <p>Phrases are their own component, separate from words. They are also surrounded by spans which are highlighted based on the users level of familiarity with the phrase. So we needed a way to create phrases on the fly as users selected them. So when a user selects several words, their selection is added to the <code>userWords</code> object, which automatically highlights the new phrase.</p>
@@ -469,7 +493,7 @@ Over the course of development, this saved us a significant time and frustration
 </section>
 <section class=page id=future>
 <h1>
-<a href=#future>Current State and Future Plans</a>
+<a href=#future>MVP and Future Plans</a>
 </h1>
 <div class=content>
 <p>Where we are now, and where we are going</p>
@@ -479,7 +503,7 @@ Over the course of development, this saved us a significant time and frustration
 </section>
 <section class=page id=team>
 <h1>
-<a href=#team>Team</a>
+<a href=#team>Meet the Team</a>
 </h1>
 <div class=content>
 <h3 id=dana-chen>Dana Chen</h3>
