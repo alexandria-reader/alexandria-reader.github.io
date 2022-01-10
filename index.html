@@ -32,6 +32,9 @@
 <a href=#challenges>Challenges and Solutions</a>
 </li>
 <li>
+<a href=#future>Current State and Future Plans</a>
+</li>
+<li>
 <a href=#team>Team</a>
 </li>
 <li>
@@ -98,7 +101,7 @@
 <td>Mobile First</td>
 <td>❌</td>
 <td>✅</td>
-<td>❌</td>
+<td>✅</td>
 </tr>
 <tr>
 <td>Responsiveness to Community Input</td>
@@ -106,9 +109,15 @@
 <td>✅</td>
 <td>✅</td>
 </tr>
+<tr>
+<td>Phrase Selection</td>
+<td>❌</td>
+<td>✅</td>
+<td>❓</td>
+</tr>
 </tbody>
 </table>
-<p>Our main objectives were to create a modern, fast, open source webapp with a mobile first interface, allowing users to quickly and easily get learning without having to stuggle with the interface or wait for eveything to load.</p>
+<p>Our main objectives at the initial stage are to: create a modern, fast, open source webapp with a mobile first interface. This will allow users to quickly and easily start learning without struggles with the interface, or excessive wait times for content to load.</p>
 </div>
 </section>
 <section class=page id=decisions>
@@ -153,12 +162,47 @@ Over the course of development, this saved us a significant time and frustration
 <p>Overall, we felt that the benefits clearly outweighted the disadvantages for our usecase. It was worth putting in the extra effort of using TypeScript as it helped us catch bugs before the code was run, meaning that they didn&rsquo;t make it into production. The added readability and easy refactoring made TypeScript the clear winner.</p>
 <h3 id=postgresql>PostgreSQL</h3>
 <h3 id=react>React</h3>
-<p>There are many options available for creating modern websites, so why did we decide to use React for our app?</p>
-<p>Our app more resembles a modern interactive app than a static website as it involves a lot of user interaction, so we ruled out static serving of HTML and CSS. We looked into using templating engines such as Handlebars, but for our use case we found that due to the complexity of the user interaction and the level of interactivity we required, something like React would be far better.</p>
-<p>Templating engines like handlebars are good for server-side rendering, but they are not good for fast incremental updates of the DOM, event-handling or frontend to backend communication.</p>
-<p>In the end we decided on React due to the many advantages that it brought:</p>
-<p>The component-based design. Being able to design components that hold state was fundamental to the design of our app. For example, as each &ldquo;word&rdquo; can have it&rsquo;s own state (translation, learning stage, context, etc), React&rsquo;s implementation of hooks and component state fit perfectly with what we had in mind.</p>
-<p>Speed. When a user changes a word&rsquo;s state, the result is displayed immediately on the DOM (In this case, the word would be highlighted and it&rsquo;s translation and context would be saved to the word&rsquo;s state).</p>
+<h4 id=project-requirements>Project requirements</h4>
+<p>In order to achieve both performance and user experience objectives for Alexandria, we settled on a number of goals that we&rsquo;d like to fullfill at the initial stsage.</p>
+<p>One of the key features of the app is to reflect the changes made by a particular user interaction immediately, without an additional page reload.</p>
+<p>Consider the following user actions and their effects on a piece of text. Our challenge is to make every user interaction feel instantaneous and seamless.</p>
+<table>
+<thead>
+<tr>
+<th>User action</th>
+<th>Immediate Rendering</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Click on word/phrase</td>
+<td>Translation input box available</td>
+</tr>
+<tr>
+<td>Click on highlighted word/phrase</td>
+<td>Translation and status displayed</td>
+</tr>
+<tr>
+<td>Update word/phrase status</td>
+<td>Highlighted colour on word changes</td>
+</tr>
+</tbody>
+</table>
+<p>Another challenge is the ability of the UI to keep in sync with state changes of variables. With increased complexity, it becomes harder to track the exact state of the UI at every given moment during the lifecycle of the application. The challenge is to represent the UI accurately after a possible flurry of user interactions.</p>
+<h4 id=plain-javascript-versus-react>Plain Javascript versus React</h4>
+<p>Pitting plain JS against React against Alexandria&rsquo;s initial requirements, React was the easy winner. Below is a summary of some of the differences between the two languages as it pertains to Alexandria.</p>
+<h5 id=rendering-efficiency>Rendering efficiency</h5>
+<p>With Javascript, UI is created in HTML on the server side, and sent to the browser. Each user interaction resulting in a data change requires an API call to the backend, and a re-rendering of the browser based on the new DOM. We briefly considered templating engines like Handlebars. While they are excellent choices for server-side rendering, they do not meet Alexandria&rsquo;s goal of delivering speedy incremental updates of the DOM, event-handling, or frontend to backend communication.</p>
+<p>On the other hand, React defines UI on the browser. An app starts with a blank container and loads the UI. The UI is defined by a component that returns the JSX - a HTML lookalike. The new component is rendered into the div contianer using the <code>ReactDOM</code> library, and the result will appear directly on the browser.</p>
+<p>Because each UI is broken into smaller components, each component can render independently due to its use of the virtual DOM. One change in a component does not result in the re-rendering of the entire page, merely the changed component, thus improving the front-end user experience significantly.</p>
+<h5 id=state-management>State management</h5>
+<p>In JS, an event listener is attached to a DOM element to listen for changes. With each state change, we track the value deviation function, re-run the deviation functions and track the changes in return value. Those changed values are passed to the appropriate DOM element through the DOM API.</p>
+<p>With React, the UI is set up to keep the entire state of a variable in the form of a &ldquo;controlled component&rdquo;, while an event (e.g. a button press) can be specified directly in the code, with no need for an event listener. The change to variable is registered, and the UI is updated automatically. There&rsquo;s no need to go into the DOM to find the variable to update.</p>
+<p>Being able to design components that hold state was fundamental to the design of Alexandria. Using React, each &ldquo;word&rdquo; residing within a piece of text can have it&rsquo;s own state (translation, learning stage, context). When a user changes a word&rsquo;s state, the result is displayed immediately on the DOM. In this case, the word would be highlighted, and its translation and context would be saved to the word&rsquo;s state.</p>
+<p>React&rsquo;s implementation of hooks and component state fit perfectly with this requirement.</p>
+<h5 id=maintainability-and-reusability>Maintainability and Reusability</h5>
+<p>In JS, the markup and functionality are kept separate. As apps grow bigger, this becomes a major source of complexity, where a developer needs to keep track of both sets of codes.</p>
+<p>In React, the app is split into components, where each component maintains the code required to both display and upates the UI. This also allows reusability of components, another benefit.</p>
 <h3 id=recoil>Recoil</h3>
 <h3 id=heroku--netlify>Heroku + Netlify</h3>
 </div>
@@ -385,6 +429,16 @@ Over the course of development, this saved us a significant time and frustration
 <p>Using the browser API <code>Selection</code>, we were able to get the <code>anchorNode</code> and <code>focusNode</code>, the nodes where the selection started and ended. With access to those nodes, we could extract the full words using the nodes <code>textContent</code> property, meaning it was trivial to replace the first and last words of the selection with the full words. This gives the user a much better experience as they can select phrases without having to be careful to always select full words.</p>
 <p>The only problem with this approach was that if for some reason a user selected a phrase dragging the mouse from right to left, the first and last word would be reversed. We tried to solve this by saving the X location of the mouse pointer <code>onMouseDown</code> and comparing it to the end X location <code>onMouseUp</code> to see if the selection was done backwards or not. But when a selection was done across multiple lines and the start point was further left than the end point, it didn&rsquo;t work.</p>
 <p>As we had access to the context (the phrase the selection was from), in the end we were able to simply test if the phrase appeared in the context, and if not, switch the first and last words, thus greatly simplifying the selection logic.</p>
+</div>
+</section>
+<section class=page id=future>
+<h1>
+<a href=#future>Current State and Future Plans</a>
+</h1>
+<div class=content>
+<p>Where we are now, and where we are going</p>
+<h3 id=mvp>MVP</h3>
+<h3 id=moving-forward>Moving Forward</h3>
 </div>
 </section>
 <section class=page id=team>
