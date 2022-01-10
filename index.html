@@ -62,7 +62,7 @@
 <p>With this very specific language learning need in mind, a number of web applications has been created in recent years. Language learning enthusiasts have embraced those platforms to supplment their language learning journey.</p>
 <p>Despite a choice of platforms that range from open source software to paid software, there are shortcomings. The language learning enthusiast in our team has identified a number of weaknesses that Alexandria seeks to address.</p>
 <h3 id=competitor-analysis>Competitor analysis</h3>
-<p>Current &ldquo;learning with text&rdquo; software applications fall under two broad group.</p>
+<p>Current &ldquo;learning with text&rdquo; software applications fall under two broad groups.</p>
 <p>One group includes long-standing open source projects that are well received but sparsely maintained, or newer free applications that started with a bang, but were quickly forgotten and subsequently neglected.</p>
 <p>The second group of applications are commercial solutions that address the goal of language learning with text, but suffer from feature bloat, lack of user friendliness, or mobile performance issues.</p>
 <p>Alexandria would like to become the go-to solution for language learning enthusiasts. Through keeping the product free and open source, we aspire to continue developmenting product features that are crucial to language learners, while maintaining a joyful user experience based on the latest technological offerings.</p>
@@ -108,6 +108,7 @@
 </tr>
 </tbody>
 </table>
+<p>Our main objectives were to create a modern, fast, open source webapp with a mobile first interface, allowing users to quickly and easily get learning without having to stuggle with the interface or wait for eveything to load.</p>
 </div>
 </section>
 <section class=page id=decisions>
@@ -119,7 +120,7 @@
 <h3 id=typescript-vs-javascript>TypeScript vs JavaScript</h3>
 <p>Before we started developing Alexandria, none of us had any real experience using TypeScript, whereas we all had a solid foundation in JavaScript.
 Yet after doing a lot of research, we decided to use TypeScript in our project. Why?</p>
-<h3 id=static-typing>Static typing</h3>
+<h4 id=static-typing>Static typing</h4>
 <p>One of the main reasons is the static typing that is a core part of TypeScript. In JavaScript, an object can have whatever properties you want, and you can add
 and remove them as you see fit. In TypeScript, types are static, meaning that once an object&rsquo;s type is declared, it does not change its type and can
 only take certain values.</p>
@@ -136,22 +137,29 @@ be warned by the compiler that the wrong type had been added. An even better exa
 <p>Another useful feature is that if you try to add a property that has not been declared on the type, for example <code>language</code>, the compiler would warn you that the property <code>language</code> does not exist on type <code>UserWord</code>.</p>
 <p>The warnings given by the compiler and even by our IDE of choice, VSCode, were invaluable in alerting us to type-related bugs before the code was even run.
 Over the course of development, this saved us a significant time and frustration as far fewer errors made it into the codebase. Even errors as simple as misspelled variables are caught by the TypeScript compiler.</p>
-<h3 id=code-readability>Code readability</h3>
+<h4 id=code-readability>Code readability</h4>
 <p>TypeScript greatly increases the readability of our code. Let&rsquo;s take a function that takes an object as a parameter. In JavaScript, you would have to be familiar with that object and its properties, or possibly log the object to the console to see what properties exist on the object. With TypeScript in VSCode, you can simply over the mouse over the type declaration to see a list of the properties that object will have as well as the types of each of those properties.</p>
 <p>This means that in future, if more developers join our project, it will be much easier for them to get up to speed on with our codebase. This also results in increased code stability, as you can be sure exactly what properties an object will have, or whether a certain variable is possibly null.</p>
-<h3 id=easy-refactoring>Easy refactoring</h3>
+<h4 id=easy-refactoring>Easy refactoring</h4>
 <p>TypeScript makes refactoring much easier. For example, if you change a function&rsquo;s name, but forget to change the name in another file, the TypeScript compiler will immediately alert you to the issue, even showing you the exact file and line of code where the problem resides. This means that you can refactor with confidence, resulting in a cleaner codebase.</p>
-<h3 id=future-advantages>Future advantages</h3>
+<h4 id=future-advantages>Future advantages</h4>
 <p>All of this means that as the codebase grows and more developers join the project, it will be easier for them to get up to speed, and the codebase will be more stable.</p>
-<h3 id=disadvantages-of-typescript>Disadvantages of TypeScript</h3>
+<h4 id=disadvantages-of-typescript>Disadvantages of TypeScript</h4>
 <p>Of course, nothing is perfect. Some of the disadvantages of TypeScript include:</p>
 <p>Longer code. Using TypeScript involves writing more code than with JavaScript, meaning that writing the code can take longer than with just plain JavaScript.</p>
 <p>Having to learn TypeScript. As I mentioned above, none of us had any real experience with TypeScript before beginning this project, so learning TypeScript on top of designing and coding the app resulted in longer development time, especially in the beginning stages. Thankfully, having a strong base in JavaScript made this process much easier.</p>
 <p>TypeScripts static typing is not true static typing. Once TypeScript is compiled, it is transpiled into untyped Javascript, meaning that there is still a small risk of type problems at runtime.</p>
-<h3 id=conclusion>Conclusion</h3>
+<h4 id=conclusion>Conclusion</h4>
 <p>Overall, we felt that the benefits clearly outweighted the disadvantages for our usecase. It was worth putting in the extra effort of using TypeScript as it helped us catch bugs before the code was run, meaning that they didn&rsquo;t make it into production. The added readability and easy refactoring made TypeScript the clear winner.</p>
 <h3 id=postgresql>PostgreSQL</h3>
-<h3 id=react--recoil>React + Recoil</h3>
+<h3 id=react>React</h3>
+<p>There are many options available for creating modern websites, so why did we decide to use React for our app?</p>
+<p>Our app more resembles a modern interactive app than a static website as it involves a lot of user interaction, so we ruled out static serving of HTML and CSS. We looked into using templating engines such as Handlebars, but for our use case we found that due to the complexity of the user interaction and the level of interactivity we required, something like React would be far better.</p>
+<p>Templating engines like handlebars are good for server-side rendering, but they are not good for fast incremental updates of the DOM, event-handling or frontend to backend communication.</p>
+<p>In the end we decided on React due to the many advantages that it brought:</p>
+<p>The component-based design. Being able to design components that hold state was fundamental to the design of our app. For example, as each &ldquo;word&rdquo; can have it&rsquo;s own state (translation, learning stage, context, etc), React&rsquo;s implementation of hooks and component state fit perfectly with what we had in mind.</p>
+<p>Speed. When a user changes a word&rsquo;s state, the result is displayed immediately on the DOM (In this case, the word would be highlighted and it&rsquo;s translation and context would be saved to the word&rsquo;s state).</p>
+<h3 id=recoil>Recoil</h3>
 <h3 id=heroku--netlify>Heroku + Netlify</h3>
 </div>
 </section>
