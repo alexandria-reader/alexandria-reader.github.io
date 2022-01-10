@@ -204,7 +204,21 @@ Over the course of development, this saved us a significant time and frustration
 <p>In JS, the markup and functionality are kept separate. As apps grow bigger, this becomes a major source of complexity, where a developer needs to keep track of both sets of codes.</p>
 <p>In React, the app is split into components, where each component maintains the code required to both display and upates the UI. This also allows reusability of components, another benefit.</p>
 <h3 id=recoil>Recoil</h3>
+<p>The state of the user interface depends on a range of dynamically changing variables. And our interface was going to change a lot, with words being highlighted, translations added, statuses and languages changed etc.</p>
+<p>If we didn&rsquo;t want to pass these variables up and down the React component tree all the time, but rather grant the components access to them from anywhere, we needed a global state management system.</p>
+<p>For Alexandria we evaluated three alternatives:</p>
+<ul>
+<li>state management stalwart Redux,</li>
+<li>React&rsquo;s very own Context,</li>
+<li>and newcomer Recoil,</li>
+</ul>
+<p>Redux: Too big, too much boilerplate code, to much overhead for our humble app.</p>
+<p>Context: A workable solution for read-only state, but a pain in the nect to update (reducer hooks anyone?)</p>
+<p>Recoil: literally perfect for our needs. Works just like React&rsquo;s local component states (useState), ie. with a similar syntax, but with a global state. States can be easily set as well, as opposed to Context. Atoms hold &ldquo;true&rdquo; state, selectors hold &ldquo;derived&rdquo; state, based on atoms. Same syntax for both.</p>
 <h3 id=heroku--netlify>Heroku + Netlify</h3>
+<p>Heroku offers an affordable, yet scalable way to deploy apps relying on a PostgreSQL database. It also has a CI/CD pipeline with automatic deployment from GitHub both for PR bases review apps and staging/production app.</p>
+<p>We decided to deliver the front end part of the app through Netlify, because we had separate GH repositories anyway and could decouple front end and back end development even more by having separate review apps.</p>
+<p>Also, we benefit from Netlify&rsquo;s CDN for the (admittedly sparse) static content.</p>
 </div>
 </section>
 <section class=page id=database-api>
