@@ -127,11 +127,101 @@
 <a href=#database-api>Database and API design</a>
 </h1>
 <div class=content>
-<p>The basic idea was to keep the main tables small and self contained, and work with references (foreign keys) to establish connections and to normalize the database.</p>
-<h3 id=graph>Graph</h3>
-<p>This is the graphical representaion of the Alexandria database.</p>
-<p><img src=/images/database-design-marc-1.9.png alt></p>
-<h3 id=main-tables-coloured>Main tables (coloured)</h3>
+<p>With the technical decisions settled, it was time to design to vital aspects of the backend architecture: the database and the API.</p>
+<p>While a database of some form would always have been necessary, exposing an API was the result of going with a single page React app that talks to the server via API calls. This also opens the door for alternative front ends at a later stage - a mobile app could use the same back end. It is also in keeping with Alexandria being an open source project and allows for a decoupled contributions to front end or back end.</p>
+<h3 id=database-architecture>Database architecture</h3>
+<p>The basic idea behind the database design was to keep the main tables small and self contained, and work with references (foreign keys) to establish connections where possible in order to normalize the database.</p>
+<h4 id=normalization>Normalization</h4>
+<p>To normalize a database means to organize or structure it in a way that avoids redundancy of data, undesirable dependencies, and inconsistencies.</p>
+<p>In his <a href=https://forum.thethirdmanifesto.com/wp-content/uploads/asgarosforum/987737/00-efc-further-normalization.pdf>paper</a> &ldquo;Further Normalization of the Data Base Relational Model&rdquo;, <a href=https://en.wikipedia.org/wiki/Edgar_F._Codd>Edgar F. Codd</a>, the &ldquo;father&rdquo; of the relational database model, listed these objectives of nomalization:</p>
+<ol>
+<li><em>To free the collection of relations from undesirable insertion, update and deletion dependencies.</em></li>
+<li><em>To reduce the need for restructuring the collection of relations, as new types of data are introduced, and thus increase the life span of application programs.</em></li>
+<li><em>To make the relational model more informative to users.</em></li>
+<li><em>To make the collection of relations neutral to the query statistics, where these statistics are liable to change as time goes by.</em></li>
+</ol>
+<p>The following set of tables serves as an example for a database structure that is not properly normalized.</p>
+<h6 id=table-1>Table 1:</h6>
+<table>
+<thead>
+<tr>
+<th>username</th>
+<th>word</th>
+<th>word_language</th>
+<th>translation</th>
+<th>translation_language</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mark</td>
+<td>hause</td>
+<td>en</td>
+<td>Haus</td>
+<td>de</td>
+</tr>
+<tr>
+<td>Dana</td>
+<td>hause</td>
+<td>en</td>
+<td>maison</td>
+<td>fr</td>
+</tr>
+<tr>
+<td>Eamon</td>
+<td>casa</td>
+<td>es</td>
+<td>house</td>
+<td>en</td>
+</tr>
+</tbody>
+</table>
+<h6 id=table-2>Table 2:</h6>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>username</th>
+<th>email</th>
+<th>is_admin</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1001</td>
+<td>Dana</td>
+<td><a href=mailto:dana@email.com>dana@email.com</a></td>
+<td>true</td>
+</tr>
+<tr>
+<td>1002</td>
+<td>Eamon</td>
+<td><a href=mailto:eamon@email.com>eamon@email.com</a></td>
+<td>true</td>
+</tr>
+<tr>
+<td>1003</td>
+<td>Mark</td>
+<td><a href=mailto:marc@email.com>marc@email.com</a></td>
+<td>false</td>
+</tr>
+</tbody>
+</table>
+<p>The first table holds values of four key entities of Alexandria: <code>users</code>, <code>words</code>, <code>translations</code>, and <code>languages</code>. The second table is the <code>users</code> table to go with it.</p>
+<p>There are two independent <code>username</code> columns, an example of redundancy that can lead to so-called &ldquo;update anomalies&rdquo;: It turns out that Marc is not spellt with a &ldquo;k&rdquo; but with a &ldquo;c&rdquo;. If we only change this in the <code>users</code> table, the data will become inconsistent, because it still says &ldquo;Mark&rdquo; in the first table. It is the same situation with the word &ldquo;house&rdquo; that was misspelled as &ldquo;hause&rdquo;. It, too, needs to be updated in too places at once.</p>
+<h5 id=normal-forms>Normal forms</h5>
+<p>Normalization of relational databases is guided by a set of rules that build on each other. They are calle &ldquo;normal forms&rdquo;.</p>
+<h4 id=tables-more-tables-no-sorry-fewer-tables-again>Tables. More tables! No, sorry, fewer tables again.</h4>
+<p>We started out with a couple of fairly basic design. This is the graphical representation of one the first drafts:</p>
+<p><img src=/images/database-design-marc-1.0.png alt></p>
+<p>But as we let our imagination run wild the demand for tables and table columns grew in line with our feature list. &ldquo;Hey, wouldn&rsquo;t it be nice if the user could choose from other users' translations?&rdquo;, or &ldquo;I think every time an existing translation is applied, it should save a new context.&rdquo;, or &ldquo;Will users be able to set a preferred web dictionary?&rdquo;.</p>
+<p>After a few iterations to allow for more features, especially cross-user content we landed here:</p>
+<p><img src=/images/database-design-marc-1.4.png alt></p>
+<p>Reality eventually got the better of us and we decided to cut down the feature list to a more manageable size in line with our time table. We focussed on the single user experience with only the basic groundwork laid for cross-user content, simplified the user profile, and significantly simplified context handling.</p>
+<p>For the final design we also stripped the connecting tables of their own unique ids, and made the of the foreign key columns (composite keys) the primary keys. This would ensure that the connections are unique and a user cannot have, for example, two statuses for the same word.</p>
+<p>This is what we arrived at for the initial release:</p>
+<p><img src=/images/database-design-marc-1.10.png alt></p>
+<h5 id=main-tables>Main tables</h5>
 <table>
 <thead>
 <tr>
@@ -142,31 +232,35 @@
 <tbody>
 <tr>
 <td>users</td>
-<td>The people using or administering Alexandria.</td>
+<td>The people using Alexandria. Each user can actively learn one language at a time and translate to one base language. If the language preferences change, previous progress (translations, word statuses) is kept.</td>
+</tr>
+<tr>
+<td>admins</td>
+<td>The people adminiteing Alexandria. That would be us for now.</td>
 </tr>
 <tr>
 <td>langauges</td>
-<td>A language that is supported by Alexandria.</td>
+<td>The languages that are supported by Alexandria. For the first release, it is a list of ten. What they have in common is their use of a latin-based alphabet (to avoid surprises with our text parser for now) and their being supported by the PostgreSQL text search. A flag representing the language is saved as a unicode character combination to be used in menus across the application.</td>
 </tr>
 <tr>
 <td>texts</td>
-<td>The key entity for learning. Texts are provided by users through forms, files or links. For those who learn best by reading state secrets or erotic literature, texts can be made private. Otherwise they can be used by others for learning as well.</td>
+<td>The key entity for learning. Texts are currently provided by users through forms, later through URLs and files. Texts default to being priovate which should particularly suit those who learn best by reading state secrets or erotic literature. Public texts, that can be used by every user to study, could be an option for a future release. The database already provides the necessary column.</td>
 </tr>
 <tr>
 <td>words</td>
-<td>Translatable entities. Usually single words like <em>cabbage</em>, but also compounds, or phrases, like <em>get up</em>, but also <em>l&rsquo;hôtel</em>. Translations go from source language to target language. Each word must be unique within a source language.</td>
+<td>Translatable entities. Usually single words like <em>cabbage</em>, but also compounds, or phrases, like <em>get up</em> or <em>l&rsquo;hôtel</em>. Each word must be unique within its language. It can have different meanings (translations) but in database terms, each combination of letters must occur only once per language.</td>
 </tr>
 <tr>
 <td>translations</td>
-<td>Translations of words can be provided or selected by the users, but they exist independently of the users who created them. Translations can also be automatically generated to seed the database with a language&rsquo;s most common words.</td>
+<td>Translations of words can be provided or selected by the users, but they exist independently of the users who created them. The go from the language of the word in question to a target language associated with this specific translation. Translations could also also be automatically generated to seed the database with a language&rsquo;s most common words; another feature for a follow up version.</td>
 </tr>
 <tr>
 <td>webdictionaries</td>
-<td>Online resources in which the user can look up a word or phrase.</td>
+<td>Online resources in which the user can look up a word or phrase. They</td>
 </tr>
 </tbody>
 </table>
-<h3 id=connecting-tables-grey>Connecting tables (grey)</h3>
+<h5 id=connecting-tables>Connecting tables</h5>
 <table>
 <thead>
 <tr>
@@ -189,6 +283,8 @@
 </tr>
 </tbody>
 </table>
+<h4 id=naming-things>Naming things</h4>
+<p>An useful side effect of designing the database very early in the project was that we had to agree on the names of the entities that we were going to deal with in our code. Eg. what is a word, what is a phrase? (They are actually the same in the database but different for text parsing). Finding that common language was essential for all communication going forward.</p>
 <h3 id=resources-and-collections>Resources and collections</h3>
 <ul>
 <li><strong>Resources</strong> are the individual items (rows) of the main database tables (&ldquo;single noun&rdquo; name, coloured in the graph). Each resource has a unique (integer) id within its table.</li>
