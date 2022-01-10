@@ -379,25 +379,38 @@ Over the course of development, this saved us a significant time and frustration
 </tbody>
 </table>
 <h3 id=api-design>API Design</h3>
-<p>In the design of the API that is queried by the React front end, we tried to follow <a href=https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm>REST</a> principles as well as possible within the constraints of our type of application and of the current state of development.</p>
+<p>In the design of the API that is queried by the React front end, we aimed at following REST principles as outlined in Roy Fielding&rsquo;s 2000 dissertation
+<sup><a href=#references>[3]</a></sup>, but within the constraints of our type of application and of the current state of development.</p>
 <ul>
-<li><strong>Client-Server</strong>: as mentioned previously, this separation came naturally with the decision to create a React-based single page application.</li>
-<li><strong>Stateless</strong>: For security reasons and device inerchangeability, only the user id is stored with the client in a JSON Web token which is sent with every request. Additional information is always drawn from the user state which is kept in a Recoil atom. The request then includes the combined state information and sends it to the server.</li>
-<li></li>
+<li><em>Client-Server</em>: As mentioned previously, this separation came naturally with the decision to create a React-based single page application.</li>
+<li><em>Stateless</em>: For security reasons and device inerchangeability, only the user id is stored with the client in a JSON Web token which is sent with every request. Additional information is always drawn from the user state which is kept in a Recoil atom. The request then includes the combined state information and sends it to the server.</li>
+<li><em>Cacheable</em>: The core of Alexandria, the single text and translation page is a highly dynamic affair where cached responses for word and translation queries could seriously damage the user experience. We decided to only explicitely allow caching of responses for resources that do not change often: the list of languages, the web dictionary list, and the individual texts.</li>
+<li><em>Layered System</em>: Front end and back end of Alexantdria reside on different servers, allowing for independent scalability.</li>
+<li><em>Code-on-Demand</em>: This was not actively implemented in Alexandria</li>
+<li><em>Uniform Interface</em>: According to Fielding, &ldquo;In order to obtain a uniform interface, multiple architectural constraints are needed to guide the behavior of components: &mldr;
+<ul>
+<li>identification of resources,</li>
+<li>manipulation of resources through representations,</li>
+<li>self-descriptive messages,</li>
+<li>hypermedia as the engine of application state.&rdquo;</li>
 </ul>
+</li>
+</ul>
+<p>During the API design we spend most of our time on getting the uniform interface right, or, more prosaically, come up with a system of URLs (routes) that - in combination with request bodies - would allow the client to get any response it requires from the server, and be logical and readable at the same time, to the API as accessible to new contributors as possible. Here is what we ended up with:</p>
 <h4 id=resources-and-collections>Resources and collections</h4>
 <ul>
-<li><strong>Resources</strong> are the individual items (rows) of the main database tables (&ldquo;single noun&rdquo; name, coloured in the graph). Each resource has a unique (integer) id within its table.</li>
-<li><strong>Collections</strong> are lists of resources, that can be filtered by criteria such as languages or user.</li>
+<li><strong>Resources</strong> are the individual items (rows) of the main database tables (the once with a &ldquo;single noun&rdquo; name). Each resource has a unique id within its table.</li>
+<li><strong>Collections</strong> are lists of resources, eg. words or texts, that can be filtered by criteria such as languages or user.</li>
 </ul>
-<h4 id=general-route-pattern-rules>General route pattern rules</h4>
+<h4 id=route-patterns>Route patterns</h4>
 <h5 id=basic-access>Basic access</h5>
 <ul>
 <li>The type of the resource that is queried is always the first part of the route.</li>
 <li>This is the case for both individual resources and collections.</li>
+<li>The queried resource is named in plural form.</li>
 <li>Individual resources are accessed by their id.</li>
 <li>Data from other resources associated with the queried resource might be sent back as well, but querying those happens on the backend and is not exposed via the API.</li>
-<li>Creation, updates and deletion of resources happens via the basic route (ie. without filters).</li>
+<li>Creation, updates and deletion of resources happens via the basic route, ie. without filters (see below).</li>
 </ul>
 <h6 id=examples>Examples</h6>
 <ul>
@@ -409,19 +422,18 @@ Over the course of development, this saved us a significant time and frustration
 </ul>
 <h5 id=filtering-collections>Filtering collections</h5>
 <ul>
-<li>If the second part of the route is not an id (ie. not an integer), we are looking for a filtered collection of that resource.</li>
+<li>If the second part of the route is not an id, we are looking for a filtered collection of that resource.</li>
 <li>Filters are indicated by a keyword (in singular) and a unique identifier.</li>
 <li>Filters can be chained.</li>
-<li>Filtering for the logged-in user only requires the <code>user</code> keyword because the id is stored in the active session. The user keyword is always the last in the route.</li>
+<li>Filtering for the logged-in user is indicated via the URL. Filtering collections down to to those resources belonging to a user is done on the back end server based purely based on the functionality and access rights of the app.</li>
 </ul>
 <h6 id=examples-1>Examples</h6>
 <ul>
-<li><code>GET /translations/word/22533</code> => all translations (to all languages) for word with id <code>22533</code></li>
-<li><code>GET /translations/language/de/word/22533</code> => all translations to German (unique identifier <code>de</code>) for word with id <code>22533</code></li>
-<li><code>GET /words/text/38422/user</code> => all words in text <code>38422</code> that the user already has marked.</li>
-<li><code>GET /texts/user</code> => all texts belonging to the current user</li>
-<li><code>GET /texts/language/fr/user</code> => all texts in French (unique identifier <code>de</code>) belonging to the current user</li>
+<li><code>GET /words/text/17/language/fr</code> => get all words from text 17 that have a translation to French (unique identifier <code>fr</code>)</li>
+<li><code>GET /texts/language/fr</code> => all texts in French (unique identifier <code>de</code>) belonging to the current user</li>
 </ul>
+<h5 id=special-routes>Special routes</h5>
+<p>Certain functionality that the client demands from the server did not fit the resource schema outlined above, for example login or logout, or certain user related functions. In those cases, the route URLs deviate from the pattern after the initial resource and simply spell out what is expected of them.</p>
 </div>
 </section>
 <section class=page id=challenges>
@@ -467,12 +479,9 @@ Over the course of development, this saved us a significant time and frustration
 </h1>
 <div class=content>
 <ol>
-<li>
-<p><a href=https://www.researchgate.net/publication/349255011_Explorations_in_Language_Acquisition_and_Use>https://www.researchgate.net/publication/349255011_Explorations_in_Language_Acquisition_and_Use</a></p>
-</li>
-<li>
-<p>Edgar F. Codd (1972): <a href=https://forum.thethirdmanifesto.com/wp-content/uploads/asgarosforum/987737/00-efc-further-normalization.pdf>Further Normalization of the Data Base Relational Model</a></p>
-</li>
+<li>Stephen Krishan (2021): <a href=https://www.researchgate.net/publication/349255011_Explorations_in_Language_Acquisition_and_Use>Explorations in Language Acquisition and Use</a></li>
+<li>Edgar F. Codd (1972): <a href=https://forum.thethirdmanifesto.com/wp-content/uploads/asgarosforum/987737/00-efc-further-normalization.pdf>Further Normalization of the Data Base Relational Model</a></li>
+<li>Roy Fielding (2000): <a href=https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm>Architectural Styles and the Design of Network-based Software Architectures</a></li>
 </ol>
 </div>
 </section>
