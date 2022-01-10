@@ -116,7 +116,40 @@
 </h1>
 <div class=content>
 <p>How we decided on technologies we used.</p>
-<h3 id=typescript--nodejs>TypeScript + NodeJS</h3>
+<h3 id=typescript-vs-javascript>TypeScript vs JavaScript</h3>
+<p>Before we started developing Alexandria, none of us had any real experience using TypeScript, whereas we all had a solid foundation in JavaScript.
+Yet after doing a lot of research, we decided to use TypeScript in our project. Why?</p>
+<h3 id=static-typing>Static typing</h3>
+<p>One of the main reasons is the static typing that is a core part of TypeScript. In JavaScript, an object can have whatever properties you want, and you can add
+and remove them as you see fit. In TypeScript, types are static, meaning that once an object&rsquo;s type is declared, it does not change its type and can
+only take certain values.</p>
+<p>An example of this is a <code>UserWord</code> which is how we chose to represent the words that a user saved to the database by adding a translation and status.</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#00a8c8>type</span> <span style=color:#75af00>UserWord</span> <span style=color:#f92672>=</span> <span style=color:#111>{</span>
+  <span style=color:#75af00>id?</span>: <span style=color:#00a8c8>number</span><span style=color:#111>,</span>
+  <span style=color:#75af00>word</span>: <span style=color:#00a8c8>string</span><span style=color:#111>,</span>
+  <span style=color:#75af00>status?</span>: <span style=color:#00a8c8>Status</span><span style=color:#111>,</span>
+  <span style=color:#75af00>translations</span>: <span style=color:#00a8c8>Array</span><span style=color:#111>&lt;</span><span style=color:#f92672>Translation</span><span style=color:#111>&gt;,</span>
+  <span style=color:#75af00>languageId?</span>: <span style=color:#00a8c8>string</span>
+<span style=color:#111>};</span>
+</code></pre></div><p>The type <code>UserWord</code> has 5 properties with predefined types. So if, for example, we tried to add a <code>languageId</code> that was a number, we would immediately
+be warned by the compiler that the wrong type had been added. An even better example is the <code>translations</code> property, which takes an array of <code>Translation</code> type objects. If we tried to add something to the array that was not of type <code>Translation</code>, we would again be warned by the compiler.</p>
+<p>Another useful feature is that if you try to add a property that has not been declared on the type, for example <code>language</code>, the compiler would warn you that the property <code>language</code> does not exist on type <code>UserWord</code>.</p>
+<p>The warnings given by the compiler and even by our IDE of choice, VSCode, were invaluable in alerting us to type-related bugs before the code was even run.
+Over the course of development, this saved us a significant time and frustration as far fewer errors made it into the codebase. Even errors as simple as misspelled variables are caught by the TypeScript compiler.</p>
+<h3 id=code-readability>Code readability</h3>
+<p>TypeScript greatly increases the readability of our code. Let&rsquo;s take a function that takes an object as a parameter. In JavaScript, you would have to be familiar with that object and its properties, or possibly log the object to the console to see what properties exist on the object. With TypeScript in VSCode, you can simply over the mouse over the type declaration to see a list of the properties that object will have as well as the types of each of those properties.</p>
+<p>This means that in future, if more developers join our project, it will be much easier for them to get up to speed on with our codebase. This also results in increased code stability, as you can be sure exactly what properties an object will have, or whether a certain variable is possibly null.</p>
+<h3 id=easy-refactoring>Easy refactoring</h3>
+<p>TypeScript makes refactoring much easier. For example, if you change a function&rsquo;s name, but forget to change the name in another file, the TypeScript compiler will immediately alert you to the issue, even showing you the exact file and line of code where the problem resides. This means that you can refactor with confidence, resulting in a cleaner codebase.</p>
+<h3 id=future-advantages>Future advantages</h3>
+<p>All of this means that as the codebase grows and more developers join the project, it will be easier for them to get up to speed, and the codebase will be more stable.</p>
+<h3 id=disadvantages-of-typescript>Disadvantages of TypeScript</h3>
+<p>Of course, nothing is perfect. Some of the disadvantages of TypeScript include:</p>
+<p>Longer code. Using TypeScript involves writing more code than with JavaScript, meaning that writing the code can take longer than with just plain JavaScript.</p>
+<p>Having to learn TypeScript. As I mentioned above, none of us had any real experience with TypeScript before beginning this project, so learning TypeScript on top of designing and coding the app resulted in longer development time, especially in the beginning stages. Thankfully, having a strong base in JavaScript made this process much easier.</p>
+<p>TypeScripts static typing is not true static typing. Once TypeScript is compiled, it is transpiled into untyped Javascript, meaning that there is still a small risk of type problems at runtime.</p>
+<h3 id=conclusion>Conclusion</h3>
+<p>Overall, we felt that the benefits clearly outweighted the disadvantages for our usecase. It was worth putting in the extra effort of using TypeScript as it helped us catch bugs before the code was run, meaning that they didn&rsquo;t make it into production. The added readability and easy refactoring made TypeScript the clear winner.</p>
 <h3 id=postgresql>PostgreSQL</h3>
 <h3 id=react--recoil>React + Recoil</h3>
 <h3 id=heroku--netlify>Heroku + Netlify</h3>
