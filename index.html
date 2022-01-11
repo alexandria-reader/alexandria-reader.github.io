@@ -204,17 +204,54 @@ Over the course of development, this saved us a significant time and frustration
 <p>In JS, the markup and functionality are kept separate. As apps grow bigger, this becomes a major source of complexity, where a developer needs to keep track of both sets of codes.</p>
 <p>In React, the app is split into components, where each component maintains the code required to both display and upates the UI. This also allows reusability of components, another benefit.</p>
 <h3 id=recoil>Recoil</h3>
-<p>The state of the user interface depends on a range of dynamically changing variables. And our interface was going to change a lot, with words being highlighted, translations added, statuses and languages changed etc.</p>
-<p>If we didn&rsquo;t want to pass these variables up and down the React component tree all the time, but rather grant the components access to them from anywhere, we needed a global state management system.</p>
-<p>For Alexandria we evaluated three alternatives:</p>
+<p>When it comes to choosing a statement management tool, we began by assessing what the application needed.</p>
+<p>It was immediately clear to us that users will be interacting intensively with highly dyanmic components: highlighted words, translations, status, and languages are all expected to change with every user interaction. Therefore, it was vital that after each update, each component state is accurately captured and rendered back to the users in the most efficient manner.</p>
+<p>Turning our attention to state management tools available on the market, we quickly realized although the number of libraries and packages are numerous, most belong to one of three categories in addition to the React natively supported Context API: Flux (Redux, Zustand), Proxy (Mobx, Valtio), or Atomic (Recoil, Jotai) (<a href=https://blog.logrocket.com/jotai-vs-recoil-what-are-the-differences/)>https://blog.logrocket.com/jotai-vs-recoil-what-are-the-differences/)</a>.</p>
+<p>Within the context of Alexandria, we took a closer look at three choices: React&rsquo;s Context API, Redux, and Recoil. Redux has long been the state management library of choice for applications of a certain size, while React&rsquo;s very own Context API provided state management directly from React itself. Adding to the mix, new kid on the block Recoil had been released by Facebook, and touted as a React-specific statement management library maximizes developer happiness.</p>
+<p>Choosing the right tool for the job took some careful examination. While we did not perform an exhaustive benchmarking study, some initial sandboxing helped us arrive at the following observations.</p>
+<h4 id=context-api>Context API</h4>
+<h5 id=how-it-works>How it works</h5>
+<p>A context provider is created on the parent component where the global state sits. Data is passed down the tree to its children components. Those children components are able to access the context object from the parent through props drilling.</p>
+<p>This works great when the context data changes only occasionally. But the solution breaks down when we store substantive amount of data in the context. In the case of Alexandria, the context data would change every time the user interacts with one word or phrase in the text, and causes unnecessary re-rendering of all components of the provider, in this case, all of the words/phrases.</p>
+<p>Alternatively, the context object can be broken down into multiple states. This, however, introduces complexity into the codebase that could be avoided through another approach.</p>
+<h5 id=pros>Pros</h5>
 <ul>
-<li>state management stalwart Redux,</li>
-<li>React&rsquo;s very own Context,</li>
-<li>and newcomer Recoil,</li>
+<li>Context API is part of React&rsquo;s built-in package, requiring no additional installation</li>
+<li>Relatively easy to set up and start working</li>
+<li>Great for static or rarely refreshed data</li>
 </ul>
-<p>Redux: Too big, too much boilerplate code, to much overhead for our humble app.</p>
-<p>Context: A workable solution for read-only state, but a pain in the nect to update (reducer hooks anyone?)</p>
-<p>Recoil: literally perfect for our needs. Works just like React&rsquo;s local component states (useState), ie. with a similar syntax, but with a global state. States can be easily set as well, as opposed to Context. Atoms hold &ldquo;true&rdquo; state, selectors hold &ldquo;derived&rdquo; state, based on atoms. Same syntax for both.</p>
+<h5 id=cons>Cons:</h5>
+<ul>
+<li>Excessive unnecessary re-rendering affects performance</li>
+</ul>
+<h4 id=redux>Redux</h4>
+<h5 id=how-it-works-1>How it works</h5>
+<p>Instead of changing state by propagating values through the component tree, Redux takes a different approach. When a component state changes, the component dispatch an action to a reducer. The reducer handles the action (e.g. change a word state), manipulates the old state to reflect the new state. The reducer goes to the central store, which that manages all the states of the application. The application subscribes to part or all of the store, which then passes updated states as props to components that subscribe to it. This is how the application handles a state change.</p>
+<h5 id=pros-1>Pros</h5>
+<ul>
+<li>Great for often-refreshed data, only listen to what has changed, only the value changed re-renders</li>
+<li>Integrates with <code>react-redux</code> library</li>
+<li>Server-side rendering possible</li>
+</ul>
+<h5 id=cons-1>Cons</h5>
+<ul>
+<li>Much more complicated to get started, introduces substantial complexity to application</li>
+</ul>
+<h4 id=recoil-1>Recoil</h4>
+<h5 id=how-it-works-2>How it works</h5>
+<p>Recoil was created to solve a number of challenges very specific to large and interactive apps, where issues of persistence and robustness are central. More specifically, how does one keep different branches of the tree in sync where components live in different branches of the tree? How does one avoid re-rendering mlutiple components when state change(s) are detected in the same provider?</p>
+<p>In order to meet these global state mangement challenges, Recoil implemented small, shared units of state named &ldquo;atoms&rdquo;, and derived states named &ldquo;selectors&rdquo;. Atoms are changeable and subscribable pieces of state. That is to say, one particular atom can be subscribed to by components, and atoms can be used to derive data from state. States are stored within the React tree, similar to how <code>useState</code> and <code>useContext</code> hooks function, making it easy to get started. Recoil encourages separation of state into separate pieces in order to route components. The existence of atoms is particularly well-suited for applications that receive a high frequency of updates.</p>
+<h5 id=pros-2>Pros</h5>
+<ul>
+<li>Easy to set up and implement, experience of working with <code>useRecoilState</code> similar to working with <code>useState</code></li>
+<li>Re-renders only components with changed state, improves performance</li>
+</ul>
+<h5 id=cons-2>Cons</h5>
+<ul>
+<li>Library still in beta</li>
+</ul>
+<h4 id=choosing-recoil>Choosing Recoil</h4>
+<p>Recoil became our state management library of choice based on two key considerations. One, it delivered optimal performance by rendering only component that changes upon user interaction. Two, it offered maximal developer happiness. The simplicty of set up and usage made state management a non-issue, where state changes are central to the viability of Alexandria.</p>
 <h3 id=heroku--netlify>Heroku + Netlify</h3>
 <p>Heroku offers an affordable, yet scalable way to deploy apps relying on a PostgreSQL database. It also has a CI/CD pipeline with automatic deployment from GitHub both for PR bases review apps and staging/production app.</p>
 <p>We decided to deliver the front end part of the app through Netlify, because we had separate GH repositories anyway and could decouple front end and back end development even more by having separate review apps.</p>
