@@ -256,6 +256,11 @@ Over the course of development, this saved us a significant time and frustration
 <p>Heroku offers an affordable, yet scalable way to deploy apps relying on a PostgreSQL database. It also has a CI/CD pipeline with automatic deployment from GitHub both for PR bases review apps and staging/production app.</p>
 <p>We decided to deliver the front end part of the app through Netlify, because we had separate GH repositories anyway and could decouple front end and back end development even more by having separate review apps.</p>
 <p>Also, we benefit from Netlify&rsquo;s CDN for the (admittedly sparse) static content.</p>
+<h3 id=backend-project-structure>Backend Project Structure</h3>
+<p>When we first start designing and implementing our backend, we started out with just two layers, routes and services. With this approach, we realized that we were ending up with bloated services as both the data access logic and the application logic resided in the service. Once we saw that this was becoming a problem, we did some research into the best way to structure the backend.</p>
+<p>We ended up deciding on a three layer design, involving routes, a services layer and a data access layer. This allowed us to separate concerns and create more reusable components.</p>
+<p>With this layout, when a request is made to a route, it calls the corresponding service, which in turn calls the data access layer. The data access layer simply queries the database and returns the result to the service layer. This means that we could put whatever logic was necessary in the service layer to parse the data, and then pass that data back to the route. The route then can be kept dumb and simply passes the data it recieves from the service back to the client.</p>
+<p>The advantage of this architecture is that the application logic can be kept out of the routes and data access layer. Unit testing is made easier as tests can be designed to test each part individually. This also has the added advantage that if we ever decided to change our database implementation, most of the changes would be confined to the data access layer.</p>
 </div>
 </section>
 <section class=page id=database-api>
