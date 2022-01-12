@@ -1,0 +1,171 @@
+<!doctype html><html lang=en class="js csstransforms3d">
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=generator content="Hugo 0.91.2">
+<meta name=generator content="Relearn 2.9.2
+">
+<link rel=alternate type=application/rss+xml href=../future/index.xml title="Alexandria Case Study">
+<meta name=description content="Design notes from development of the Alexandria language learning app.">
+<meta name=author content="Team Alexandria">
+<title>MVP and Future Plans :: Alexandria Case Study</title>
+<link href=../css/nucleus.css?1641989671 rel=stylesheet>
+<link href=../css/fontawesome-all.min.css?1641989671 rel=stylesheet>
+<link href=../css/featherlight.min.css?1641989671 rel=stylesheet>
+<link href=../css/perfect-scrollbar.min.css?1641989671 rel=stylesheet>
+<link href=../css/auto-complete.css?1641989671 rel=stylesheet>
+<link href=../css/theme.css?1641989671 rel=stylesheet>
+<link href=../css/theme-alexandria.css?1641989671 rel=stylesheet>
+<link href=../css/variant.css?1641989671 rel=stylesheet>
+<link href=../css/print.css?1641989671 rel=stylesheet media=print>
+<script src=../js/jquery.min.js?1641989671></script>
+<style>:root #header+#content>#left>#rlblock_left{display:none!important}:not(pre)>code.copy-to-clipboard-inline+span.copy-to-clipboard{display:none}:not(pre)>code.copy-to-clipboard-inline{border-bottom-right-radius:2px;border-top-right-radius:2px;border-right-width:1px}</style>
+</head>
+<body data-url=../future/>
+<script>var index_url="../index.json",root_url="../",baseUri=root_url.replace(/\/$/,'')</script>
+<nav id=sidebar>
+<div id=header-wrapper>
+<div id=header>
+<a href=../><img src=../images/logo-light.png alt="Alexandria logo"></a>
+</div>
+<div class=searchbox>
+<label for=search-by><i class="fas fa-search"></i></label>
+<input data-search-input id=search-by type=search placeholder=Search...>
+<span data-search-clear><i class="fas fa-times"></i></span>
+</div>
+<script src=../js/lunr.min.js?1641989671></script>
+<script src=../js/auto-complete.js?1641989671></script>
+<script src=../js/search.js?1641989671></script>
+</div>
+<div id=homelinks>
+<ul>
+<li>
+<a class=padding href=../><i class="fas fa-home"></i> Home</a>
+</li>
+</ul>
+</div>
+<div class=highlightable>
+<ul class=topics>
+<li data-nav-id=/competitors/ title="Competitor Analysis" class=dd-item><a href=../competitors/>Competitor Analysis</a><ul></ul></li>
+<li data-nav-id=/decisions/ title="Technical decisions" class=dd-item><a href=../decisions/>Technical decisions</a><ul></ul></li>
+<li data-nav-id=/database-api/ title="Database and API" class=dd-item><a href=../database-api/>Database and API</a><ul>
+<li data-nav-id=/database-api/database/ title="Database Architecture" class=dd-item><a href=../database-api/database/>Database Architecture</a></li>
+<li data-nav-id=/database-api/api/ title="API design" class=dd-item><a href=../database-api/api/>API design</a></li></ul></li>
+<li data-nav-id=/challenges/ title="Challenges and Solutions" class=dd-item><a href=../challenges/>Challenges and Solutions</a><ul></ul></li>
+<li data-nav-id=/future/ title="MVP and Future Plans" class="dd-item active parent"><a href=../future/>MVP and Future Plans</a><ul></ul></li>
+<li data-nav-id=/team/ title="Meet the Team" class=dd-item><a href=../team/>Meet the Team</a><ul></ul></li>
+<li data-nav-id=/references/ title=References class=dd-item><a href=../references/>References</a><ul></ul></li>
+</ul>
+<div id=shortcuts>
+<div class=nav-title>More</div>
+<ul>
+<li><a class=padding href=https://tryalexandria.com><i class="fas fa-fw fa-book"></i> Use the app, learn a language!</a></li>
+<li><a class=padding href=https://github.com/alexandria-reader><i class="fab fa-fw fa-github"></i> Alexandria on GitHub</a></li>
+</ul>
+</div>
+<div id=footer>
+<p>Built with <a href=https://github.com/McShelby/hugo-theme-relearn><i class="fas fa-heart"></i></a> by <a href=https://gohugo.io/>Hugo</a></p>
+</div>
+</div>
+</nav>
+<div id=body>
+<div id=overlay></div>
+<div class="padding highlightable">
+<div id=top-bar>
+<div id=breadcrumbs>
+<span id=sidebar-toggle-span>
+<a href=# id=sidebar-toggle data-sidebar-toggle>
+<i class="fas fa-bars"></i>
+</a>
+</span>
+<span id=toc-menu><i class="fas fa-list-alt"></i></span>
+<span class=links>
+MVP and Future Plans
+</span>
+</div>
+<div class=progress>
+<div class=wrapper>
+<nav id=TableOfContents>
+<ul>
+<li>
+<ul>
+<li><a href=#mvp>MVP</a></li>
+<li><a href=#moving-forward>Moving Forward</a></li>
+</ul>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div id=head-tags>
+</div>
+<main id=body-inner>
+<h1>MVP and Future Plans</h1>
+<h3 id=mvp>MVP</h3>
+<p>Confronted with the fully-fledged feature set of commercial language learning applications, our team made the early decision to create a minimum viable product that reflects the essence of what we find crucial in such a product.</p>
+<ul>
+<li>User experience: mobile-first, fast and seamless processing of user interactions</li>
+<li>Backend and API: layered, robust, RESTful, maintainable, and flexible enough to service front-end needs</li>
+<li>Database: normalized and withstands scale</li>
+<li>CI/CD: establish continuous deployment pipelines</li>
+</ul>
+<h3 id=moving-forward>Moving Forward</h3>
+<p>Our core team has plans to continue support the maintenance and development of Alexandria.</p>
+<h4 id=backend>Backend</h4>
+<ul>
+<li>API enhancements.</li>
+</ul>
+<h4 id=frontend>Frontend</h4>
+<ul>
+<li>
+<p>Full user access and ownership control:</p>
+<ul>
+<li>Add full suite of user access tools, including email validation upon sign-up and password reset.</li>
+<li>Offer users full control, where words and translations can be deleted as well as updated.</li>
+<li>User are currently only able to access texts and translations based on their own inputs. Going forward, users will have the choice of accessing a global pool of shared texts and translations, further reducing usage friction, take advantage of other users' contribution, and making the experience more dynamic.</li>
+</ul>
+</li>
+<li>
+<p>Starter kit upon sign-up: Offer new users a package of existing texts to improve onboarding experience</p>
+</li>
+<li>
+<p>Import/export: Import / export functionality for interoperability with other learning tools</p>
+</li>
+<li>
+<p>Additional language support: Alexandria currently supports 10 languages. We would like to expand the number of languages supported after additional testing.</p>
+</li>
+<li>
+<p>Admin dashboard: Allows admins to make changes to user accounts from the front-end.</p>
+</li>
+<li>
+<p>Mobile optmization: Additional development to further enhance user mobile experiences.</p>
+</li>
+</ul>
+<h4 id=testing>Testing</h4>
+<ul>
+<li>Alexandria backend currently has close to full coverage testing in place. Front end has some unit testing and Cypress testing in place. We plan on introducing testing suite that offers full coverage testing for the front end.</li>
+</ul>
+<footer class=footline>
+</footer>
+</main>
+</div>
+<div id=navigation>
+<a class="nav nav-prev" href=../challenges/ title="Challenges and Solutions"><i class="fa fa-chevron-left"></i></a>
+<a class="nav nav-next" href=../team/ title="Meet the Team"><i class="fa fa-chevron-right"></i></a>
+</div>
+</div>
+<div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
+<div style=border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px></div>
+</div>
+<script src=../js/clipboard.min.js?1641989671></script>
+<script src=../js/perfect-scrollbar.min.js?1641989671></script>
+<script src=../js/perfect-scrollbar.jquery.min.js?1641989671></script>
+<script src=../js/jquery.svg.pan.zoom.js?1641989671></script>
+<script src=../js/featherlight.min.js?1641989671></script>
+<script src=../js/modernizr.custom-3.6.0.js?1641989671></script>
+<script src=../js/mermaid.min.js?1641989671></script>
+<script>typeof mermaid!='undefined'&&typeof mermaid.mermaidAPI!='undefined'&&mermaid.mermaidAPI.initialize(Object.assign({securityLevel:"antiscript"},JSON.parse('{ "startOnLoad": true }'),{startOnLoad:!1}))</script>
+<script src=../js/relearn.js?1641989671></script>
+</body>
+</html>

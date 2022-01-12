@@ -1,0 +1,296 @@
+<!doctype html><html lang=en class="js csstransforms3d">
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=generator content="Hugo 0.91.2">
+<meta name=generator content="Relearn 2.9.2
+">
+<meta name=description content="Design notes from development of the Alexandria language learning app.">
+<meta name=author content="Team Alexandria">
+<title>Database Architecture :: Alexandria Case Study</title>
+<link href=../../css/nucleus.css?1641989671 rel=stylesheet>
+<link href=../../css/fontawesome-all.min.css?1641989671 rel=stylesheet>
+<link href=../../css/featherlight.min.css?1641989671 rel=stylesheet>
+<link href=../../css/perfect-scrollbar.min.css?1641989671 rel=stylesheet>
+<link href=../../css/auto-complete.css?1641989671 rel=stylesheet>
+<link href=../../css/theme.css?1641989671 rel=stylesheet>
+<link href=../../css/theme-alexandria.css?1641989671 rel=stylesheet>
+<link href=../../css/variant.css?1641989671 rel=stylesheet>
+<link href=../../css/print.css?1641989671 rel=stylesheet media=print>
+<script src=../../js/jquery.min.js?1641989671></script>
+<style>:root #header+#content>#left>#rlblock_left{display:none!important}:not(pre)>code.copy-to-clipboard-inline+span.copy-to-clipboard{display:none}:not(pre)>code.copy-to-clipboard-inline{border-bottom-right-radius:2px;border-top-right-radius:2px;border-right-width:1px}</style>
+</head>
+<body data-url=../../database-api/database/>
+<script>var index_url="../../index.json",root_url="../../",baseUri=root_url.replace(/\/$/,'')</script>
+<nav id=sidebar>
+<div id=header-wrapper>
+<div id=header>
+<a href=../../><img src=../../images/logo-light.png alt="Alexandria logo"></a>
+</div>
+<div class=searchbox>
+<label for=search-by><i class="fas fa-search"></i></label>
+<input data-search-input id=search-by type=search placeholder=Search...>
+<span data-search-clear><i class="fas fa-times"></i></span>
+</div>
+<script src=../../js/lunr.min.js?1641989671></script>
+<script src=../../js/auto-complete.js?1641989671></script>
+<script src=../../js/search.js?1641989671></script>
+</div>
+<div id=homelinks>
+<ul>
+<li>
+<a class=padding href=../../><i class="fas fa-home"></i> Home</a>
+</li>
+</ul>
+</div>
+<div class=highlightable>
+<ul class=topics>
+<li data-nav-id=/competitors/ title="Competitor Analysis" class=dd-item><a href=../../competitors/>Competitor Analysis</a><ul></ul></li>
+<li data-nav-id=/decisions/ title="Technical decisions" class=dd-item><a href=../../decisions/>Technical decisions</a><ul></ul></li>
+<li data-nav-id=/database-api/ title="Database and API" class="dd-item parent"><a href=../../database-api/>Database and API</a><ul>
+<li data-nav-id=/database-api/database/ title="Database Architecture" class="dd-item active"><a href=../../database-api/database/>Database Architecture</a></li>
+<li data-nav-id=/database-api/api/ title="API design" class=dd-item><a href=../../database-api/api/>API design</a></li></ul></li>
+<li data-nav-id=/challenges/ title="Challenges and Solutions" class=dd-item><a href=../../challenges/>Challenges and Solutions</a><ul></ul></li>
+<li data-nav-id=/future/ title="MVP and Future Plans" class=dd-item><a href=../../future/>MVP and Future Plans</a><ul></ul></li>
+<li data-nav-id=/team/ title="Meet the Team" class=dd-item><a href=../../team/>Meet the Team</a><ul></ul></li>
+<li data-nav-id=/references/ title=References class=dd-item><a href=../../references/>References</a><ul></ul></li>
+</ul>
+<div id=shortcuts>
+<div class=nav-title>More</div>
+<ul>
+<li><a class=padding href=https://tryalexandria.com><i class="fas fa-fw fa-book"></i> Use the app, learn a language!</a></li>
+<li><a class=padding href=https://github.com/alexandria-reader><i class="fab fa-fw fa-github"></i> Alexandria on GitHub</a></li>
+</ul>
+</div>
+<div id=footer>
+<p>Built with <a href=https://github.com/McShelby/hugo-theme-relearn><i class="fas fa-heart"></i></a> by <a href=https://gohugo.io/>Hugo</a></p>
+</div>
+</div>
+</nav>
+<div id=body>
+<div id=overlay></div>
+<div class="padding highlightable">
+<div id=top-bar>
+<div id=breadcrumbs>
+<span id=sidebar-toggle-span>
+<a href=# id=sidebar-toggle data-sidebar-toggle>
+<i class="fas fa-bars"></i>
+</a>
+</span>
+<span id=toc-menu><i class="fas fa-list-alt"></i></span>
+<span class=links>
+Database Architecture
+</span>
+</div>
+<div class=progress>
+<div class=wrapper>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#normalization>Normalization</a>
+<ul>
+<li></li>
+<li><a href=#normal-forms>Normal forms</a></li>
+</ul>
+</li>
+<li><a href=#tables-more-tables-no-sorry-fewer-tables-again>Tables. More tables! No, sorry, fewer tables again.</a></li>
+<li><a href=#naming-things>Naming things</a></li>
+<li><a href=#alexandrias-mvp-database-tables>Alexandria&rsquo;s MVP database tables</a>
+<ul>
+<li><a href=#main-tables>Main tables</a></li>
+<li><a href=#connecting-tables>Connecting tables</a></li>
+</ul>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div id=head-tags>
+</div>
+<main id=body-inner>
+<h1>Database Architecture</h1>
+<h2 id=normalization>Normalization</h2>
+<p>To normalize a database means to organize or structure it in a way that avoids redundancy of data, undesirable dependencies, and inconsistencies.</p>
+<p>In his paper &ldquo;Further Normalization of the Data Base Relational Model"
+<sup><a href=../../references>[2]</a></sup>, Edgar F. Codd, the &ldquo;father&rdquo; of the relational database model, listed these objectives of nomalization:</p>
+<ol>
+<li><em>To free the collection of relations from undesirable insertion, update and deletion dependencies.</em></li>
+<li><em>To reduce the need for restructuring the collection of relations, as new types of data are introduced, and thus increase the life span of application programs.</em></li>
+<li><em>To make the relational model more informative to users.</em></li>
+<li><em>To make the collection of relations neutral to the query statistics, where these statistics are liable to change as time goes by.</em></li>
+</ol>
+<p>The following set of tables serves as an example for a database structure that is not properly normalized.</p>
+<h4 id=table-1>Table 1:</h4>
+<table>
+<thead>
+<tr>
+<th>username</th>
+<th>word</th>
+<th>word_language</th>
+<th>translation</th>
+<th>translation_language</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mark</td>
+<td>house</td>
+<td>en</td>
+<td>Haus</td>
+<td>de</td>
+</tr>
+<tr>
+<td>Dana</td>
+<td>house</td>
+<td>en</td>
+<td>maison</td>
+<td>fr</td>
+</tr>
+<tr>
+<td>Eamon</td>
+<td>casa</td>
+<td>es</td>
+<td>house</td>
+<td>en</td>
+</tr>
+</tbody>
+</table>
+<h4 id=table-2>Table 2:</h4>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>username</th>
+<th>email</th>
+<th>is_admin</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1001</td>
+<td>Dana</td>
+<td><a href=mailto:dana@email.com>dana@email.com</a></td>
+<td>true</td>
+</tr>
+<tr>
+<td>1002</td>
+<td>Eamon</td>
+<td><a href=mailto:eamon@email.com>eamon@email.com</a></td>
+<td>true</td>
+</tr>
+<tr>
+<td>1003</td>
+<td>Mark</td>
+<td><a href=mailto:marc@email.com>marc@email.com</a></td>
+<td>false</td>
+</tr>
+</tbody>
+</table>
+<p>The first table holds values of four key entities of Alexandria: <code>users</code>, <code>words</code>, <code>translations</code>, and <code>languages</code>. The second table is the <code>users</code> table to go with it.</p>
+<p>There are two independent <code>username</code> columns, an example of redundancy that can lead to so-called &ldquo;update anomalies&rdquo;: It turns out that Marc is not spellt with a &ldquo;k&rdquo; but with a &ldquo;c&rdquo;. If we only change this in the <code>users</code> table, the data will become inconsistent, because it still says &ldquo;Mark&rdquo; in the first table. The username needs to be updated in two different places which is prone to errors.</p>
+<h3 id=normal-forms>Normal forms</h3>
+<p>Normalization of relational databases is guided by rules that build on each other. They are called &ldquo;normal forms&rdquo;.</p>
+<p>To satisfy the the first normal form (<strong>1NF</strong>), data sets must not contain tables themselves, and each data set must have a unique primary key. In the example above, there are no nested tabels, but only the <code>users</code> table has a primary key (<code>id</code>), so not even 1NF is satisfied.</p>
+<p>The second normal form (<strong>2NF</strong>) fulfills the rules of the first normal form, and it also demands every attribute of a dataset is functionally dependent on the primary keys. Those attributes that do not depend on the primary key should go in their own table and be linked with a foreign key instead.</p>
+<p>The third normal form (<strong>3NF</strong>) adds the rule that transitive functional dependencies must be eliminated as well: If B depends on primary key A, but C depends on B, then both B and C should be extracted to their own table.</p>
+<p>There are higher normal forms but they are rarely encountered in the wild. If our database were to satisfy 3NF it would be safe from insertion, update and deletion anomalies. Did we succeed with our design? Let&rsquo;s find out&mldr;</p>
+<h2 id=tables-more-tables-no-sorry-fewer-tables-again>Tables. More tables! No, sorry, fewer tables again.</h2>
+<p>We started out with a couple of fairly basic design. This is the graphical representation of one the first drafts:</p>
+<p><img src=../../images/database-design-marc-1.0.png alt></p>
+<p>But as we let our imagination run wild the demand for tables and table columns grew in line with our feature list. &ldquo;Hey, wouldn&rsquo;t it be nice if the user could choose from other users' translations?&rdquo;, or &ldquo;I think every time an existing translation is applied, it should save a new context.&rdquo;, or &ldquo;Will users be able to set a preferred web dictionary?&rdquo;.</p>
+<p>After a few iterations to allow for more features, especially cross-user content we landed here:</p>
+<p><img src=../../images/database-design-marc-1.4.png alt></p>
+<p>Reality eventually got the better of us and we decided to cut down the feature list to a more manageable size in line with our time table. We focussed on the single user experience with only the basic groundwork laid for cross-user content, simplified the user profile, and significantly simplified context handling.</p>
+<p>This is what we arrived at for the initial release of Alexandria:</p>
+<p><img src=../../images/database-design-marc-1.10.png alt></p>
+<p>As you can see, for the final design we stripped the connecting tables of their own unique ids, and made composite keys - the combinations of the foreign key columns - the primary keys. This would ensure that the connections are unique and a user cannot have, for example, two statuses for the same word.</p>
+<p>Admittedly it should also have been done for the <code>words</code> table, because each word (ie. combination of letters) is unique in its language. But this occurred to us too late into the project and we stuck to the id as primary key for <code>words</code>.</p>
+<p>It is for this small detail that our database does probably not full satisfy <strong>3NF</strong>, but it is close enough to achieve all the objectives of normalization.</p>
+<h2 id=naming-things>Naming things</h2>
+<p>A useful side effect of designing the database very early in the project was that we had to agree on the names of the entities that we were going to deal with in our code. Eg. what is a word, what is a phrase? (They are actually the same in the database but different for text parsing). Finding that common language was essential for all communication going forward.</p>
+<h2 id=alexandrias-mvp-database-tables>Alexandria&rsquo;s MVP database tables</h2>
+<h3 id=main-tables>Main tables</h3>
+<table>
+<thead>
+<tr>
+<th>table</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>users</td>
+<td>The people using Alexandria. Each user can actively learn one language at a time and translate to one base language. If the language preferences change, previous progress (translations, word statuses) is kept.</td>
+</tr>
+<tr>
+<td>admins</td>
+<td>The people adminiteing Alexandria. That would be us for now.</td>
+</tr>
+<tr>
+<td>languages</td>
+<td>The languages that are supported by Alexandria. For the first release, it is a list of ten. What they have in common is their use of a latin-based alphabet (to avoid surprises with our text parser for now) and their being supported by the PostgreSQL text search. A flag representing the language is saved as a unicode character combination to be used in menus across the application.</td>
+</tr>
+<tr>
+<td>texts</td>
+<td>The key entity for learning. Texts are currently provided by users through forms, later through URLs and files. Texts default to being priovate which should particularly suit those who learn best by reading state secrets or erotic literature. Public texts, that can be used by every user to study, could be an option for a future release. The database already provides the necessary column.</td>
+</tr>
+<tr>
+<td>words</td>
+<td>Translatable entities. Usually single words like <em>cabbage</em>, but also compounds, or phrases, like <em>get up</em> or <em>l&rsquo;hôtel</em>. Each word must be unique within its language. It can have different meanings (translations) but in database terms, each combination of letters must occur only once per language.</td>
+</tr>
+<tr>
+<td>translations</td>
+<td>Translations of words can be provided or selected by the users, but they exist independently of the users who created them. The go from the language of the word in question to a target language associated with this specific translation. Translations could also also be automatically generated to seed the database with a language&rsquo;s most common words; another feature for a follow up version.</td>
+</tr>
+<tr>
+<td>webdictionaries</td>
+<td>Online resources in which the user can look up a word or phrase. They</td>
+</tr>
+</tbody>
+</table>
+<h3 id=connecting-tables>Connecting tables</h3>
+<table>
+<thead>
+<tr>
+<th>table</th>
+<th>purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>users_words</td>
+<td>Word statuses for a usr-word combination are &ldquo;learning&rdquo;, familiar&rdquo;, and &ldquo;learned&rdquo;.<br>User dictionaries could be generated using this table.</td>
+</tr>
+<tr>
+<td>users_translations</td>
+<td>Every translated word orginates in a text, and the surrounding words from that text form the translation&rsquo;s context. Users have their own contexts for every translation. If the translation is not newly provided but simply selected from previous translations, the current context is saved and connected to selected the translation and user.</td>
+</tr>
+<tr>
+<td>webdictionary_preference</td>
+<td>Users can have one favourite dictionary per source language.</td>
+</tr>
+</tbody>
+</table>
+<footer class=footline>
+</footer>
+</main>
+</div>
+<div id=navigation>
+<a class="nav nav-prev" href=../../database-api/ title="Database and API"><i class="fa fa-chevron-left"></i></a>
+<a class="nav nav-next" href=../../database-api/api/ title="API design"><i class="fa fa-chevron-right"></i></a>
+</div>
+</div>
+<div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
+<div style=border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px></div>
+</div>
+<script src=../../js/clipboard.min.js?1641989671></script>
+<script src=../../js/perfect-scrollbar.min.js?1641989671></script>
+<script src=../../js/perfect-scrollbar.jquery.min.js?1641989671></script>
+<script src=../../js/jquery.svg.pan.zoom.js?1641989671></script>
+<script src=../../js/featherlight.min.js?1641989671></script>
+<script src=../../js/modernizr.custom-3.6.0.js?1641989671></script>
+<script src=../../js/mermaid.min.js?1641989671></script>
+<script>typeof mermaid!='undefined'&&typeof mermaid.mermaidAPI!='undefined'&&mermaid.mermaidAPI.initialize(Object.assign({securityLevel:"antiscript"},JSON.parse('{ "startOnLoad": true }'),{startOnLoad:!1}))</script>
+<script src=../../js/relearn.js?1641989671></script>
+</body>
+</html>

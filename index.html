@@ -1,702 +1,105 @@
-<!doctype html><html xmlns=http://www.w3.org/1999/xhtml xml:lang=en-us lang=en-us>
+<!doctype html><html lang=en class="js csstransforms3d">
 <head>
-<meta name=generator content="Hugo 0.91.2">
 <meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>Alexandria - Design Notes</title>
-<link rel="shortcut icon" href=favicon.ico type=image/x-icon>
-<link href="https://fonts.googleapis.com/css?family=Dosis:wght@200;300;400;500;600;700;800&display=swap" rel=stylesheet>
-<link rel=stylesheet href=/css/styles.css>
-<link href=/index.xml rel=alternate type=application/rss+xml title=Alexandria>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=generator content="Hugo 0.91.2">
+<meta name=generator content="Relearn 2.9.2
+">
+<meta name=robots content="noindex, nofollow, noarchive, noimageindex">
+<meta name=description content="Design notes from development of the Alexandria language learning app.">
+<meta name=author content="Team Alexandria">
+<title> :: Alexandria Case Study</title>
+<link href=./css/nucleus.css?1641989671 rel=stylesheet>
+<link href=./css/fontawesome-all.min.css?1641989671 rel=stylesheet>
+<link href=./css/featherlight.min.css?1641989671 rel=stylesheet>
+<link href=./css/perfect-scrollbar.min.css?1641989671 rel=stylesheet>
+<link href=./css/auto-complete.css?1641989671 rel=stylesheet>
+<link href=./css/theme.css?1641989671 rel=stylesheet>
+<link href=./css/theme-alexandria.css?1641989671 rel=stylesheet>
+<link href=./css/variant.css?1641989671 rel=stylesheet>
+<link href=./css/print.css?1641989671 rel=stylesheet media=print>
+<script src=./js/jquery.min.js?1641989671></script>
+<style>:root #header+#content>#left>#rlblock_left{display:none!important}:not(pre)>code.copy-to-clipboard-inline+span.copy-to-clipboard{display:none}:not(pre)>code.copy-to-clipboard-inline{border-bottom-right-radius:2px;border-top-right-radius:2px;border-right-width:1px}</style>
 </head>
-<body>
-<div class="sidebar sidebar-grey">
-<div class=navigation>
-<div>
-<img src=/images/logo-light.png alt="Alexandria logo">
-<p style=font-size:smaller;font-family:Dosis>Learn languages by translating texts</p>
+<body data-url=./>
+<script>var index_url="./index.json",root_url="./",baseUri=root_url.replace(/\/$/,'')</script>
+<nav id=sidebar>
+<div id=header-wrapper>
+<div id=header>
+<a href=./><img src=./images/logo-light.png alt="Alexandria logo"></a>
 </div>
-<h1 class=site-title><a href=/>Alexandria</a></h1>
-<nav class=internal>
+<div class=searchbox>
+<label for=search-by><i class="fas fa-search"></i></label>
+<input data-search-input id=search-by type=search placeholder=Search...>
+<span data-search-clear><i class="fas fa-times"></i></span>
+</div>
+<script src=./js/lunr.min.js?1641989671></script>
+<script src=./js/auto-complete.js?1641989671></script>
+<script src=./js/search.js?1641989671></script>
+</div>
+<div id=homelinks>
 <ul>
 <li>
-<a href=#introduction>Introduction</a>
-</li>
-<li>
-<a href=#decisions>Technical decisions</a>
-</li>
-<li>
-<a href=#database-api>Database and API design</a>
-</li>
-<li>
-<a href=#challenges>Challenges and Solutions</a>
-</li>
-<li>
-<a href=#future>MVP and Future Plans</a>
-</li>
-<li>
-<a href=#team>Meet the Team</a>
-</li>
-<li>
-<a href=#references>References</a>
+<a class=padding href=./><i class="fas fa-home"></i> Home</a>
 </li>
 </ul>
-</nav>
-<nav class=external>
-<div class=external-title>Check out Alexandria:</div>
-<ul id=shortcuts>
-<li>
-<a href=https://tryalexandria.com target=_blank rel=noopener>Use the app, learn a language</a>
-</li>
-<li>
-<a href=https://github.com/alexandria-reader/ target=_blank rel=noopener>Visit Alexandria on Github</a>
-</li>
+</div>
+<div class=highlightable>
+<ul class=topics>
+<li data-nav-id=/competitors/ title="Competitor Analysis" class=dd-item><a href=./competitors/>Competitor Analysis</a><ul></ul></li>
+<li data-nav-id=/decisions/ title="Technical decisions" class=dd-item><a href=./decisions/>Technical decisions</a><ul></ul></li>
+<li data-nav-id=/database-api/ title="Database and API" class=dd-item><a href=./database-api/>Database and API</a><ul>
+<li data-nav-id=/database-api/database/ title="Database Architecture" class=dd-item><a href=./database-api/database/>Database Architecture</a></li>
+<li data-nav-id=/database-api/api/ title="API design" class=dd-item><a href=./database-api/api/>API design</a></li></ul></li>
+<li data-nav-id=/challenges/ title="Challenges and Solutions" class=dd-item><a href=./challenges/>Challenges and Solutions</a><ul></ul></li>
+<li data-nav-id=/future/ title="MVP and Future Plans" class=dd-item><a href=./future/>MVP and Future Plans</a><ul></ul></li>
+<li data-nav-id=/team/ title="Meet the Team" class=dd-item><a href=./team/>Meet the Team</a><ul></ul></li>
+<li data-nav-id=/references/ title=References class=dd-item><a href=./references/>References</a><ul></ul></li>
 </ul>
+<div id=shortcuts>
+<div class=nav-title>More</div>
+<ul>
+<li><a class=padding href=https://tryalexandria.com><i class="fas fa-fw fa-book"></i> Use the app, learn a language!</a></li>
+<li><a class=padding href=https://github.com/alexandria-reader><i class="fab fa-fw fa-github"></i> Alexandria on GitHub</a></li>
+</ul>
+</div>
+<div id=footer>
+<p>Built with <a href=https://github.com/McShelby/hugo-theme-relearn><i class="fas fa-heart"></i></a> by <a href=https://gohugo.io/>Hugo</a></p>
+</div>
+</div>
 </nav>
+<div id=body>
+<div id=overlay></div>
+<div class="padding highlightable">
+<div id=head-tags>
 </div>
-</div>
-<div class=content>
-<section class=page id=introduction>
-<h1>
-<a href=#introduction>Introduction</a>
-</h1>
-<div class=content>
-<p>Why is language acquisition so evasive for the majority of language learners? Why has decades of grammar rules, repetition drills, and computer-assisted learning shown only limited success? In recent years, research surrounding both second language acquisition as well as literacy has shown that language acquisition occurs when we comprehend messages alongside its surrounding context
-<sup><a href=#references>[1]</a></sup>. More specifically, the &ldquo;input hypothesis&rdquo; states that we acquire language in one way and one way only: when we understand messages, and when we obtain comprehensive input.</p>
+<main id=body-inner>
+<span id=sidebar-toggle-span>
+<a href=# id=sidebar-toggle data-sidebar-toggle><i class="fas fa-bars"></i> navigation</a>
+</span>
+<p><img src=./images/logo-light.png alt></p>
+<h1 id=alexandria>Alexandria</h1>
+<h1 id=case-study>Case Study</h1>
+<p>Why is language acquisition so evasive for the majority of language learners? Why has decades of grammar rules, repetition drills, and computer-assisted learning shown only limited success? In recent years, research surrounding both second language acquisition as well as literacy has shown that language acquisition occurs when we comprehend messages alongside its surrounding context <sup>1</sup>. More specifically, the &ldquo;input hypothesis&rdquo; states that we acquire language in one way and one way only: when we understand messages, and when we obtain comprehensive input.</p>
 <p>With this very specific language learning need in mind, a number of web applications has been created in recent years. Language learning enthusiasts have embraced those platforms to supplment their language learning journey.</p>
 <p>Despite a choice of platforms that range from open source software to paid software, there are shortcomings. The language learning enthusiast in our team has identified a number of weaknesses that Alexandria seeks to address.</p>
-<h3 id=competitor-analysis>Competitor analysis</h3>
-<p>Current &ldquo;learning with text&rdquo; software applications fall under two broad groups.</p>
-<p>One group includes long-standing open source projects that are well received but sparsely maintained, or newer free applications that started with a bang, but were quickly forgotten and subsequently neglected.</p>
-<p>The second group of applications are commercial solutions that address the goal of language learning with text, but suffer from feature bloat, lack of user friendliness, or mobile performance issues.</p>
-<p>Alexandria would like to become the go-to solution for language learning enthusiasts. Through keeping the product free and open source, we aspire to continue developmenting product features that are crucial to language learners, while maintaining a joyful user experience based on the latest technological offerings.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>Existing Free/Open Source Software</th>
-<th>Alexandria</th>
-<th>Commerical Products</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Interactive front-end user experience</td>
-<td>❌</td>
-<td>✅</td>
-<td>✅</td>
-</tr>
-<tr>
-<td>Open Source</td>
-<td>✅</td>
-<td>✅</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>Ongoing Development</td>
-<td>❌</td>
-<td>✅</td>
-<td>✅</td>
-</tr>
-<tr>
-<td>Mobile First</td>
-<td>❌</td>
-<td>✅</td>
-<td>✅</td>
-</tr>
-<tr>
-<td>Responsiveness to Community Input</td>
-<td>❌</td>
-<td>✅</td>
-<td>✅</td>
-</tr>
-<tr>
-<td>Phrase Selection</td>
-<td>❌</td>
-<td>✅</td>
-<td>❓</td>
-</tr>
-</tbody>
-</table>
-<p>Our main objectives at the initial stage are to: create a modern, fast, open source webapp with a mobile first interface. This will allow users to quickly and easily start learning without struggles with the interface, or excessive wait times for content to load.</p>
+</main>
 </div>
-</section>
-<section class=page id=decisions>
-<h1>
-<a href=#decisions>Technical decisions</a>
-</h1>
-<div class=content>
-<h3 id=typescript-vs-javascript>TypeScript vs JavaScript</h3>
-<p>Before we started developing Alexandria, none of us had any real experience using TypeScript, whereas we all had a solid foundation in JavaScript.
-Yet after doing a lot of research, we decided to use TypeScript in our project. Why?</p>
-<h4 id=static-typing>Static typing</h4>
-<p>One of the main reasons is the static typing that is a core part of TypeScript. In JavaScript, an object can have whatever properties you want, and you can add
-and remove them as you see fit. In TypeScript, types are static, meaning that once an object&rsquo;s type is declared, it does not change its type and can
-only take certain values.</p>
-<p>An example of this is a <code>UserWord</code> which is how we chose to represent the words that a user saved to the database by adding a translation and status.</p>
-<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#00a8c8>type</span> <span style=color:#75af00>UserWord</span> <span style=color:#f92672>=</span> <span style=color:#111>{</span>
-  <span style=color:#75af00>id?</span>: <span style=color:#00a8c8>number</span><span style=color:#111>,</span>
-  <span style=color:#75af00>word</span>: <span style=color:#00a8c8>string</span><span style=color:#111>,</span>
-  <span style=color:#75af00>status?</span>: <span style=color:#00a8c8>Status</span><span style=color:#111>,</span>
-  <span style=color:#75af00>translations</span>: <span style=color:#00a8c8>Array</span><span style=color:#111>&lt;</span><span style=color:#f92672>Translation</span><span style=color:#111>&gt;,</span>
-  <span style=color:#75af00>languageId?</span>: <span style=color:#00a8c8>string</span>
-<span style=color:#111>};</span>
-</code></pre></div><p>The type <code>UserWord</code> has 5 properties with predefined types. So if, for example, we tried to add a <code>languageId</code> that was a number, we would immediately
-be warned by the compiler that the wrong type had been added. An even better example is the <code>translations</code> property, which takes an array of <code>Translation</code> type objects. If we tried to add something to the array that was not of type <code>Translation</code>, we would again be warned by the compiler.</p>
-<p>Another useful feature is that if you try to add a property that has not been declared on the type, for example <code>language</code>, the compiler would warn you that the property <code>language</code> does not exist on type <code>UserWord</code>.</p>
-<p>The warnings given by the compiler and even by our IDE of choice, VSCode, were invaluable in alerting us to type-related bugs before the code was even run.
-Over the course of development, this saved us a significant time and frustration as far fewer errors made it into the codebase. Even errors as simple as misspelled variables are caught by the TypeScript compiler.</p>
-<h4 id=code-readability>Code readability</h4>
-<p>TypeScript greatly increases the readability of our code. Let&rsquo;s take a function that takes an object as a parameter. In JavaScript, you would have to be familiar with that object and its properties, or possibly log the object to the console to see what properties exist on the object. With TypeScript in VSCode, you can simply over the mouse over the type declaration to see a list of the properties that object will have as well as the types of each of those properties.</p>
-<p>This means that in future, if more developers join our project, it will be much easier for them to get up to speed on with our codebase. This also results in increased code stability, as you can be sure exactly what properties an object will have, or whether a certain variable is possibly null.</p>
-<h4 id=easy-refactoring>Easy refactoring</h4>
-<p>TypeScript makes refactoring much easier. For example, if you change a function&rsquo;s name, but forget to change the name in another file, the TypeScript compiler will immediately alert you to the issue, even showing you the exact file and line of code where the problem resides. This means that you can refactor with confidence, resulting in a cleaner codebase.</p>
-<h4 id=future-advantages>Future advantages</h4>
-<p>All of this means that as the codebase grows and more developers join the project, it will be easier for them to get up to speed, and the codebase will be more stable.</p>
-<h4 id=disadvantages-of-typescript>Disadvantages of TypeScript</h4>
-<p>Of course, nothing is perfect. Some of the disadvantages of TypeScript include:</p>
-<p>Longer code. Using TypeScript involves writing more code than with JavaScript, meaning that writing the code can take longer than with just plain JavaScript.</p>
-<p>Having to learn TypeScript. As I mentioned above, none of us had any real experience with TypeScript before beginning this project, so learning TypeScript on top of designing and coding the app resulted in longer development time, especially in the beginning stages. Thankfully, having a strong base in JavaScript made this process much easier.</p>
-<p>TypeScripts static typing is not true static typing. Once TypeScript is compiled, it is transpiled into untyped Javascript, meaning that there is still a small risk of type problems at runtime.</p>
-<h4 id=conclusion>Conclusion</h4>
-<p>Overall, we felt that the benefits clearly outweighted the disadvantages for our usecase. It was worth putting in the extra effort of using TypeScript as it helped us catch bugs before the code was run, meaning that they didn&rsquo;t make it into production. The added readability and easy refactoring made TypeScript the clear winner.</p>
-<h3 id=sql-vs-nosql>SQL vs. NoSQL</h3>
-<p>Alexandria is primarily deployed as a web application, where users log in and interact with the information they have stored on the platform. Therefore, robust and scalable database choice is a must.</p>
-<p>Our research comparing between SQL and NoSQL databases centered around the following issues.</p>
-<table>
-<thead>
-<tr>
-<th>Parameter</th>
-<th>SQL</th>
-<th>NoSQL</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Ability to handle high volume of complex queries</td>
-<td>✅</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>Scalabiility</td>
-<td>Vertical</td>
-<td>Horizontal</td>
-</tr>
-<tr>
-<td>Data type</td>
-<td>Structured</td>
-<td>Unstructured</td>
-</tr>
-</tbody>
-</table>
-<h4 id=sql>SQL</h4>
-<p>Structured Query Language (SQL) is the standard language for dealing with relational databases that define relationships in the form of tables. SQL databases works with a predefined schema, and can be used to effectively insert, search, update, and delete database records. SQL databases are table-based, and known for its vertical scalability.</p>
-<h4 id=nosql>NoSQL</h4>
-<p>NoSQL represents non-relational database management systems, where fixed schema is not required. It also avoids joins, and is easy to scale. NoSQL databases can be document based, key-value pairs, or graph databases. It uses dynamic schema for unstructured data, and is known for its ability to scale horizontally.</p>
-<h4 id=choosing-sql>Choosing SQL</h4>
-<p>Our choice of SQL is based primarily on its ability to handle a high volume of complex queries. Each user interacting with the Alexandria may upload text, select words from the text to add translations to, change status of a word, or even switch language, all within the same session. Each action requires sometimes complex queries to complete.</p>
-<p>While SQL became Alexandria&rsquo;s database of choice, we are acutely aware of the shortcomings of a SQL database, namely its vertical, versus horizontal scalability. Vertical sclability means that while we can increase the load on a single server by increasing RAM, CPU, or SSD, NoSQL databases handle more traffic by sharding and adding more servers, allowing it to become larger and preferable in the cases for large and ever-changing data sets.</p>
-<h3 id=react>React</h3>
-<h4 id=project-requirements>Project requirements</h4>
-<p>In order to achieve both performance and user experience objectives for Alexandria, we settled on a number of goals that we&rsquo;d like to fullfill at the initial stsage.</p>
-<p>One of the key features of the app is to reflect the changes made by a particular user interaction immediately, without an additional page reload.</p>
-<p>Consider the following user actions and their effects on a piece of text. Our challenge is to make every user interaction feel instantaneous and seamless.</p>
-<table>
-<thead>
-<tr>
-<th>User action</th>
-<th>Immediate Rendering</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Click on word/phrase</td>
-<td>Translation input box available</td>
-</tr>
-<tr>
-<td>Click on highlighted word/phrase</td>
-<td>Translation and status displayed</td>
-</tr>
-<tr>
-<td>Update word/phrase status</td>
-<td>Highlighted colour on word changes</td>
-</tr>
-</tbody>
-</table>
-<p>Another challenge is the ability of the UI to keep in sync with state changes of variables. With increased complexity, it becomes harder to track the exact state of the UI at every given moment during the lifecycle of the application. The challenge is to represent the UI accurately after a possible flurry of user interactions.</p>
-<h4 id=plain-javascript-versus-react>Plain Javascript versus React</h4>
-<p>Pitting plain JS against React against Alexandria&rsquo;s initial requirements, React was the easy winner. Below is a summary of some of the differences between the two languages as it pertains to Alexandria.</p>
-<h5 id=rendering-efficiency>Rendering efficiency</h5>
-<p>With Javascript, UI is created in HTML on the server side, and sent to the browser. Each user interaction resulting in a data change requires an API call to the backend, and a re-rendering of the browser based on the new DOM. We briefly considered templating engines like Handlebars. While they are excellent choices for server-side rendering, they do not meet Alexandria&rsquo;s goal of delivering speedy incremental updates of the DOM, event-handling, or frontend to backend communication.</p>
-<p>On the other hand, React defines UI on the browser. An app starts with a blank container and loads the UI. The UI is defined by a component that returns the JSX - a HTML lookalike. The new component is rendered into the div contianer using the <code>ReactDOM</code> library, and the result will appear directly on the browser.</p>
-<p>Because each UI is broken into smaller components, each component can render independently due to its use of the virtual DOM. One change in a component does not result in the re-rendering of the entire page, merely the changed component, thus improving the front-end user experience significantly.</p>
-<h5 id=state-management>State management</h5>
-<p>In JS, an event listener is attached to a DOM element to listen for changes. With each state change, we track the value deviation function, re-run the deviation functions and track the changes in return value. Those changed values are passed to the appropriate DOM element through the DOM API.</p>
-<p>With React, the UI is set up to keep the entire state of a variable in the form of a &ldquo;controlled component&rdquo;, while an event (e.g. a button press) can be specified directly in the code, with no need for an event listener. The change to variable is registered, and the UI is updated automatically. There&rsquo;s no need to go into the DOM to find the variable to update.</p>
-<p>Being able to design components that hold state was fundamental to the design of Alexandria. Using React, each &ldquo;word&rdquo; residing within a piece of text can have it&rsquo;s own state (translation, learning stage, context). When a user changes a word&rsquo;s state, the result is displayed immediately on the DOM. In this case, the word would be highlighted, and its translation and context would be saved to the word&rsquo;s state.</p>
-<p>React&rsquo;s implementation of hooks and component state fit perfectly with this requirement.</p>
-<h5 id=maintainability-and-reusability>Maintainability and Reusability</h5>
-<p>In JS, the markup and functionality are kept separate. As apps grow bigger, this becomes a major source of complexity, where a developer needs to keep track of both sets of codes.</p>
-<p>In React, the app is split into components, where each component maintains the code required to both display and upates the UI. This also allows reusability of components, another benefit.</p>
-<h3 id=recoil>Recoil</h3>
-<p>When it comes to choosing a state management tool, we began by assessing what the application needed.</p>
-<p>It was immediately clear to us that users will be interacting intensively with highly dyanmic components: highlighted words, translations, status, and languages are all expected to change with every user interaction. Therefore, it was vital that after each update, each component state is accurately captured and rendered back to the users in the most efficient manner.</p>
-<p>Turning our attention to state management tools available on the market, we quickly realized although the number of libraries and packages are numerous, most belong to one of three categories in addition to the React natively supported Context API: Flux (Redux, Zustand), Proxy (Mobx, Valtio), or Atomic (Recoil, Jotai)
-<sup><a href=#references>[2]</a></sup>.</p>
-<p>Within the context of Alexandria, we took a closer look at three choices: React&rsquo;s Context API, Redux, and Recoil. Redux has long been the state management library of choice for applications of a certain size, while React&rsquo;s very own Context API provided state management directly from React itself. Adding to the mix, new kid on the block Recoil had been released by Facebook, and touted as a React-specific state management library maximizes developer happiness.</p>
-<p>Choosing the right tool for the job took some careful examination. While we did not perform an exhaustive benchmarking study, some initial sandboxing helped us arrive at the following observations.</p>
-<h4 id=context-api>Context API</h4>
-<h5 id=how-it-works>How it works</h5>
-<p>A context provider is created on the parent component where the global state sits. Data is passed down the tree to its children components. Those children components are able to access the context object from the parent through props drilling.</p>
-<p>This works great when the context data changes only occasionally. But the solution breaks down when we store substantive amount of data in the context. In the case of Alexandria, the context data would change every time the user interacts with one word or phrase in the text, and causes unnecessary re-rendering of all components of the provider, in this case, all of the words/phrases.</p>
-<p>Alternatively, the context object can be broken down into multiple states. This, however, introduces complexity into the codebase that could be avoided through another approach.</p>
-<h5 id=pros>Pros</h5>
-<ul>
-<li>Context API is part of React&rsquo;s built-in package, requiring no additional installation</li>
-<li>Relatively easy to set up and start working</li>
-<li>Great for static or rarely refreshed data</li>
-</ul>
-<h5 id=cons>Cons:</h5>
-<ul>
-<li>Excessive unnecessary re-rendering affects performance</li>
-</ul>
-<h4 id=redux>Redux</h4>
-<h5 id=how-it-works-1>How it works</h5>
-<p>Instead of changing state by propagating values through the component tree, Redux takes a different approach. When a component state changes, the component dispatch an action to a reducer. The reducer handles the action (e.g. change a word state), manipulates the old state to reflect the new state. The reducer goes to the central store, which that manages all the states of the application. The application subscribes to part or all of the store, which then passes updated states as props to components that subscribe to it. This is how the application handles a state change.</p>
-<h5 id=pros-1>Pros</h5>
-<ul>
-<li>Great for often-refreshed data, only listen to what has changed, only the value changed re-renders</li>
-<li>Integrates with <code>react-redux</code> library</li>
-<li>Server-side rendering possible</li>
-</ul>
-<h5 id=cons-1>Cons</h5>
-<ul>
-<li>Much more complicated to get started, introduces substantial complexity to application</li>
-</ul>
-<h4 id=recoil-1>Recoil</h4>
-<h5 id=how-it-works-2>How it works</h5>
-<p>Recoil was created to solve a number of challenges very specific to large and interactive apps, where issues of persistence and robustness are central. More specifically, how does one keep different branches of the tree in sync where components live in different branches of the tree? How does one avoid re-rendering mlutiple components when state change(s) are detected in the same provider?</p>
-<p>In order to meet these global state mangement challenges, Recoil implemented small, shared units of state named &ldquo;atoms&rdquo;, and derived states named &ldquo;selectors&rdquo;. Atoms are changeable and subscribable pieces of state. That is to say, one particular atom can be subscribed to by components, and atoms can be used to derive data from state. States are stored within the React tree, similar to how <code>useState</code> and <code>useContext</code> hooks function, making it easy to get started. Recoil encourages separation of state into separate pieces in order to route components. The existence of atoms is particularly well-suited for applications that receive a high frequency of updates.</p>
-<h5 id=pros-2>Pros</h5>
-<ul>
-<li>Easy to set up and implement, experience of working with <code>useRecoilState</code> similar to working with <code>useState</code></li>
-<li>Re-renders only components with changed state, improves performance</li>
-</ul>
-<h5 id=cons-2>Cons</h5>
-<ul>
-<li>Library still in beta</li>
-</ul>
-<h4 id=choosing-recoil>Choosing Recoil</h4>
-<p>Recoil became our state management library of choice based on two key considerations. One, it delivered optimal performance by rendering only component that changes upon user interaction. Two, it offered maximal developer happiness. The simplicty of set up and usage made state management a non-issue, where state changes are central to the viability of Alexandria.</p>
-<h3 id=heroku--netlify>Heroku + Netlify</h3>
-<p>Heroku offers an affordable, yet scalable way to deploy apps relying on a PostgreSQL database. It also has a CI/CD pipeline with automatic deployment from GitHub both for PR bases review apps and staging/production app.</p>
-<p>We decided to deliver the front end part of the app through Netlify, because we had separate GH repositories anyway and could decouple front end and back end development even more by having separate review apps.</p>
-<p>Also, we benefit from Netlify&rsquo;s CDN for the (admittedly sparse) static content.</p>
-<h3 id=backend-project-structure>Backend Project Structure</h3>
-<p>When we first start designing and implementing our backend, we started out with just two layers, routes and services. With this approach, we realized that we were ending up with bloated services as both the data access logic and the application logic resided in the service. Once we saw that this was becoming a problem, we did some research into the best way to structure the backend.</p>
-<p>We ended up deciding on a three layer design, involving routes, a services layer and a data access layer. This allowed us to separate concerns and create more reusable components.</p>
-<p>With this layout, when a request is made to a route, it calls the corresponding service, which in turn calls the data access layer. The data access layer simply queries the database and returns the result to the service layer. This means that we could put whatever logic was necessary in the service layer to parse the data, and then pass that data back to the route. The route then can be kept dumb and simply passes the data it recieves from the service back to the client.</p>
-<p>The advantage of this architecture is that the application logic can be kept out of the routes and data access layer. Unit testing is made easier as tests can be designed to test each part individually. This also has the added advantage that if we ever decided to change our database implementation, most of the changes would be confined to the data access layer.</p>
+<div id=navigation>
+<a class="nav nav-next" href=./competitors/ title="Competitor Analysis"><i class="fa fa-chevron-right"></i></a>
 </div>
-</section>
-<section class=page id=database-api>
-<h1>
-<a href=#database-api>Database and API design</a>
-</h1>
-<div class=content>
-<p>With the technical decisions settled, it was time to design two vital aspects of the backend architecture: the database and the API.</p>
-<p>While a database of some form would always have been necessary, exposing an API was the result of going with a single page React app that talks to the server via API calls. This also opens the door for alternative front ends at a later stage - a mobile app could use the same back end. It is also in line with Alexandria being an open source project, allowing for decoupled contributions to front end or back end.</p>
-<h3 id=database-architecture>Database architecture</h3>
-<p>The basic idea behind the database design was to keep the main tables small and self contained, and work with references (foreign keys) to establish connections where possible in order to normalize the database.</p>
-<h4 id=normalization>Normalization</h4>
-<p>To normalize a database means to organize or structure it in a way that avoids redundancy of data, undesirable dependencies, and inconsistencies.</p>
-<p>In his paper &ldquo;Further Normalization of the Data Base Relational Model"
-<sup><a href=#references>[3]</a></sup>, Edgar F. Codd, the &ldquo;father&rdquo; of the relational database model, listed these objectives of nomalization:</p>
-<ol>
-<li><em>To free the collection of relations from undesirable insertion, update and deletion dependencies.</em></li>
-<li><em>To reduce the need for restructuring the collection of relations, as new types of data are introduced, and thus increase the life span of application programs.</em></li>
-<li><em>To make the relational model more informative to users.</em></li>
-<li><em>To make the collection of relations neutral to the query statistics, where these statistics are liable to change as time goes by.</em></li>
-</ol>
-<p>The following set of tables serves as an example for a database structure that is not properly normalized.</p>
-<h6 id=table-1>Table 1:</h6>
-<table>
-<thead>
-<tr>
-<th>username</th>
-<th>word</th>
-<th>word_language</th>
-<th>translation</th>
-<th>translation_language</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Mark</td>
-<td>house</td>
-<td>en</td>
-<td>Haus</td>
-<td>de</td>
-</tr>
-<tr>
-<td>Dana</td>
-<td>house</td>
-<td>en</td>
-<td>maison</td>
-<td>fr</td>
-</tr>
-<tr>
-<td>Eamon</td>
-<td>casa</td>
-<td>es</td>
-<td>house</td>
-<td>en</td>
-</tr>
-</tbody>
-</table>
-<h6 id=table-2>Table 2:</h6>
-<table>
-<thead>
-<tr>
-<th>id</th>
-<th>username</th>
-<th>email</th>
-<th>is_admin</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1001</td>
-<td>Dana</td>
-<td><a href=mailto:dana@email.com>dana@email.com</a></td>
-<td>true</td>
-</tr>
-<tr>
-<td>1002</td>
-<td>Eamon</td>
-<td><a href=mailto:eamon@email.com>eamon@email.com</a></td>
-<td>true</td>
-</tr>
-<tr>
-<td>1003</td>
-<td>Mark</td>
-<td><a href=mailto:marc@email.com>marc@email.com</a></td>
-<td>false</td>
-</tr>
-</tbody>
-</table>
-<p>The first table holds values of four key entities of Alexandria: <code>users</code>, <code>words</code>, <code>translations</code>, and <code>languages</code>. The second table is the <code>users</code> table to go with it.</p>
-<p>There are two independent <code>username</code> columns, an example of redundancy that can lead to so-called &ldquo;update anomalies&rdquo;: It turns out that Marc is not spellt with a &ldquo;k&rdquo; but with a &ldquo;c&rdquo;. If we only change this in the <code>users</code> table, the data will become inconsistent, because it still says &ldquo;Mark&rdquo; in the first table. The username needs to be updated in two different places which is prone to errors.</p>
-<h5 id=normal-forms>Normal forms</h5>
-<p>Normalization of relational databases is guided by rules that build on each other. They are called &ldquo;normal forms&rdquo;.</p>
-<p>To satisfy the the first normal form (<strong>1NF</strong>), data sets must not contain tables themselves, and each data set must have a unique primary key. In the example above, there are no nested tabels, but only the <code>users</code> table has a primary key (<code>id</code>), so not even 1NF is satisfied.</p>
-<p>The second normal form (<strong>2NF</strong>) fulfills the rules of the first normal form, and it also demands every attribute of a dataset is functionally dependent on the primary keys. Those attributes that do not depend on the primary key should go in their own table and be linked with a foreign key instead.</p>
-<p>The third normal form (<strong>3NF</strong>) adds the rule that transitive functional dependencies must be eliminated as well: If B depends on primary key A, but C depends on B, then both B and C should be extracted to their own table.</p>
-<p>There are higher normal forms but they are rarely encountered in the wild. If our database were to satisfy 3NF it would be safe from insertion, update and deletion anomalies. Did we succeed with our design? Let&rsquo;s find out&mldr;</p>
-<h4 id=tables-more-tables-no-sorry-fewer-tables-again>Tables. More tables! No, sorry, fewer tables again.</h4>
-<p>We started out with a couple of fairly basic design. This is the graphical representation of one the first drafts:</p>
-<p><img src=/images/database-design-marc-1.0.png alt></p>
-<p>But as we let our imagination run wild the demand for tables and table columns grew in line with our feature list. &ldquo;Hey, wouldn&rsquo;t it be nice if the user could choose from other users' translations?&rdquo;, or &ldquo;I think every time an existing translation is applied, it should save a new context.&rdquo;, or &ldquo;Will users be able to set a preferred web dictionary?&rdquo;.</p>
-<p>After a few iterations to allow for more features, especially cross-user content we landed here:</p>
-<p><img src=/images/database-design-marc-1.4.png alt></p>
-<p>Reality eventually got the better of us and we decided to cut down the feature list to a more manageable size in line with our time table. We focussed on the single user experience with only the basic groundwork laid for cross-user content, simplified the user profile, and significantly simplified context handling.</p>
-<p>This is what we arrived at for the initial release of Alexandria:</p>
-<p><img src=/images/database-design-marc-1.10.png alt></p>
-<p>As you can see, for the final design we stripped the connecting tables of their own unique ids, and made composite keys - the combinations of the foreign key columns - the primary keys. This would ensure that the connections are unique and a user cannot have, for example, two statuses for the same word.</p>
-<p>Admittedly it should also have been done for the <code>words</code> table, because each word (ie. combination of letters) is unique in its language. But this occurred to us too late into the project and we stuck to the id as primary key for <code>words</code>.</p>
-<p>It is for this small detail that our database does probably not full satisfy <strong>3NF</strong>, but it is close enough to achieve all the objectives of normalization.</p>
-<h4 id=naming-things>Naming things</h4>
-<p>A useful side effect of designing the database very early in the project was that we had to agree on the names of the entities that we were going to deal with in our code. Eg. what is a word, what is a phrase? (They are actually the same in the database but different for text parsing). Finding that common language was essential for all communication going forward.</p>
-<h4 id=alexandrias-mvp-database-tables>Alexandria&rsquo;s MVP database tables</h4>
-<h5 id=main-tables>Main tables</h5>
-<table>
-<thead>
-<tr>
-<th>table</th>
-<th>description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>users</td>
-<td>The people using Alexandria. Each user can actively learn one language at a time and translate to one base language. If the language preferences change, previous progress (translations, word statuses) is kept.</td>
-</tr>
-<tr>
-<td>admins</td>
-<td>The people adminiteing Alexandria. That would be us for now.</td>
-</tr>
-<tr>
-<td>languages</td>
-<td>The languages that are supported by Alexandria. For the first release, it is a list of ten. What they have in common is their use of a latin-based alphabet (to avoid surprises with our text parser for now) and their being supported by the PostgreSQL text search. A flag representing the language is saved as a unicode character combination to be used in menus across the application.</td>
-</tr>
-<tr>
-<td>texts</td>
-<td>The key entity for learning. Texts are currently provided by users through forms, later through URLs and files. Texts default to being priovate which should particularly suit those who learn best by reading state secrets or erotic literature. Public texts, that can be used by every user to study, could be an option for a future release. The database already provides the necessary column.</td>
-</tr>
-<tr>
-<td>words</td>
-<td>Translatable entities. Usually single words like <em>cabbage</em>, but also compounds, or phrases, like <em>get up</em> or <em>l&rsquo;hôtel</em>. Each word must be unique within its language. It can have different meanings (translations) but in database terms, each combination of letters must occur only once per language.</td>
-</tr>
-<tr>
-<td>translations</td>
-<td>Translations of words can be provided or selected by the users, but they exist independently of the users who created them. The go from the language of the word in question to a target language associated with this specific translation. Translations could also also be automatically generated to seed the database with a language&rsquo;s most common words; another feature for a follow up version.</td>
-</tr>
-<tr>
-<td>webdictionaries</td>
-<td>Online resources in which the user can look up a word or phrase. They</td>
-</tr>
-</tbody>
-</table>
-<h5 id=connecting-tables>Connecting tables</h5>
-<table>
-<thead>
-<tr>
-<th>table</th>
-<th>purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>users_words</td>
-<td>Word statuses for a usr-word combination are &ldquo;learning&rdquo;, familiar&rdquo;, and &ldquo;learned&rdquo;.User dictionaries could be generated using this table.</td>
-</tr>
-<tr>
-<td>users_translations</td>
-<td>Every translated word orginates in a text, and the surrounding words from that text form the translation&rsquo;s context. Users have their own contexts for every translation. If the translation is not newly provided but simply selected from previous translations, the current context is saved and connected to selected the translation and user.</td>
-</tr>
-<tr>
-<td>webdictionary_preference</td>
-<td>Users can have one favourite dictionary per source language.</td>
-</tr>
-</tbody>
-</table>
-<h3 id=api-design>API Design</h3>
-<p>In the design of the API that is queried by the React front end, we aimed at following REST principles as outlined in Roy Fielding&rsquo;s 2000 dissertation
-<sup><a href=#references>[4]</a></sup>, but within the constraints of our type of application and of the current state of development.</p>
-<ul>
-<li><em>Client-Server</em>: As mentioned previously, this separation came naturally with the decision to create a React-based single page application.</li>
-<li><em>Stateless</em>: For security reasons and device inerchangeability, only the user id is stored with the client in a JSON Web token which is sent with every request. Additional information is always drawn from the user state which is kept in a Recoil atom. The request then includes the combined state information and sends it to the server.</li>
-<li><em>Cacheable</em>: The core of Alexandria, the single text and translation page is a highly dynamic affair where cached responses for word and translation queries could seriously damage the user experience. We decided to only explicitely allow caching of responses for resources that do not change often: the list of languages, the web dictionary list, and the individual texts.</li>
-<li><em>Layered System</em>: Front end and back end of Alexantdria reside on different servers, allowing for independent scalability.</li>
-<li><em>Code-on-Demand</em>: This was not actively implemented in Alexandria</li>
-<li><em>Uniform Interface</em>: According to Fielding, &ldquo;In order to obtain a uniform interface, multiple architectural constraints are needed to guide the behavior of components: &mldr;
-<ul>
-<li>identification of resources,</li>
-<li>manipulation of resources through representations,</li>
-<li>self-descriptive messages,</li>
-<li>hypermedia as the engine of application state.&rdquo;</li>
-</ul>
-</li>
-</ul>
-<p>During the API design we spend most of our time on getting the uniform interface right, or, more prosaically, come up with a system of URLs (routes) that - in combination with request bodies - would allow the client to get any response it requires from the server, and be logical and readable at the same time, to the API as accessible to new contributors as possible. Here is what we ended up with:</p>
-<h4 id=resources-and-collections>Resources and collections</h4>
-<ul>
-<li><strong>Resources</strong> are the individual items (rows) of the main database tables (the once with a &ldquo;single noun&rdquo; name). Each resource has a unique id within its table.</li>
-<li><strong>Collections</strong> are lists of resources, eg. words or texts, that can be filtered by criteria such as languages or user.</li>
-</ul>
-<h4 id=route-patterns>Route patterns</h4>
-<h5 id=basic-access>Basic access</h5>
-<ul>
-<li>The type of the resource that is queried is always the first part of the route.</li>
-<li>This is the case for both individual resources and collections.</li>
-<li>The queried resource is named in plural form.</li>
-<li>Individual resources are accessed by their id.</li>
-<li>Data from other resources associated with the queried resource might be sent back as well, but querying those happens on the backend and is not exposed via the API.</li>
-<li>Creation, updates and deletion of resources happens via the basic route, ie. without filters (see below).</li>
-</ul>
-<h6 id=examples>Examples</h6>
-<ul>
-<li><code>GET /texts/</code> => a collection of all texts</li>
-<li><code>GET /texts/38422</code> => the text with id <code>38422</code></li>
-<li><code>POST /translations</code> => create a new translation</li>
-<li><code>PUT /users</code> => update user data</li>
-<li><code>DELETE /texts/38422</code>=> removes text with id <code>22533</code></li>
-</ul>
-<h5 id=filtering-collections>Filtering collections</h5>
-<ul>
-<li>If the second part of the route is not an id, we are looking for a filtered collection of that resource.</li>
-<li>Filters are indicated by a keyword (in singular) and a unique identifier.</li>
-<li>Filters can be chained.</li>
-<li>Filtering for the logged-in user is indicated via the URL. Filtering collections down to to those resources belonging to a user is done on the back end server based purely based on the functionality and access rights of the app.</li>
-</ul>
-<h6 id=examples-1>Examples</h6>
-<ul>
-<li><code>GET /words/text/17/language/fr</code> => get all words from text 17 that have a translation to French (unique identifier <code>fr</code>)</li>
-<li><code>GET /texts/language/fr</code> => all texts in French (unique identifier <code>de</code>) belonging to the current user</li>
-</ul>
-<h5 id=special-routes>Special routes</h5>
-<p>Certain functionality that the client demands from the server did not fit the resource schema outlined above, for example login or logout, or certain user related functions. In those cases, the route URLs deviate from the pattern after the initial resource and simply spell out what is expected of them.</p>
 </div>
-</section>
-<section class=page id=challenges>
-<h1>
-<a href=#challenges>Challenges and Solutions</a>
-</h1>
-<div class=content>
-<p>While the designing database and API were challenging in and by themselves, and the thorough preparation definitely paid of during the coding stage, there were, of course, still hurdles to overcome, problems to solve, solutions to find.</p>
-<h3 id=finding-the-users-words-and-phrases-in-the-text>Finding the user&rsquo;s words and phrases in the text</h3>
-<p>We have already discussed why we chose to work with a relational database as opposed to a document-based one. But our decision to use PostgreSQL brought another benefit with it, and that is the build in full text search which we put to good use to solve.</p>
-<p>On the front end, Alexandria highlights all the words and phrases that the user has already encountered. To find out whether a text contains words or phrases that the user has already marked, the words of the text have to be compared to all the user&rsquo;s words and phrases saved in the database.</p>
-<p>We were already working on a search algorithm using <a href=https://en.wikipedia.org/wiki/Trie><em>tries</em></a>, when we had a closer look at the PostgreSQL documentation and decided that its full text search was just what we needed, and that using it would bring a couple of advantages with it:</p>
-<ul>
-<li>It is written in C and most likely faster than anything we would implement in TypeScript.</li>
-<li>It is happening at the starting point of the data chain, so no unnecessary data has to be transferred and processed by neither the server nor the client.</li>
-</ul>
-<p>PostgreSQL text search works by parsing and normalizing a text into a <em>text search vector</em> of the <code>tsvector</code> data type. Search terms on the other hand are parsed and normalized into <em>text search queries</em> of the <code>tsquery</code> type. The parser breaks a string (text or search term) into individual tokens, mostly words in our case.</p>
-<p>The normalization then removes common small words from the tokens and reduces the words to their stems according to language specific dictionaries. Heroku&rsquo;s PostgreSQL installation came with support for twenty languages.</p>
-<p>While this normalization step is very powerful, it is obviously geared for full text search, allowing for results like &ldquo;handling&rdquo; and &ldquo;handlebar&rdquo; when search term is &ldquo;handle&rdquo;. But this was a bit too lenient for our purpose. For the language learner &ldquo;handle&rdquo;, and &ldquo;handling&rdquo; should be considered as two words. Luckily, PostgreSQL also ships with a <code>simple</code> configuration that simple parses the text but leaves the tokens as they are, and that is the configuration we used.</p>
-<p>To save processing time, each text is parsed immediately into a <code>tsvector</code> when it is added to the database (or modified later). The vector is saved in a column of the <code>texts</code> table defined like this:</p>
-<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sql data-lang=sql>        <span style=color:#00a8c8>ALTER</span> <span style=color:#00a8c8>TABLE</span> <span style=color:#111>texts</span>
-         <span style=color:#00a8c8>ADD</span> <span style=color:#00a8c8>COLUMN</span> <span style=color:#111>tsvector_simple</span> <span style=color:#111>tsvector</span> 
-<span style=color:#00a8c8>GENERATED</span> <span style=color:#111>ALWAYS</span> <span style=color:#00a8c8>AS</span> <span style=color:#111>(</span><span style=color:#111>to_tsvector</span><span style=color:#111>(</span><span style=color:#d88200>&#39;simple&#39;</span><span style=color:#111>,</span> <span style=color:#111>title</span> <span style=color:#f92672>||</span> <span style=color:#d88200>&#39; &#39;</span> <span style=color:#f92672>||</span> <span style=color:#111>body</span><span style=color:#111>))</span> <span style=color:#111>STORED</span>
-</code></pre></div><p>In a similar fashion, every word or phrase added to the database also gets a column in which the parsed <code>tsquery</code> is saved.</p>
-<p>We then find all the words in text <code>5</code> that user <code>1</code> has in their vocabulary with this SQL query:</p>
-<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sql data-lang=sql>  <span style=color:#00a8c8>SELECT</span> <span style=color:#111>w</span><span style=color:#111>.</span><span style=color:#111>id</span><span style=color:#111>,</span> <span style=color:#111>w</span><span style=color:#111>.</span><span style=color:#111>word</span><span style=color:#111>,</span> <span style=color:#111>uw</span><span style=color:#111>.</span><span style=color:#111>word_status</span>
-    <span style=color:#00a8c8>FROM</span> <span style=color:#111>words</span> <span style=color:#00a8c8>AS</span> <span style=color:#111>w</span> 
-    <span style=color:#00a8c8>JOIN</span> <span style=color:#111>users_words</span> <span style=color:#00a8c8>AS</span> <span style=color:#111>uw</span> <span style=color:#00a8c8>ON</span> <span style=color:#111>w</span><span style=color:#111>.</span><span style=color:#111>id</span> <span style=color:#f92672>=</span> <span style=color:#111>uw</span><span style=color:#111>.</span><span style=color:#111>word_id</span> 
-   <span style=color:#00a8c8>WHERE</span> <span style=color:#111>uw</span><span style=color:#111>.</span><span style=color:#111>user_id</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span> 
-         <span style=color:#00a8c8>AND</span>
-         <span style=color:#111>w</span><span style=color:#111>.</span><span style=color:#111>language_id</span> <span style=color:#f92672>=</span> <span style=color:#111>(</span><span style=color:#00a8c8>SELECT</span> <span style=color:#111>t</span><span style=color:#111>.</span><span style=color:#111>language_id</span> <span style=color:#00a8c8>FROM</span> <span style=color:#111>texts</span> <span style=color:#00a8c8>AS</span> <span style=color:#111>t</span> 
-                           <span style=color:#00a8c8>WHERE</span> <span style=color:#111>t</span><span style=color:#111>.</span><span style=color:#111>id</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>5</span><span style=color:#111>)</span>
-         <span style=color:#00a8c8>AND</span>
-         <span style=color:#111>w</span><span style=color:#111>.</span><span style=color:#111>tsquery_simple</span> <span style=color:#f92672>@@</span> <span style=color:#111>(</span><span style=color:#00a8c8>SELECT</span> <span style=color:#111>t</span><span style=color:#111>.</span><span style=color:#111>tsvector_simple</span> <span style=color:#00a8c8>FROM</span> <span style=color:#111>texts</span> <span style=color:#00a8c8>AS</span> <span style=color:#111>t</span> 
-                               <span style=color:#00a8c8>WHERE</span> <span style=color:#111>t</span><span style=color:#111>.</span><span style=color:#111>id</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>5</span><span style=color:#111>);</span>        
-</code></pre></div><h3 id=parsing-the-text-into-react-and-html>Parsing the text into React and HTML</h3>
-<p>Eventually, thanks to the powers of PostgreSQL, a text and a list of words from the user&rsquo;s vocabulary will make their way to the client. The next step would then be combining these two in a user interface that satisfied these conditions:</p>
-<ul>
-<li>Every occurence of a word from the list must be highlighted in the text according to its level of familiarity.</li>
-<li>Every occurence of a phrases must be highlighted in the text according to its level of familiarity.</li>
-<li>Each word from the text must be, regardless of whether a word is highlighted, or whether it is part of a phrase.</li>
-<li>Each phrase must be clickable/selectable.</li>
-<li>Punctuation and spaces must be part of any words (with the exception of the apostrophe and hyphen).</li>
-<li>The text must be split into sentences to facilitate saving the context of a word when adding a new translation.</li>
-<li>Bonus: Phrases should be highlighted regardless of the punctuation with which is was saved previously or which is encountered in the text.</li>
-</ul>
-<p>It was clear from the beginning that on the lowest level it meant that words would end up nested in <code>&lt;span></code>s, and that a phrase meant another set of <code>&lt;span></code>s around those word <code>&lt;span></code>s . It was also clear that simply splitting the text at the whitespace characters would not do the trick because commas or exclamation marks would stick to their preceding word. As always in such cases, it was regular expressions to the rescue!</p>
-<p>From the full text body to the individual words the text is parsed and split up into React components and HTML elements in these steps.</p>
-<ol>
-<li>
-<p>The text body is divided into <code>Paragraph</code> components, using the <code>split</code> string method.</p>
-</li>
-<li>
-<p>Paragraphs are split into <code>Sentence</code> components using this regular expression:</p>
-<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#d88200>/[^\s]([^!?.:;]|\.{3})*[&#34;!?.:;\s]*/g</span>
-</code></pre></div><p>This expression splits sentences at <code>!</code> <code>?</code> <code>.</code> <code>:</code> <code>;</code> but not at an ellipsis <code>...</code></p>
-</li>
-<li>
-<p>At the sentence level it gets interesting. Sentences are split into tokens which can either be phrases, words, or spaces and punctuation.</p>
-<p>The corresponding regular expression matches all phrases as found on the list or alternatively any words or non-words (ie. spaces and punctuation). Here is an example with two phrases:</p>
-<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-js data-lang=js><span style=color:#d88200>/of course|get up|(?&lt;words&gt;[\p{L}\p{M}\&#39;-]+)|(?&lt;nowords&gt;[^\\p{L}\\p{M}\&#39;-]+)/gui</span>
-</code></pre></div><p>It utilizes the unicode character class <code>\p</code> with the categories <em>Letter</em> <code>{L}</code> and <em>Mark</em> <code>{M}</code> to account for letters beyond the standard ASCII characters.</p>
-</li>
-<li>
-<p>To satisfy the bonus criterion of finding phrases with any punctuation in them, the phrases at the beginning need to be replaces with</p>
-<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-js data-lang=js><span style=color:#d88200>/of[^\\p{Letter}\\p{Mark}\&#39;-]+course|get[^\\p{Letter}\\p{Mark}\&#39;-]+up/</span>
-</code></pre></div><p>to allow punctuation or spaces between the words that make up the phrase.</p>
-<p>Additionally, as preparation for the parsing all phrases from the users vocabulary for the are stripped off their punctuation.</p>
-</li>
-<li>
-<p>If a token is a phrase (simply checking for spaces suffices), it will be handed over to a <code>Phrase</code> component, Words go into <code>Word</code> components, and punctuation and spaces are unceremoniously wrapped into <code>&lt;span></code>s. That is necessary for selecting phrases from the text (see next section).</p>
-</li>
-<li>
-<p>In a <code>Phrase</code> component, the phrase wrapped into <code>&lt;span></code>s, and the parsing from steps 3 and 5 is repeated, just without phrases.</p>
-</li>
-<li>
-<p>Finally, the <code>Word</code> component wraps <code>&lt;span></code>s around a word.</p>
-</li>
-</ol>
-<p>The CSS for highlighting the words is applied in steps 6 and 7.</p>
-<h3 id=creating-the-user-interface-for-selecting-phrases>Creating the user interface for selecting phrases</h3>
-<p>One of the most important features of our app is allowing users to select and save phrases along with its translation. This ended up being more challenging than expected due to the way our texts are displayed. Each word in a user text has its own state, and resides in its own span. When a user clicks on a word, it is added to the <code>currentWord</code> state, which then triggers a re-render of the translation input component, which contains the current word, existing translations, links to dictionaries and translations, as well as the option for the user to set their level of familiarity with the word.</p>
-<p>Phrases are their own component, separate from words. They are also surrounded by spans which are highlighted based on the users level of familiarity with the phrase. So we needed a way to create phrases on the fly as users selected them. So when a user selects several words, their selection is added to the <code>userWords</code> object, which automatically highlights the new phrase.</p>
-<p>This sounds relatively simple, but the challenges appeared depending on how the user selected the word. Consider, for example, the phrase &ldquo;for example&rdquo;. If the user started or ended their selection in the middle of a word, the <code>currentWord</code> might end up being displayed as &ldquo;or examp&rdquo; instead of &ldquo;for example&rdquo;.</p>
-<p>Using the browser API <code>Selection</code>, we were able to get the <code>anchorNode</code> and <code>focusNode</code>, the nodes where the selection started and ended. With access to those nodes, we could extract the full words using the nodes <code>textContent</code> property, meaning it was trivial to replace the first and last words of the selection with the full words. This gives the user a much better experience as they can select phrases without having to be careful to always select full words.</p>
-<p>The only problem with this approach was that if for some reason a user selected a phrase dragging the mouse from right to left, the first and last word would be reversed. We tried to solve this by saving the X location of the mouse pointer <code>onMouseDown</code> and comparing it to the end X location <code>onMouseUp</code> to see if the selection was done backwards or not. But when a selection was done across multiple lines and the start point was further left than the end point, it didn&rsquo;t work.</p>
-<p>As we had access to the context (the phrase the selection was from), in the end we were able to simply test if the phrase appeared in the context, and if not, switch the first and last words, thus greatly simplifying the selection logic.</p>
-<h3 id=automating-testing-of-prs>Automating testing of PRs</h3>
-<p>One challenge we faced early on when implementing the backend and database was how to automate testing of PRs.</p>
-<p>In the beginning, while we had implemented some basic unit testing, when reviewing a PR we often had to manually test routes using Postman to ensure everything was working correctly before merging. Obviously this was not sustainable, especially as the project grew in size and scope.</p>
-<p>We were able to achieve a good level of coverage using Jest quite quickly, but one problem we ran into was that each user was using their own local testing database, which sometimes lead to different outcomes. To improve the reliability of the tests, we wanted to make sure that the database was always in a known state when the tests were run, allowing for greater control.</p>
-<p>To do this, we set up a PostgreSQL Docker image that would automatically spin up a Docker instance, set up and seed the database each time the tests were run. One of the inherent advantages of using a Docker image is that unless explicitly set up, data is not persisted after the Docker instance is shut down. We were able to take advantage of that to avoid having to reset the database before running tests. This made the testing process much more reliable and easier to control.</p>
-<p>Initally, a reviewer had to download the PR branch, then run the test suite manually to ensure there had been no regression. We decided to implement automated testing to speed up development and make the reviewers job easier.</p>
-<p>After some investigation, we decided to use GitHub actions to automate the tests. We set the automated tests on GitHub to use the same PostgreSQL Docker image and seed data as we were using on our local machines. As we were already using GitHub, this greatly simplified the review process as the test results are very prominently displayed on the PR, instantly notifying the developer if there was a problem that needed to be fixed.</p>
-<p>This solution ended up greatly simplifying the review process, and saved us a lot of time as bugs and regression were caught quickly.</p>
+<div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
+<div style=border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px></div>
 </div>
-</section>
-<section class=page id=future>
-<h1>
-<a href=#future>MVP and Future Plans</a>
-</h1>
-<div class=content>
-<h3 id=mvp>MVP</h3>
-<p>Confronted with the fully-fledged feature set of commercial language learning applications, our team made the early decision to create a minimum viable product that reflects the essence of what we find crucial in such a product.</p>
-<ul>
-<li>User experience: mobile-first, fast and seamless processing of user interactions</li>
-<li>Backend and API: layered, robust, RESTful, maintainable, and flexible enough to service front-end needs</li>
-<li>Database: normalized and withstands scale</li>
-<li>CI/CD: establish continuous deployment pipelines</li>
-</ul>
-<h3 id=moving-forward>Moving Forward</h3>
-<p>Our core team has plans to continue support the maintenance and development of Alexandria.</p>
-<h4 id=backend>Backend</h4>
-<ul>
-<li>API enhancements.</li>
-</ul>
-<h4 id=frontend>Frontend</h4>
-<ul>
-<li>
-<p>Full user access and ownership control:</p>
-<ul>
-<li>Add full suite of user access tools, including email validation upon sign-up and password reset.</li>
-<li>Offer users full control, where words and translations can be deleted as well as updated.</li>
-<li>User are currently only able to access texts and translations based on their own inputs. Going forward, users will have the choice of accessing a global pool of shared texts and translations, further reducing usage friction, take advantage of other users' contribution, and making the experience more dynamic.</li>
-</ul>
-</li>
-<li>
-<p>Starter kit upon sign-up: Offer new users a package of existing texts to improve onboarding experience</p>
-</li>
-<li>
-<p>Import/export: Import / export functionality for interoperability with other learning tools</p>
-</li>
-<li>
-<p>Additional language support: Alexandria currently supports 10 languages. We would like to expand the number of languages supported after additional testing.</p>
-</li>
-<li>
-<p>Admin dashboard: Allows admins to make changes to user accounts from the front-end.</p>
-</li>
-<li>
-<p>Mobile optmization: Additional development to further enhance user mobile experiences.</p>
-</li>
-</ul>
-<h4 id=testing>Testing</h4>
-<ul>
-<li>Alexandria backend currently has close to full coverage testing in place. Front end has some unit testing and Cypress testing in place. We plan on introducing testing suite that offers full coverage testing for the front end.</li>
-</ul>
-</div>
-</section>
-<section class=page id=team>
-<h1>
-<a href=#team>Meet the Team</a>
-</h1>
-<div class=content>
-<h3 id=dana-chen>Dana Chen</h3>
-<h3 id=eamon-ocallaghan>Eamon O&rsquo;Callaghan</h3>
-<h3 id=marc-hermann>Marc Hermann</h3>
-</div>
-</section>
-<section class=page id=references>
-<h1>
-<a href=#references>References</a>
-</h1>
-<div class=content>
-<ol>
-<li>Stephen Krishan (2021): <a href=https://www.researchgate.net/publication/349255011_Explorations_in_Language_Acquisition_and_Use>Explorations in Language Acquisition and Use</a></li>
-<li>Yaroslav Lapin (2021) : <a href=https://blog.logrocket.com/jotai-vs-recoil-what-are-the-differences>Jotai vs. Recoil: What are the differences?</a></li>
-<li>Edgar F. Codd (1972): <a href=https://forum.thethirdmanifesto.com/wp-content/uploads/asgarosforum/987737/00-efc-further-normalization.pdf>Further Normalization of the Data Base Relational Model</a></li>
-<li>Roy Fielding (2000): <a href=https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm>Architectural Styles and the Design of Network-based Software Architectures</a></li>
-</ol>
-</div>
-</section>
-</div>
+<script src=./js/clipboard.min.js?1641989671></script>
+<script src=./js/perfect-scrollbar.min.js?1641989671></script>
+<script src=./js/perfect-scrollbar.jquery.min.js?1641989671></script>
+<script src=./js/jquery.svg.pan.zoom.js?1641989671></script>
+<script src=./js/featherlight.min.js?1641989671></script>
+<script src=./js/modernizr.custom-3.6.0.js?1641989671></script>
+<script src=./js/mermaid.min.js?1641989671></script>
+<script>typeof mermaid!='undefined'&&typeof mermaid.mermaidAPI!='undefined'&&mermaid.mermaidAPI.initialize(Object.assign({securityLevel:"antiscript"},JSON.parse('{ "startOnLoad": true }'),{startOnLoad:!1}))</script>
+<script src=./js/relearn.js?1641989671></script>
 </body>
 </html>

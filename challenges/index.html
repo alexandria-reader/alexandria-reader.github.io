@@ -1,0 +1,217 @@
+<!doctype html><html lang=en class="js csstransforms3d">
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=generator content="Hugo 0.91.2">
+<meta name=generator content="Relearn 2.9.2
+">
+<link rel=alternate type=application/rss+xml href=../challenges/index.xml title="Alexandria Case Study">
+<meta name=description content="Design notes from development of the Alexandria language learning app.">
+<meta name=author content="Team Alexandria">
+<title>Challenges and Solutions :: Alexandria Case Study</title>
+<link href=../css/nucleus.css?1641989671 rel=stylesheet>
+<link href=../css/fontawesome-all.min.css?1641989671 rel=stylesheet>
+<link href=../css/featherlight.min.css?1641989671 rel=stylesheet>
+<link href=../css/perfect-scrollbar.min.css?1641989671 rel=stylesheet>
+<link href=../css/auto-complete.css?1641989671 rel=stylesheet>
+<link href=../css/theme.css?1641989671 rel=stylesheet>
+<link href=../css/theme-alexandria.css?1641989671 rel=stylesheet>
+<link href=../css/variant.css?1641989671 rel=stylesheet>
+<link href=../css/print.css?1641989671 rel=stylesheet media=print>
+<script src=../js/jquery.min.js?1641989671></script>
+<style>:root #header+#content>#left>#rlblock_left{display:none!important}:not(pre)>code.copy-to-clipboard-inline+span.copy-to-clipboard{display:none}:not(pre)>code.copy-to-clipboard-inline{border-bottom-right-radius:2px;border-top-right-radius:2px;border-right-width:1px}</style>
+</head>
+<body data-url=../challenges/>
+<script>var index_url="../index.json",root_url="../",baseUri=root_url.replace(/\/$/,'')</script>
+<nav id=sidebar>
+<div id=header-wrapper>
+<div id=header>
+<a href=../><img src=../images/logo-light.png alt="Alexandria logo"></a>
+</div>
+<div class=searchbox>
+<label for=search-by><i class="fas fa-search"></i></label>
+<input data-search-input id=search-by type=search placeholder=Search...>
+<span data-search-clear><i class="fas fa-times"></i></span>
+</div>
+<script src=../js/lunr.min.js?1641989671></script>
+<script src=../js/auto-complete.js?1641989671></script>
+<script src=../js/search.js?1641989671></script>
+</div>
+<div id=homelinks>
+<ul>
+<li>
+<a class=padding href=../><i class="fas fa-home"></i> Home</a>
+</li>
+</ul>
+</div>
+<div class=highlightable>
+<ul class=topics>
+<li data-nav-id=/competitors/ title="Competitor Analysis" class=dd-item><a href=../competitors/>Competitor Analysis</a><ul></ul></li>
+<li data-nav-id=/decisions/ title="Technical decisions" class=dd-item><a href=../decisions/>Technical decisions</a><ul></ul></li>
+<li data-nav-id=/database-api/ title="Database and API" class=dd-item><a href=../database-api/>Database and API</a><ul>
+<li data-nav-id=/database-api/database/ title="Database Architecture" class=dd-item><a href=../database-api/database/>Database Architecture</a></li>
+<li data-nav-id=/database-api/api/ title="API design" class=dd-item><a href=../database-api/api/>API design</a></li></ul></li>
+<li data-nav-id=/challenges/ title="Challenges and Solutions" class="dd-item active parent"><a href=../challenges/>Challenges and Solutions</a><ul></ul></li>
+<li data-nav-id=/future/ title="MVP and Future Plans" class=dd-item><a href=../future/>MVP and Future Plans</a><ul></ul></li>
+<li data-nav-id=/team/ title="Meet the Team" class=dd-item><a href=../team/>Meet the Team</a><ul></ul></li>
+<li data-nav-id=/references/ title=References class=dd-item><a href=../references/>References</a><ul></ul></li>
+</ul>
+<div id=shortcuts>
+<div class=nav-title>More</div>
+<ul>
+<li><a class=padding href=https://tryalexandria.com><i class="fas fa-fw fa-book"></i> Use the app, learn a language!</a></li>
+<li><a class=padding href=https://github.com/alexandria-reader><i class="fab fa-fw fa-github"></i> Alexandria on GitHub</a></li>
+</ul>
+</div>
+<div id=footer>
+<p>Built with <a href=https://github.com/McShelby/hugo-theme-relearn><i class="fas fa-heart"></i></a> by <a href=https://gohugo.io/>Hugo</a></p>
+</div>
+</div>
+</nav>
+<div id=body>
+<div id=overlay></div>
+<div class="padding highlightable">
+<div id=top-bar>
+<div id=breadcrumbs>
+<span id=sidebar-toggle-span>
+<a href=# id=sidebar-toggle data-sidebar-toggle>
+<i class="fas fa-bars"></i>
+</a>
+</span>
+<span id=toc-menu><i class="fas fa-list-alt"></i></span>
+<span class=links>
+Challenges and Solutions
+</span>
+</div>
+<div class=progress>
+<div class=wrapper>
+<nav id=TableOfContents>
+<ul>
+<li>
+<ul>
+<li><a href=#finding-the-users-words-and-phrases-in-the-text>Finding the user&rsquo;s words and phrases in the text</a></li>
+<li><a href=#parsing-the-text-into-react-and-html>Parsing the text into React and HTML</a></li>
+<li><a href=#creating-the-user-interface-for-selecting-phrases>Creating the user interface for selecting phrases</a></li>
+<li><a href=#automating-testing-of-prs>Automating testing of PRs</a></li>
+</ul>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div id=head-tags>
+</div>
+<main id=body-inner>
+<h1>Challenges and Solutions</h1>
+<p>While the designing database and API were challenging in and by themselves, and the thorough preparation definitely paid of during the coding stage, there were, of course, still hurdles to overcome, problems to solve, solutions to find.</p>
+<h3 id=finding-the-users-words-and-phrases-in-the-text>Finding the user&rsquo;s words and phrases in the text</h3>
+<p>We have already discussed why we chose to work with a relational database as opposed to a document-based one. But our decision to use PostgreSQL brought another benefit with it, and that is the build in full text search which we put to good use to solve.</p>
+<p>On the front end, Alexandria highlights all the words and phrases that the user has already encountered. To find out whether a text contains words or phrases that the user has already marked, the words of the text have to be compared to all the user&rsquo;s words and phrases saved in the database.</p>
+<p>We were already working on a search algorithm using <a href=https://en.wikipedia.org/wiki/Trie><em>tries</em></a>, when we had a closer look at the PostgreSQL documentation and decided that its full text search was just what we needed, and that using it would bring a couple of advantages with it:</p>
+<ul>
+<li>It is written in C and most likely faster than anything we would implement in TypeScript.</li>
+<li>It is happening at the starting point of the data chain, so no unnecessary data has to be transferred and processed by neither the server nor the client.</li>
+</ul>
+<p>PostgreSQL text search works by parsing and normalizing a text into a <em>text search vector</em> of the <code>tsvector</code> data type. Search terms on the other hand are parsed and normalized into <em>text search queries</em> of the <code>tsquery</code> type. The parser breaks a string (text or search term) into individual tokens, mostly words in our case.</p>
+<p>The normalization then removes common small words from the tokens and reduces the words to their stems according to language specific dictionaries. Heroku&rsquo;s PostgreSQL installation came with support for twenty languages.</p>
+<p>While this normalization step is very powerful, it is obviously geared for full text search, allowing for results like &ldquo;handling&rdquo; and &ldquo;handlebar&rdquo; when search term is &ldquo;handle&rdquo;. But this was a bit too lenient for our purpose. For the language learner &ldquo;handle&rdquo;, and &ldquo;handling&rdquo; should be considered as two words. Luckily, PostgreSQL also ships with a <code>simple</code> configuration that simple parses the text but leaves the tokens as they are, and that is the configuration we used.</p>
+<p>To save processing time, each text is parsed immediately into a <code>tsvector</code> when it is added to the database (or modified later). The vector is saved in a column of the <code>texts</code> table defined like this:</p>
+<div class=highlight><pre tabindex=0 style=color:#e2e4e5;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sql data-lang=sql>        <span style=color:#ff6ac1>ALTER</span> <span style=color:#ff6ac1>TABLE</span> texts
+         <span style=color:#ff6ac1>ADD</span> <span style=color:#ff6ac1>COLUMN</span> tsvector_simple tsvector 
+<span style=color:#ff6ac1>GENERATED</span> ALWAYS <span style=color:#ff6ac1>AS</span> (to_tsvector(<span style=color:#5af78e>&#39;simple&#39;</span>, title <span style=color:#ff6ac1>||</span> <span style=color:#5af78e>&#39; &#39;</span> <span style=color:#ff6ac1>||</span> body)) STORED
+</code></pre></div><p>In a similar fashion, every word or phrase added to the database also gets a column in which the parsed <code>tsquery</code> is saved.</p>
+<p>We then find all the words in text <code>5</code> that user <code>1</code> has in their vocabulary with this SQL query:</p>
+<div class=highlight><pre tabindex=0 style=color:#e2e4e5;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sql data-lang=sql>  <span style=color:#ff6ac1>SELECT</span> w.id, w.word, uw.word_status
+    <span style=color:#ff6ac1>FROM</span> words <span style=color:#ff6ac1>AS</span> w 
+    <span style=color:#ff6ac1>JOIN</span> users_words <span style=color:#ff6ac1>AS</span> uw <span style=color:#ff6ac1>ON</span> w.id <span style=color:#ff6ac1>=</span> uw.word_id 
+   <span style=color:#ff6ac1>WHERE</span> uw.user_id <span style=color:#ff6ac1>=</span> <span style=color:#ff9f43>1</span> 
+         <span style=color:#ff6ac1>AND</span>
+         w.language_id <span style=color:#ff6ac1>=</span> (<span style=color:#ff6ac1>SELECT</span> t.language_id <span style=color:#ff6ac1>FROM</span> texts <span style=color:#ff6ac1>AS</span> t 
+                           <span style=color:#ff6ac1>WHERE</span> t.id <span style=color:#ff6ac1>=</span> <span style=color:#ff9f43>5</span>)
+         <span style=color:#ff6ac1>AND</span>
+         w.tsquery_simple <span style=color:#ff6ac1>@@</span> (<span style=color:#ff6ac1>SELECT</span> t.tsvector_simple <span style=color:#ff6ac1>FROM</span> texts <span style=color:#ff6ac1>AS</span> t 
+                               <span style=color:#ff6ac1>WHERE</span> t.id <span style=color:#ff6ac1>=</span> <span style=color:#ff9f43>5</span>);        
+</code></pre></div><h3 id=parsing-the-text-into-react-and-html>Parsing the text into React and HTML</h3>
+<p>Eventually, thanks to the powers of PostgreSQL, a text and a list of words from the user&rsquo;s vocabulary will make their way to the client. The next step would then be combining these two in a user interface that satisfied these conditions:</p>
+<ul>
+<li>Every occurence of a word from the list must be highlighted in the text according to its level of familiarity.</li>
+<li>Every occurence of a phrases must be highlighted in the text according to its level of familiarity.</li>
+<li>Each word from the text must be, regardless of whether a word is highlighted, or whether it is part of a phrase.</li>
+<li>Each phrase must be clickable/selectable.</li>
+<li>Punctuation and spaces must be part of any words (with the exception of the apostrophe and hyphen).</li>
+<li>The text must be split into sentences to facilitate saving the context of a word when adding a new translation.</li>
+<li>Bonus: Phrases should be highlighted regardless of the punctuation with which is was saved previously or which is encountered in the text.</li>
+</ul>
+<p>It was clear from the beginning that on the lowest level it meant that words would end up nested in <code>&lt;span></code>s, and that a phrase meant another set of <code>&lt;span></code>s around those word <code>&lt;span></code>s . It was also clear that simply splitting the text at the whitespace characters would not do the trick because commas or exclamation marks would stick to their preceding word. As always in such cases, it was regular expressions to the rescue!</p>
+<p>From the full text body to the individual words the text is parsed and split up into React components and HTML elements in these steps.</p>
+<ol>
+<li>
+<p>The text body is divided into <code>Paragraph</code> components, using the <code>split</code> string method.</p>
+</li>
+<li>
+<p>Paragraphs are split into <code>Sentence</code> components using this regular expression:</p>
+<div class=highlight><pre tabindex=0 style=color:#e2e4e5;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#5af78e>/[^\s]([^!?.:;]|\.{3})*[&#34;!?.:;\s]*/g</span>
+</code></pre></div><p>This expression splits sentences at <code>!</code> <code>?</code> <code>.</code> <code>:</code> <code>;</code> but not at an ellipsis <code>...</code></p>
+</li>
+<li>
+<p>At the sentence level it gets interesting. Sentences are split into tokens which can either be phrases, words, or spaces and punctuation.</p>
+<p>The corresponding regular expression matches all phrases as found on the list or alternatively any words or non-words (ie. spaces and punctuation). Here is an example with two phrases:</p>
+<div class=highlight><pre tabindex=0 style=color:#e2e4e5;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-js data-lang=js><span style=color:#5af78e>/of course|get up|(?&lt;words&gt;[\p{L}\p{M}\&#39;-]+)|(?&lt;nowords&gt;[^\\p{L}\\p{M}\&#39;-]+)/gui</span>
+</code></pre></div><p>It utilizes the unicode character class <code>\p</code> with the categories <em>Letter</em> <code>{L}</code> and <em>Mark</em> <code>{M}</code> to account for letters beyond the standard ASCII characters.</p>
+</li>
+<li>
+<p>To satisfy the bonus criterion of finding phrases with any punctuation in them, the phrases at the beginning need to be replaces with</p>
+<div class=highlight><pre tabindex=0 style=color:#e2e4e5;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-js data-lang=js><span style=color:#5af78e>/of[^\\p{Letter}\\p{Mark}\&#39;-]+course|get[^\\p{Letter}\\p{Mark}\&#39;-]+up/</span>
+</code></pre></div><p>to allow punctuation or spaces between the words that make up the phrase.</p>
+<p>Additionally, as preparation for the parsing all phrases from the users vocabulary for the are stripped off their punctuation.</p>
+</li>
+<li>
+<p>If a token is a phrase (simply checking for spaces suffices), it will be handed over to a <code>Phrase</code> component, Words go into <code>Word</code> components, and punctuation and spaces are unceremoniously wrapped into <code>&lt;span></code>s. That is necessary for selecting phrases from the text (see next section).</p>
+</li>
+<li>
+<p>In a <code>Phrase</code> component, the phrase wrapped into <code>&lt;span></code>s, and the parsing from steps 3 and 5 is repeated, just without phrases.</p>
+</li>
+<li>
+<p>Finally, the <code>Word</code> component wraps <code>&lt;span></code>s around a word.</p>
+</li>
+</ol>
+<p>The CSS for highlighting the words is applied in steps 6 and 7.</p>
+<h3 id=creating-the-user-interface-for-selecting-phrases>Creating the user interface for selecting phrases</h3>
+<p>One of the most important features of our app is allowing users to select and save phrases along with its translation. This ended up being more challenging than expected due to the way our texts are displayed. Each word in a user text has its own state, and resides in its own span. When a user clicks on a word, it is added to the <code>currentWord</code> state, which then triggers a re-render of the translation input component, which contains the current word, existing translations, links to dictionaries and translations, as well as the option for the user to set their level of familiarity with the word.</p>
+<p>Phrases are their own component, separate from words. They are also surrounded by spans which are highlighted based on the users level of familiarity with the phrase. So we needed a way to create phrases on the fly as users selected them. So when a user selects several words, their selection is added to the <code>userWords</code> object, which automatically highlights the new phrase.</p>
+<p>This sounds relatively simple, but the challenges appeared depending on how the user selected the word. Consider, for example, the phrase &ldquo;for example&rdquo;. If the user started or ended their selection in the middle of a word, the <code>currentWord</code> might end up being displayed as &ldquo;or examp&rdquo; instead of &ldquo;for example&rdquo;.</p>
+<p>Using the browser API <code>Selection</code>, we were able to get the <code>anchorNode</code> and <code>focusNode</code>, the nodes where the selection started and ended. With access to those nodes, we could extract the full words using the nodes <code>textContent</code> property, meaning it was trivial to replace the first and last words of the selection with the full words. This gives the user a much better experience as they can select phrases without having to be careful to always select full words.</p>
+<p>The only problem with this approach was that if for some reason a user selected a phrase dragging the mouse from right to left, the first and last word would be reversed. We tried to solve this by saving the X location of the mouse pointer <code>onMouseDown</code> and comparing it to the end X location <code>onMouseUp</code> to see if the selection was done backwards or not. But when a selection was done across multiple lines and the start point was further left than the end point, it didn&rsquo;t work.</p>
+<p>As we had access to the context (the phrase the selection was from), in the end we were able to simply test if the phrase appeared in the context, and if not, switch the first and last words, thus greatly simplifying the selection logic.</p>
+<h3 id=automating-testing-of-prs>Automating testing of PRs</h3>
+<p>One challenge we faced early on when implementing the backend and database was how to automate testing of PRs.</p>
+<p>In the beginning, while we had implemented some basic unit testing, when reviewing a PR we often had to manually test routes using Postman to ensure everything was working correctly before merging. Obviously this was not sustainable, especially as the project grew in size and scope.</p>
+<p>We were able to achieve a good level of coverage using Jest quite quickly, but one problem we ran into was that each user was using their own local testing database, which sometimes lead to different outcomes. To improve the reliability of the tests, we wanted to make sure that the database was always in a known state when the tests were run, allowing for greater control.</p>
+<p>To do this, we set up a PostgreSQL Docker image that would automatically spin up a Docker instance, set up and seed the database each time the tests were run. One of the inherent advantages of using a Docker image is that unless explicitly set up, data is not persisted after the Docker instance is shut down. We were able to take advantage of that to avoid having to reset the database before running tests. This made the testing process much more reliable and easier to control.</p>
+<p>Initally, a reviewer had to download the PR branch, then run the test suite manually to ensure there had been no regression. We decided to implement automated testing to speed up development and make the reviewers job easier.</p>
+<p>After some investigation, we decided to use GitHub actions to automate the tests. We set the automated tests on GitHub to use the same PostgreSQL Docker image and seed data as we were using on our local machines. As we were already using GitHub, this greatly simplified the review process as the test results are very prominently displayed on the PR, instantly notifying the developer if there was a problem that needed to be fixed.</p>
+<p>This solution ended up greatly simplifying the review process, and saved us a lot of time as bugs and regression were caught quickly.</p>
+<footer class=footline>
+</footer>
+</main>
+</div>
+<div id=navigation>
+<a class="nav nav-prev" href=../database-api/api/ title="API design"><i class="fa fa-chevron-left"></i></a>
+<a class="nav nav-next" href=../future/ title="MVP and Future Plans"><i class="fa fa-chevron-right"></i></a>
+</div>
+</div>
+<div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
+<div style=border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px></div>
+</div>
+<script src=../js/clipboard.min.js?1641989671></script>
+<script src=../js/perfect-scrollbar.min.js?1641989671></script>
+<script src=../js/perfect-scrollbar.jquery.min.js?1641989671></script>
+<script src=../js/jquery.svg.pan.zoom.js?1641989671></script>
+<script src=../js/featherlight.min.js?1641989671></script>
+<script src=../js/modernizr.custom-3.6.0.js?1641989671></script>
+<script src=../js/mermaid.min.js?1641989671></script>
+<script>typeof mermaid!='undefined'&&typeof mermaid.mermaidAPI!='undefined'&&mermaid.mermaidAPI.initialize(Object.assign({securityLevel:"antiscript"},JSON.parse('{ "startOnLoad": true }'),{startOnLoad:!1}))</script>
+<script src=../js/relearn.js?1641989671></script>
+</body>
+</html>
