@@ -61,7 +61,8 @@
 <a href=#introduction>Introduction</a>
 </h1>
 <div class=content>
-<p>Why is language acquisition so evasive for the majority of language learners? Why has decades of grammar rules, repetition drills, and computer-assisted learning shown only limited success? In recent years, research surrounding both second language acquisition as well as literacy has shown that language acquisition occurs when we comprehend messages alongside its surrounding context 1. More specifically, the &ldquo;input hypothesis&rdquo; states that we acquire language in one way and one way only: when we understand messages, and when we obtain comprehensive input.</p>
+<p>Why is language acquisition so evasive for the majority of language learners? Why has decades of grammar rules, repetition drills, and computer-assisted learning shown only limited success? In recent years, research surrounding both second language acquisition as well as literacy has shown that language acquisition occurs when we comprehend messages alongside its surrounding context
+<sup><a href=#references>[1]</a></sup>. More specifically, the &ldquo;input hypothesis&rdquo; states that we acquire language in one way and one way only: when we understand messages, and when we obtain comprehensive input.</p>
 <p>With this very specific language learning need in mind, a number of web applications has been created in recent years. Language learning enthusiasts have embraced those platforms to supplment their language learning journey.</p>
 <p>Despite a choice of platforms that range from open source software to paid software, there are shortcomings. The language learning enthusiast in our team has identified a number of weaknesses that Alexandria seeks to address.</p>
 <h3 id=competitor-analysis>Competitor analysis</h3>
@@ -204,10 +205,11 @@ Over the course of development, this saved us a significant time and frustration
 <p>In JS, the markup and functionality are kept separate. As apps grow bigger, this becomes a major source of complexity, where a developer needs to keep track of both sets of codes.</p>
 <p>In React, the app is split into components, where each component maintains the code required to both display and upates the UI. This also allows reusability of components, another benefit.</p>
 <h3 id=recoil>Recoil</h3>
-<p>When it comes to choosing a statement management tool, we began by assessing what the application needed.</p>
+<p>When it comes to choosing a state management tool, we began by assessing what the application needed.</p>
 <p>It was immediately clear to us that users will be interacting intensively with highly dyanmic components: highlighted words, translations, status, and languages are all expected to change with every user interaction. Therefore, it was vital that after each update, each component state is accurately captured and rendered back to the users in the most efficient manner.</p>
-<p>Turning our attention to state management tools available on the market, we quickly realized although the number of libraries and packages are numerous, most belong to one of three categories in addition to the React natively supported Context API: Flux (Redux, Zustand), Proxy (Mobx, Valtio), or Atomic (Recoil, Jotai) (<a href=https://blog.logrocket.com/jotai-vs-recoil-what-are-the-differences/)>https://blog.logrocket.com/jotai-vs-recoil-what-are-the-differences/)</a>.</p>
-<p>Within the context of Alexandria, we took a closer look at three choices: React&rsquo;s Context API, Redux, and Recoil. Redux has long been the state management library of choice for applications of a certain size, while React&rsquo;s very own Context API provided state management directly from React itself. Adding to the mix, new kid on the block Recoil had been released by Facebook, and touted as a React-specific statement management library maximizes developer happiness.</p>
+<p>Turning our attention to state management tools available on the market, we quickly realized although the number of libraries and packages are numerous, most belong to one of three categories in addition to the React natively supported Context API: Flux (Redux, Zustand), Proxy (Mobx, Valtio), or Atomic (Recoil, Jotai)
+<sup><a href=#references>[2]</a></sup>.</p>
+<p>Within the context of Alexandria, we took a closer look at three choices: React&rsquo;s Context API, Redux, and Recoil. Redux has long been the state management library of choice for applications of a certain size, while React&rsquo;s very own Context API provided state management directly from React itself. Adding to the mix, new kid on the block Recoil had been released by Facebook, and touted as a React-specific state management library maximizes developer happiness.</p>
 <p>Choosing the right tool for the job took some careful examination. While we did not perform an exhaustive benchmarking study, some initial sandboxing helped us arrive at the following observations.</p>
 <h4 id=context-api>Context API</h4>
 <h5 id=how-it-works>How it works</h5>
@@ -275,7 +277,7 @@ Over the course of development, this saved us a significant time and frustration
 <h4 id=normalization>Normalization</h4>
 <p>To normalize a database means to organize or structure it in a way that avoids redundancy of data, undesirable dependencies, and inconsistencies.</p>
 <p>In his paper &ldquo;Further Normalization of the Data Base Relational Model"
-<sup><a href=#references>[2]</a></sup>, Edgar F. Codd, the &ldquo;father&rdquo; of the relational database model, listed these objectives of nomalization:</p>
+<sup><a href=#references>[3]</a></sup>, Edgar F. Codd, the &ldquo;father&rdquo; of the relational database model, listed these objectives of nomalization:</p>
 <ol>
 <li><em>To free the collection of relations from undesirable insertion, update and deletion dependencies.</em></li>
 <li><em>To reduce the need for restructuring the collection of relations, as new types of data are introduced, and thus increase the life span of application programs.</em></li>
@@ -436,7 +438,7 @@ Over the course of development, this saved us a significant time and frustration
 </table>
 <h3 id=api-design>API Design</h3>
 <p>In the design of the API that is queried by the React front end, we aimed at following REST principles as outlined in Roy Fielding&rsquo;s 2000 dissertation
-<sup><a href=#references>[3]</a></sup>, but within the constraints of our type of application and of the current state of development.</p>
+<sup><a href=#references>[4]</a></sup>, but within the constraints of our type of application and of the current state of development.</p>
 <ul>
 <li><em>Client-Server</em>: As mentioned previously, this separation came naturally with the decision to create a React-based single page application.</li>
 <li><em>Stateless</em>: For security reasons and device inerchangeability, only the user id is stored with the client in a JSON Web token which is sent with every request. Additional information is always drawn from the user state which is kept in a Recoil atom. The request then includes the combined state information and sends it to the server.</li>
@@ -592,9 +594,50 @@ Over the course of development, this saved us a significant time and frustration
 <a href=#future>MVP and Future Plans</a>
 </h1>
 <div class=content>
-<p>Where we are now, and where we are going</p>
 <h3 id=mvp>MVP</h3>
+<p>Confronted with the fully-fledged feature set of commercial language learning applications, our team made the early decision to create a minimum viable product that reflects the essence of what we find crucial in such a product.</p>
+<ul>
+<li>User experience: mobile-first, fast and seamless processing of user interactions</li>
+<li>Backend and API: layered, robust, RESTful, maintainable, and flexible enough to service front-end needs</li>
+<li>Database: normalized and withstands scale</li>
+<li>CI/CD: establish continuous deployment pipelines</li>
+</ul>
 <h3 id=moving-forward>Moving Forward</h3>
+<p>Our core team has plans to continue support the maintenance and development of Alexandria.</p>
+<h4 id=backend>Backend</h4>
+<ul>
+<li>API enhancements.</li>
+</ul>
+<h4 id=frontend>Frontend</h4>
+<ul>
+<li>
+<p>Full user access and ownership control:</p>
+<ul>
+<li>Add full suite of user access tools, including email validation upon sign-up and password reset.</li>
+<li>Offer users full control, where words and translations can be deleted as well as updated.</li>
+<li>User are currently only able to access texts and translations based on their own inputs. Going forward, users will have the choice of accessing a global pool of shared texts and translations, further reducing usage friction, take advantage of other users' contribution, and making the experience more dynamic.</li>
+</ul>
+</li>
+<li>
+<p>Starter kit upon sign-up: Offer new users a package of existing texts to improve onboarding experience</p>
+</li>
+<li>
+<p>Import/export: Import / export functionality for interoperability with other learning tools</p>
+</li>
+<li>
+<p>Additional language support: Alexandria currently supports 10 languages. We would like to expand the number of languages supported after additional testing.</p>
+</li>
+<li>
+<p>Admin dashboard: Allows admins to make changes to user accounts from the front-end.</p>
+</li>
+<li>
+<p>Mobile optmization: Additional development to further enhance user mobile experiences.</p>
+</li>
+</ul>
+<h4 id=testing>Testing</h4>
+<ul>
+<li>Alexandria backend currently has close to full coverage testing in place. Front end has some unit testing and Cypress testing in place. We plan on introducing testing suite that offers full coverage testing for the front end.</li>
+</ul>
 </div>
 </section>
 <section class=page id=team>
@@ -614,6 +657,7 @@ Over the course of development, this saved us a significant time and frustration
 <div class=content>
 <ol>
 <li>Stephen Krishan (2021): <a href=https://www.researchgate.net/publication/349255011_Explorations_in_Language_Acquisition_and_Use>Explorations in Language Acquisition and Use</a></li>
+<li>Yaroslav Lapin (2021) : <a href=https://blog.logrocket.com/jotai-vs-recoil-what-are-the-differences>Jotai vs. Recoil: What are the differences?</a></li>
 <li>Edgar F. Codd (1972): <a href=https://forum.thethirdmanifesto.com/wp-content/uploads/asgarosforum/987737/00-efc-further-normalization.pdf>Further Normalization of the Data Base Relational Model</a></li>
 <li>Roy Fielding (2000): <a href=https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm>Architectural Styles and the Design of Network-based Software Architectures</a></li>
 </ol>
