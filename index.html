@@ -126,7 +126,6 @@
 <a href=#decisions>Technical decisions</a>
 </h1>
 <div class=content>
-<p>How we decided on technologies we used.</p>
 <h3 id=typescript-vs-javascript>TypeScript vs JavaScript</h3>
 <p>Before we started developing Alexandria, none of us had any real experience using TypeScript, whereas we all had a solid foundation in JavaScript.
 Yet after doing a lot of research, we decided to use TypeScript in our project. Why?</p>
@@ -161,7 +160,42 @@ Over the course of development, this saved us a significant time and frustration
 <p>TypeScripts static typing is not true static typing. Once TypeScript is compiled, it is transpiled into untyped Javascript, meaning that there is still a small risk of type problems at runtime.</p>
 <h4 id=conclusion>Conclusion</h4>
 <p>Overall, we felt that the benefits clearly outweighted the disadvantages for our usecase. It was worth putting in the extra effort of using TypeScript as it helped us catch bugs before the code was run, meaning that they didn&rsquo;t make it into production. The added readability and easy refactoring made TypeScript the clear winner.</p>
-<h3 id=postgresql>PostgreSQL</h3>
+<h3 id=sql-vs-nosql>SQL vs. NoSQL</h3>
+<p>Alexandria is primarily deployed as a web application, where users log in and interact with the information they have stored on the platform. Therefore, robust and scalable database choice is a must.</p>
+<p>Our research comparing between SQL and NoSQL databases centered around the following issues.</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>SQL</th>
+<th>NoSQL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ability to handle high volume of complex queries</td>
+<td>✅</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Scalabiility</td>
+<td>Vertical</td>
+<td>Horizontal</td>
+</tr>
+<tr>
+<td>Data type</td>
+<td>Structured</td>
+<td>Unstructured</td>
+</tr>
+</tbody>
+</table>
+<h4 id=sql>SQL</h4>
+<p>Structured Query Language (SQL) is the standard language for dealing with relational databases that define relationships in the form of tables. SQL databases works with a predefined schema, and can be used to effectively insert, search, update, and delete database records. SQL databases are table-based, and known for its vertical scalability.</p>
+<h4 id=nosql>NoSQL</h4>
+<p>NoSQL represents non-relational database management systems, where fixed schema is not required. It also avoids joins, and is easy to scale. NoSQL databases can be document based, key-value pairs, or graph databases. It uses dynamic schema for unstructured data, and is known for its ability to scale horizontally.</p>
+<h4 id=choosing-sql>Choosing SQL</h4>
+<p>Our choice of SQL is based primarily on its ability to handle a high volume of complex queries. Each user interacting with the Alexandria may upload text, select words from the text to add translations to, change status of a word, or even switch language, all within the same session. Each action requires sometimes complex queries to complete.</p>
+<p>While SQL became Alexandria&rsquo;s database of choice, we are acutely aware of the shortcomings of a SQL database, namely its vertical, versus horizontal scalability. Vertical sclability means that while we can increase the load on a single server by increasing RAM, CPU, or SSD, NoSQL databases handle more traffic by sharding and adding more servers, allowing it to become larger and preferable in the cases for large and ever-changing data sets.</p>
 <h3 id=react>React</h3>
 <h4 id=project-requirements>Project requirements</h4>
 <p>In order to achieve both performance and user experience objectives for Alexandria, we settled on a number of goals that we&rsquo;d like to fullfill at the initial stsage.</p>
