@@ -1,0 +1,129 @@
+<!doctype html><html lang=en class="js csstransforms3d">
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=generator content="Hugo 0.92.0">
+<meta name=generator content="Relearn 2.9.2
+">
+<meta name=description content="Design notes from development of the Alexandria language learning app.">
+<meta name=author content="Team Alexandria">
+<title>Phrase selection UI :: Alexandria Case Study</title>
+<link href=../../css/nucleus.css?1641997438 rel=stylesheet>
+<link href=../../css/fontawesome-all.min.css?1641997438 rel=stylesheet>
+<link href=../../css/featherlight.min.css?1641997438 rel=stylesheet>
+<link href=../../css/perfect-scrollbar.min.css?1641997438 rel=stylesheet>
+<link href=../../css/auto-complete.css?1641997438 rel=stylesheet>
+<link href=../../css/theme.css?1641997438 rel=stylesheet>
+<link href=../../css/theme-alexandria.css?1641997438 rel=stylesheet>
+<link href=../../css/variant.css?1641997438 rel=stylesheet>
+<link href=../../css/print.css?1641997438 rel=stylesheet media=print>
+<script src=../../js/jquery.min.js?1641997438></script>
+<style>:root #header+#content>#left>#rlblock_left{display:none!important}:not(pre)>code.copy-to-clipboard-inline+span.copy-to-clipboard{display:none}:not(pre)>code.copy-to-clipboard-inline{border-bottom-right-radius:2px;border-top-right-radius:2px;border-right-width:1px}</style>
+</head>
+<body data-url=../../challenges/phrase-selection/>
+<script>var index_url="../../index.json",root_url="../../",baseUri=root_url.replace(/\/$/,'')</script>
+<nav id=sidebar>
+<div id=header-wrapper>
+<div id=header>
+<a href=../../><img src=../../images/logo-light.png alt="Alexandria logo"></a>
+</div>
+<div class=searchbox>
+<label for=search-by><i class="fas fa-search"></i></label>
+<input data-search-input id=search-by type=search placeholder=Search...>
+<span data-search-clear><i class="fas fa-times"></i></span>
+</div>
+<script src=../../js/lunr.min.js?1641997438></script>
+<script src=../../js/auto-complete.js?1641997438></script>
+<script src=../../js/search.js?1641997438></script>
+</div>
+<div id=homelinks>
+<ul>
+<li>
+<a class=padding href=../../><i class="fas fa-home"></i> Home</a>
+</li>
+</ul>
+</div>
+<div class=highlightable>
+<ul class=topics>
+<li data-nav-id=/competitors/ title="Competitor Analysis" class=dd-item><a href=../../competitors/>Competitor Analysis</a><ul></ul></li>
+<li data-nav-id=/decisions/ title="Technical Decisions" class="dd-item alwaysopen"><a href=../../decisions/>Technical Decisions</a><ul>
+<li data-nav-id=/decisions/typescript/ title="Choosing TypeScript" class=dd-item><a href=../../decisions/typescript/>Choosing TypeScript</a></li>
+<li data-nav-id=/decisions/sql/ title="SQL or NoSQL?" class=dd-item><a href=../../decisions/sql/>SQL or NoSQL?</a></li>
+<li data-nav-id=/decisions/backend/ title="3 Layers for the Back End" class=dd-item><a href=../../decisions/backend/>3 Layers for the Back End</a></li>
+<li data-nav-id=/decisions/react-recoil/ title="React and Recoil" class=dd-item><a href=../../decisions/react-recoil/>React and Recoil</a></li></ul></li>
+<li data-nav-id=/database-api/ title="Database and API" class="dd-item alwaysopen"><a href=../../database-api/>Database and API</a><ul>
+<li data-nav-id=/database-api/database/ title="Database Architecture" class=dd-item><a href=../../database-api/database/>Database Architecture</a></li>
+<li data-nav-id=/database-api/api/ title="API Design" class=dd-item><a href=../../database-api/api/>API Design</a></li></ul></li>
+<li data-nav-id=/challenges/ title="Challenges and Solutions" class="dd-item parent alwaysopen"><a href=../../challenges/>Challenges and Solutions</a><ul>
+<li data-nav-id=/challenges/automated-tests/ title="Automating Tests" class=dd-item><a href=../../challenges/automated-tests/>Automating Tests</a></li>
+<li data-nav-id=/challenges/text-parsing/ title="Text Parsing" class=dd-item><a href=../../challenges/text-parsing/>Text Parsing</a></li>
+<li data-nav-id=/challenges/phrase-selection/ title="Phrase selection UI" class="dd-item active"><a href=../../challenges/phrase-selection/>Phrase selection UI</a></li></ul></li>
+<li data-nav-id=/future/ title="MVP and Future Plans" class=dd-item><a href=../../future/>MVP and Future Plans</a><ul></ul></li>
+<li data-nav-id=/references/ title=References class=dd-item><a href=../../references/>References</a><ul></ul></li>
+</ul>
+<div id=shortcuts>
+<div class=nav-title>More</div>
+<ul>
+<li><a class=padding href=https://tryalexandria.com><i class="fas fa-fw fa-book"></i> Use the app, learn a language!</a></li>
+<li><a class=padding href=https://github.com/alexandria-reader><i class="fab fa-fw fa-github"></i> Alexandria on GitHub</a></li>
+</ul>
+</div>
+<div id=footer>
+<p>Built with <a href=https://github.com/McShelby/hugo-theme-relearn><i class="fas fa-heart"></i></a> by <a href=https://gohugo.io/>Hugo</a></p>
+</div>
+</div>
+</nav>
+<div id=body>
+<div id=overlay></div>
+<div class="padding highlightable">
+<div id=top-bar>
+<div id=breadcrumbs>
+<span id=sidebar-toggle-span>
+<a href=# id=sidebar-toggle data-sidebar-toggle>
+<i class="fas fa-bars"></i>
+</a>
+</span>
+<span id=toc-menu><i class="fas fa-list-alt"></i></span>
+<span class=links>
+Phrase selection UI
+</span>
+</div>
+<div class=progress>
+<div class=wrapper>
+<nav id=TableOfContents></nav>
+</div>
+</div>
+</div>
+<div id=head-tags>
+</div>
+<main id=body-inner>
+<h1>Phrase selection UI</h1>
+<p>One of the most important features of our app is allowing users to select and save phrases along with its translation. This ended up being more challenging than expected due to the way our texts are displayed. Each word in a user text has its own state, and resides in its own span. When a user clicks on a word, it is added to the <code>currentWord</code> state, which then triggers a re-render of the translation input component, which contains the current word, existing translations, links to dictionaries and translations, as well as the option for the user to set their level of familiarity with the word.</p>
+<p>Phrases are their own component, separate from words. They are also surrounded by spans which are highlighted based on the users level of familiarity with the phrase. So we needed a way to create phrases on the fly as users selected them. So when a user selects several words, their selection is added to the <code>userWords</code> object, which automatically highlights the new phrase.</p>
+<p>This sounds relatively simple, but the challenges appeared depending on how the user selected the word. Consider, for example, the phrase &ldquo;for example&rdquo;. If the user started or ended their selection in the middle of a word, the <code>currentWord</code> might end up being displayed as &ldquo;or examp&rdquo; instead of &ldquo;for example&rdquo;.</p>
+<p>Using the browser API <code>Selection</code>, we were able to get the <code>anchorNode</code> and <code>focusNode</code>, the nodes where the selection started and ended. With access to those nodes, we could extract the full words using the nodes <code>textContent</code> property, meaning it was trivial to replace the first and last words of the selection with the full words. This gives the user a much better experience as they can select phrases without having to be careful to always select full words.</p>
+<p>The only problem with this approach was that if for some reason a user selected a phrase dragging the mouse from right to left, the first and last word would be reversed. We tried to solve this by saving the X location of the mouse pointer <code>onMouseDown</code> and comparing it to the end X location <code>onMouseUp</code> to see if the selection was done backwards or not. But when a selection was done across multiple lines and the start point was further left than the end point, it didn&rsquo;t work.</p>
+<p>As we had access to the context (the phrase the selection was from), in the end we were able to simply test if the phrase appeared in the context, and if not, switch the first and last words, thus greatly simplifying the selection logic.</p>
+<footer class=footline>
+</footer>
+</main>
+</div>
+<div id=navigation>
+<a class="nav nav-prev" href=../../challenges/text-parsing/ title="Text Parsing"><i class="fa fa-chevron-left"></i></a>
+<a class="nav nav-next" href=../../future/ title="MVP and Future Plans"><i class="fa fa-chevron-right"></i></a>
+</div>
+</div>
+<div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
+<div style=border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px></div>
+</div>
+<script src=../../js/clipboard.min.js?1641997438></script>
+<script src=../../js/perfect-scrollbar.min.js?1641997438></script>
+<script src=../../js/perfect-scrollbar.jquery.min.js?1641997438></script>
+<script src=../../js/jquery.svg.pan.zoom.js?1641997438></script>
+<script src=../../js/featherlight.min.js?1641997438></script>
+<script src=../../js/modernizr.custom-3.6.0.js?1641997438></script>
+<script src=../../js/mermaid.min.js?1641997438></script>
+<script>typeof mermaid!='undefined'&&typeof mermaid.mermaidAPI!='undefined'&&mermaid.mermaidAPI.initialize(Object.assign({securityLevel:"antiscript"},JSON.parse('{ "startOnLoad": true }'),{startOnLoad:!1}))</script>
+<script src=../../js/relearn.js?1641997438></script>
+</body>
+</html>

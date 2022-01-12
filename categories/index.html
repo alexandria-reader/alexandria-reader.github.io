@@ -2,23 +2,23 @@
 <head>
 <meta charset=utf-8>
 <meta name=viewport content="width=device-width,initial-scale=1">
-<meta name=generator content="Hugo 0.91.2">
+<meta name=generator content="Hugo 0.92.0">
 <meta name=generator content="Relearn 2.9.2
 ">
 <link rel=alternate type=application/rss+xml href=../categories/index.xml title="Alexandria Case Study">
 <meta name=description content="Design notes from development of the Alexandria language learning app.">
 <meta name=author content="Team Alexandria">
 <title>Categories :: Alexandria Case Study</title>
-<link href=../css/nucleus.css?1641989671 rel=stylesheet>
-<link href=../css/fontawesome-all.min.css?1641989671 rel=stylesheet>
-<link href=../css/featherlight.min.css?1641989671 rel=stylesheet>
-<link href=../css/perfect-scrollbar.min.css?1641989671 rel=stylesheet>
-<link href=../css/auto-complete.css?1641989671 rel=stylesheet>
-<link href=../css/theme.css?1641989671 rel=stylesheet>
-<link href=../css/theme-alexandria.css?1641989671 rel=stylesheet>
-<link href=../css/variant.css?1641989671 rel=stylesheet>
-<link href=../css/print.css?1641989671 rel=stylesheet media=print>
-<script src=../js/jquery.min.js?1641989671></script>
+<link href=../css/nucleus.css?1641997438 rel=stylesheet>
+<link href=../css/fontawesome-all.min.css?1641997438 rel=stylesheet>
+<link href=../css/featherlight.min.css?1641997438 rel=stylesheet>
+<link href=../css/perfect-scrollbar.min.css?1641997438 rel=stylesheet>
+<link href=../css/auto-complete.css?1641997438 rel=stylesheet>
+<link href=../css/theme.css?1641997438 rel=stylesheet>
+<link href=../css/theme-alexandria.css?1641997438 rel=stylesheet>
+<link href=../css/variant.css?1641997438 rel=stylesheet>
+<link href=../css/print.css?1641997438 rel=stylesheet media=print>
+<script src=../js/jquery.min.js?1641997438></script>
 <style>:root #header+#content>#left>#rlblock_left{display:none!important}:not(pre)>code.copy-to-clipboard-inline+span.copy-to-clipboard{display:none}:not(pre)>code.copy-to-clipboard-inline{border-bottom-right-radius:2px;border-top-right-radius:2px;border-right-width:1px}</style>
 </head>
 <body data-url=../categories/>
@@ -33,9 +33,9 @@
 <input data-search-input id=search-by type=search placeholder=Search...>
 <span data-search-clear><i class="fas fa-times"></i></span>
 </div>
-<script src=../js/lunr.min.js?1641989671></script>
-<script src=../js/auto-complete.js?1641989671></script>
-<script src=../js/search.js?1641989671></script>
+<script src=../js/lunr.min.js?1641997438></script>
+<script src=../js/auto-complete.js?1641997438></script>
+<script src=../js/search.js?1641997438></script>
 </div>
 <div id=homelinks>
 <ul>
@@ -47,13 +47,19 @@
 <div class=highlightable>
 <ul class=topics>
 <li data-nav-id=/competitors/ title="Competitor Analysis" class=dd-item><a href=../competitors/>Competitor Analysis</a><ul></ul></li>
-<li data-nav-id=/decisions/ title="Technical decisions" class=dd-item><a href=../decisions/>Technical decisions</a><ul></ul></li>
-<li data-nav-id=/database-api/ title="Database and API" class=dd-item><a href=../database-api/>Database and API</a><ul>
+<li data-nav-id=/decisions/ title="Technical Decisions" class="dd-item alwaysopen"><a href=../decisions/>Technical Decisions</a><ul>
+<li data-nav-id=/decisions/typescript/ title="Choosing TypeScript" class=dd-item><a href=../decisions/typescript/>Choosing TypeScript</a></li>
+<li data-nav-id=/decisions/sql/ title="SQL or NoSQL?" class=dd-item><a href=../decisions/sql/>SQL or NoSQL?</a></li>
+<li data-nav-id=/decisions/backend/ title="3 Layers for the Back End" class=dd-item><a href=../decisions/backend/>3 Layers for the Back End</a></li>
+<li data-nav-id=/decisions/react-recoil/ title="React and Recoil" class=dd-item><a href=../decisions/react-recoil/>React and Recoil</a></li></ul></li>
+<li data-nav-id=/database-api/ title="Database and API" class="dd-item alwaysopen"><a href=../database-api/>Database and API</a><ul>
 <li data-nav-id=/database-api/database/ title="Database Architecture" class=dd-item><a href=../database-api/database/>Database Architecture</a></li>
-<li data-nav-id=/database-api/api/ title="API design" class=dd-item><a href=../database-api/api/>API design</a></li></ul></li>
-<li data-nav-id=/challenges/ title="Challenges and Solutions" class=dd-item><a href=../challenges/>Challenges and Solutions</a><ul></ul></li>
+<li data-nav-id=/database-api/api/ title="API Design" class=dd-item><a href=../database-api/api/>API Design</a></li></ul></li>
+<li data-nav-id=/challenges/ title="Challenges and Solutions" class="dd-item alwaysopen"><a href=../challenges/>Challenges and Solutions</a><ul>
+<li data-nav-id=/challenges/automated-tests/ title="Automating Tests" class=dd-item><a href=../challenges/automated-tests/>Automating Tests</a></li>
+<li data-nav-id=/challenges/text-parsing/ title="Text Parsing" class=dd-item><a href=../challenges/text-parsing/>Text Parsing</a></li>
+<li data-nav-id=/challenges/phrase-selection/ title="Phrase selection UI" class=dd-item><a href=../challenges/phrase-selection/>Phrase selection UI</a></li></ul></li>
 <li data-nav-id=/future/ title="MVP and Future Plans" class=dd-item><a href=../future/>MVP and Future Plans</a><ul></ul></li>
-<li data-nav-id=/team/ title="Meet the Team" class=dd-item><a href=../team/>Meet the Team</a><ul></ul></li>
 <li data-nav-id=/references/ title=References class=dd-item><a href=../references/>References</a><ul></ul></li>
 </ul>
 <div id=shortcuts>
@@ -105,14 +111,14 @@ Categories
 <div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
 <div style=border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px></div>
 </div>
-<script src=../js/clipboard.min.js?1641989671></script>
-<script src=../js/perfect-scrollbar.min.js?1641989671></script>
-<script src=../js/perfect-scrollbar.jquery.min.js?1641989671></script>
-<script src=../js/jquery.svg.pan.zoom.js?1641989671></script>
-<script src=../js/featherlight.min.js?1641989671></script>
-<script src=../js/modernizr.custom-3.6.0.js?1641989671></script>
-<script src=../js/mermaid.min.js?1641989671></script>
+<script src=../js/clipboard.min.js?1641997438></script>
+<script src=../js/perfect-scrollbar.min.js?1641997438></script>
+<script src=../js/perfect-scrollbar.jquery.min.js?1641997438></script>
+<script src=../js/jquery.svg.pan.zoom.js?1641997438></script>
+<script src=../js/featherlight.min.js?1641997438></script>
+<script src=../js/modernizr.custom-3.6.0.js?1641997438></script>
+<script src=../js/mermaid.min.js?1641997438></script>
 <script>typeof mermaid!='undefined'&&typeof mermaid.mermaidAPI!='undefined'&&mermaid.mermaidAPI.initialize(Object.assign({securityLevel:"antiscript"},JSON.parse('{ "startOnLoad": true }'),{startOnLoad:!1}))</script>
-<script src=../js/relearn.js?1641989671></script>
+<script src=../js/relearn.js?1641997438></script>
 </body>
 </html>

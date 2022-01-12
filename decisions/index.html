@@ -2,23 +2,23 @@
 <head>
 <meta charset=utf-8>
 <meta name=viewport content="width=device-width,initial-scale=1">
-<meta name=generator content="Hugo 0.91.2">
+<meta name=generator content="Hugo 0.92.0">
 <meta name=generator content="Relearn 2.9.2
 ">
 <link rel=alternate type=application/rss+xml href=../decisions/index.xml title="Alexandria Case Study">
 <meta name=description content="Design notes from development of the Alexandria language learning app.">
 <meta name=author content="Team Alexandria">
-<title>Technical decisions :: Alexandria Case Study</title>
-<link href=../css/nucleus.css?1641989671 rel=stylesheet>
-<link href=../css/fontawesome-all.min.css?1641989671 rel=stylesheet>
-<link href=../css/featherlight.min.css?1641989671 rel=stylesheet>
-<link href=../css/perfect-scrollbar.min.css?1641989671 rel=stylesheet>
-<link href=../css/auto-complete.css?1641989671 rel=stylesheet>
-<link href=../css/theme.css?1641989671 rel=stylesheet>
-<link href=../css/theme-alexandria.css?1641989671 rel=stylesheet>
-<link href=../css/variant.css?1641989671 rel=stylesheet>
-<link href=../css/print.css?1641989671 rel=stylesheet media=print>
-<script src=../js/jquery.min.js?1641989671></script>
+<title>Technical Decisions :: Alexandria Case Study</title>
+<link href=../css/nucleus.css?1641997438 rel=stylesheet>
+<link href=../css/fontawesome-all.min.css?1641997438 rel=stylesheet>
+<link href=../css/featherlight.min.css?1641997438 rel=stylesheet>
+<link href=../css/perfect-scrollbar.min.css?1641997438 rel=stylesheet>
+<link href=../css/auto-complete.css?1641997438 rel=stylesheet>
+<link href=../css/theme.css?1641997438 rel=stylesheet>
+<link href=../css/theme-alexandria.css?1641997438 rel=stylesheet>
+<link href=../css/variant.css?1641997438 rel=stylesheet>
+<link href=../css/print.css?1641997438 rel=stylesheet media=print>
+<script src=../js/jquery.min.js?1641997438></script>
 <style>:root #header+#content>#left>#rlblock_left{display:none!important}:not(pre)>code.copy-to-clipboard-inline+span.copy-to-clipboard{display:none}:not(pre)>code.copy-to-clipboard-inline{border-bottom-right-radius:2px;border-top-right-radius:2px;border-right-width:1px}</style>
 </head>
 <body data-url=../decisions/>
@@ -33,9 +33,9 @@
 <input data-search-input id=search-by type=search placeholder=Search...>
 <span data-search-clear><i class="fas fa-times"></i></span>
 </div>
-<script src=../js/lunr.min.js?1641989671></script>
-<script src=../js/auto-complete.js?1641989671></script>
-<script src=../js/search.js?1641989671></script>
+<script src=../js/lunr.min.js?1641997438></script>
+<script src=../js/auto-complete.js?1641997438></script>
+<script src=../js/search.js?1641997438></script>
 </div>
 <div id=homelinks>
 <ul>
@@ -47,13 +47,19 @@
 <div class=highlightable>
 <ul class=topics>
 <li data-nav-id=/competitors/ title="Competitor Analysis" class=dd-item><a href=../competitors/>Competitor Analysis</a><ul></ul></li>
-<li data-nav-id=/decisions/ title="Technical decisions" class="dd-item active parent"><a href=../decisions/>Technical decisions</a><ul></ul></li>
-<li data-nav-id=/database-api/ title="Database and API" class=dd-item><a href=../database-api/>Database and API</a><ul>
+<li data-nav-id=/decisions/ title="Technical Decisions" class="dd-item active parent alwaysopen"><a href=../decisions/>Technical Decisions</a><ul>
+<li data-nav-id=/decisions/typescript/ title="Choosing TypeScript" class=dd-item><a href=../decisions/typescript/>Choosing TypeScript</a></li>
+<li data-nav-id=/decisions/sql/ title="SQL or NoSQL?" class=dd-item><a href=../decisions/sql/>SQL or NoSQL?</a></li>
+<li data-nav-id=/decisions/backend/ title="3 Layers for the Back End" class=dd-item><a href=../decisions/backend/>3 Layers for the Back End</a></li>
+<li data-nav-id=/decisions/react-recoil/ title="React and Recoil" class=dd-item><a href=../decisions/react-recoil/>React and Recoil</a></li></ul></li>
+<li data-nav-id=/database-api/ title="Database and API" class="dd-item alwaysopen"><a href=../database-api/>Database and API</a><ul>
 <li data-nav-id=/database-api/database/ title="Database Architecture" class=dd-item><a href=../database-api/database/>Database Architecture</a></li>
-<li data-nav-id=/database-api/api/ title="API design" class=dd-item><a href=../database-api/api/>API design</a></li></ul></li>
-<li data-nav-id=/challenges/ title="Challenges and Solutions" class=dd-item><a href=../challenges/>Challenges and Solutions</a><ul></ul></li>
+<li data-nav-id=/database-api/api/ title="API Design" class=dd-item><a href=../database-api/api/>API Design</a></li></ul></li>
+<li data-nav-id=/challenges/ title="Challenges and Solutions" class="dd-item alwaysopen"><a href=../challenges/>Challenges and Solutions</a><ul>
+<li data-nav-id=/challenges/automated-tests/ title="Automating Tests" class=dd-item><a href=../challenges/automated-tests/>Automating Tests</a></li>
+<li data-nav-id=/challenges/text-parsing/ title="Text Parsing" class=dd-item><a href=../challenges/text-parsing/>Text Parsing</a></li>
+<li data-nav-id=/challenges/phrase-selection/ title="Phrase selection UI" class=dd-item><a href=../challenges/phrase-selection/>Phrase selection UI</a></li></ul></li>
 <li data-nav-id=/future/ title="MVP and Future Plans" class=dd-item><a href=../future/>MVP and Future Plans</a><ul></ul></li>
-<li data-nav-id=/team/ title="Meet the Team" class=dd-item><a href=../team/>Meet the Team</a><ul></ul></li>
 <li data-nav-id=/references/ title=References class=dd-item><a href=../references/>References</a><ul></ul></li>
 </ul>
 <div id=shortcuts>
@@ -78,225 +84,38 @@
 <i class="fas fa-bars"></i>
 </a>
 </span>
-<span id=toc-menu><i class="fas fa-list-alt"></i></span>
 <span class=links>
-Technical decisions
+Technical Decisions
 </span>
-</div>
-<div class=progress>
-<div class=wrapper>
-<nav id=TableOfContents>
-<ul>
-<li>
-<ul>
-<li><a href=#typescript-vs-javascript>TypeScript vs JavaScript</a></li>
-<li><a href=#sql-vs-nosql>SQL vs. NoSQL</a></li>
-<li><a href=#react>React</a></li>
-<li><a href=#recoil>Recoil</a></li>
-<li><a href=#heroku--netlify>Heroku + Netlify</a></li>
-<li><a href=#backend-project-structure>Backend Project Structure</a></li>
-</ul>
-</li>
-</ul>
-</nav>
-</div>
 </div>
 </div>
 <div id=head-tags>
 </div>
+<div id=chapter>
 <main id=body-inner>
-<h1>Technical decisions</h1>
-<h3 id=typescript-vs-javascript>TypeScript vs JavaScript</h3>
-<p>Before we started developing Alexandria, none of us had any real experience using TypeScript, whereas we all had a solid foundation in JavaScript.
-Yet after doing a lot of research, we decided to use TypeScript in our project. Why?</p>
-<h4 id=static-typing>Static typing</h4>
-<p>One of the main reasons is the static typing that is a core part of TypeScript. In JavaScript, an object can have whatever properties you want, and you can add
-and remove them as you see fit. In TypeScript, types are static, meaning that once an object&rsquo;s type is declared, it does not change its type and can
-only take certain values.</p>
-<p>An example of this is a <code>UserWord</code> which is how we chose to represent the words that a user saved to the database by adding a translation and status.</p>
-<div class=highlight><pre tabindex=0 style=color:#e2e4e5;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#ff6ac1>type</span> UserWord <span style=color:#ff6ac1>=</span> {
-  id?: <span style=color:#9aedfe>number</span>,
-  word: <span style=color:#9aedfe>string</span>,
-  status?: <span style=color:#9aedfe>Status</span>,
-  translations: <span style=color:#9aedfe>Array</span>&lt;<span style=color:#ff6ac1>Translation</span>&gt;,
-  languageId?: <span style=color:#9aedfe>string</span>
-};
-</code></pre></div><p>The type <code>UserWord</code> has 5 properties with predefined types. So if, for example, we tried to add a <code>languageId</code> that was a number, we would immediately
-be warned by the compiler that the wrong type had been added. An even better example is the <code>translations</code> property, which takes an array of <code>Translation</code> type objects. If we tried to add something to the array that was not of type <code>Translation</code>, we would again be warned by the compiler.</p>
-<p>Another useful feature is that if you try to add a property that has not been declared on the type, for example <code>language</code>, the compiler would warn you that the property <code>language</code> does not exist on type <code>UserWord</code>.</p>
-<p>The warnings given by the compiler and even by our IDE of choice, VSCode, were invaluable in alerting us to type-related bugs before the code was even run.
-Over the course of development, this saved us a significant time and frustration as far fewer errors made it into the codebase. Even errors as simple as misspelled variables are caught by the TypeScript compiler.</p>
-<h4 id=code-readability>Code readability</h4>
-<p>TypeScript greatly increases the readability of our code. Let&rsquo;s take a function that takes an object as a parameter. In JavaScript, you would have to be familiar with that object and its properties, or possibly log the object to the console to see what properties exist on the object. With TypeScript in VSCode, you can simply over the mouse over the type declaration to see a list of the properties that object will have as well as the types of each of those properties.</p>
-<p>This means that in future, if more developers join our project, it will be much easier for them to get up to speed on with our codebase. This also results in increased code stability, as you can be sure exactly what properties an object will have, or whether a certain variable is possibly null.</p>
-<h4 id=easy-refactoring>Easy refactoring</h4>
-<p>TypeScript makes refactoring much easier. For example, if you change a function&rsquo;s name, but forget to change the name in another file, the TypeScript compiler will immediately alert you to the issue, even showing you the exact file and line of code where the problem resides. This means that you can refactor with confidence, resulting in a cleaner codebase.</p>
-<h4 id=future-advantages>Future advantages</h4>
-<p>All of this means that as the codebase grows and more developers join the project, it will be easier for them to get up to speed, and the codebase will be more stable.</p>
-<h4 id=disadvantages-of-typescript>Disadvantages of TypeScript</h4>
-<p>Of course, nothing is perfect. Some of the disadvantages of TypeScript include:</p>
-<p>Longer code. Using TypeScript involves writing more code than with JavaScript, meaning that writing the code can take longer than with just plain JavaScript.</p>
-<p>Having to learn TypeScript. As I mentioned above, none of us had any real experience with TypeScript before beginning this project, so learning TypeScript on top of designing and coding the app resulted in longer development time, especially in the beginning stages. Thankfully, having a strong base in JavaScript made this process much easier.</p>
-<p>TypeScripts static typing is not true static typing. Once TypeScript is compiled, it is transpiled into untyped Javascript, meaning that there is still a small risk of type problems at runtime.</p>
-<h4 id=conclusion>Conclusion</h4>
-<p>Overall, we felt that the benefits clearly outweighted the disadvantages for our usecase. It was worth putting in the extra effort of using TypeScript as it helped us catch bugs before the code was run, meaning that they didn&rsquo;t make it into production. The added readability and easy refactoring made TypeScript the clear winner.</p>
-<h3 id=sql-vs-nosql>SQL vs. NoSQL</h3>
-<p>Alexandria is primarily deployed as a web application, where users log in and interact with the information they have stored on the platform. Therefore, robust and scalable database choice is a must.</p>
-<p>Our research comparing between SQL and NoSQL databases centered around the following issues.</p>
-<table>
-<thead>
-<tr>
-<th>Parameter</th>
-<th>SQL</th>
-<th>NoSQL</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Ability to handle high volume of complex queries</td>
-<td>✅</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>Scalabiility</td>
-<td>Vertical</td>
-<td>Horizontal</td>
-</tr>
-<tr>
-<td>Data type</td>
-<td>Structured</td>
-<td>Unstructured</td>
-</tr>
-</tbody>
-</table>
-<h4 id=sql>SQL</h4>
-<p>Structured Query Language (SQL) is the standard language for dealing with relational databases that define relationships in the form of tables. SQL databases works with a predefined schema, and can be used to effectively insert, search, update, and delete database records. SQL databases are table-based, and known for its vertical scalability.</p>
-<h4 id=nosql>NoSQL</h4>
-<p>NoSQL represents non-relational database management systems, where fixed schema is not required. It also avoids joins, and is easy to scale. NoSQL databases can be document based, key-value pairs, or graph databases. It uses dynamic schema for unstructured data, and is known for its ability to scale horizontally.</p>
-<h4 id=choosing-sql>Choosing SQL</h4>
-<p>Our choice of SQL is based primarily on its ability to handle a high volume of complex queries. Each user interacting with the Alexandria may upload text, select words from the text to add translations to, change status of a word, or even switch language, all within the same session. Each action requires sometimes complex queries to complete.</p>
-<p>While SQL became Alexandria&rsquo;s database of choice, we are acutely aware of the shortcomings of a SQL database, namely its vertical, versus horizontal scalability. Vertical sclability means that while we can increase the load on a single server by increasing RAM, CPU, or SSD, NoSQL databases handle more traffic by sharding and adding more servers, allowing it to become larger and preferable in the cases for large and ever-changing data sets.</p>
-<h3 id=react>React</h3>
-<h4 id=project-requirements>Project requirements</h4>
-<p>In order to achieve both performance and user experience objectives for Alexandria, we settled on a number of goals that we&rsquo;d like to fullfill at the initial stsage.</p>
-<p>One of the key features of the app is to reflect the changes made by a particular user interaction immediately, without an additional page reload.</p>
-<p>Consider the following user actions and their effects on a piece of text. Our challenge is to make every user interaction feel instantaneous and seamless.</p>
-<table>
-<thead>
-<tr>
-<th>User action</th>
-<th>Immediate Rendering</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Click on word/phrase</td>
-<td>Translation input box available</td>
-</tr>
-<tr>
-<td>Click on highlighted word/phrase</td>
-<td>Translation and status displayed</td>
-</tr>
-<tr>
-<td>Update word/phrase status</td>
-<td>Highlighted colour on word changes</td>
-</tr>
-</tbody>
-</table>
-<p>Another challenge is the ability of the UI to keep in sync with state changes of variables. With increased complexity, it becomes harder to track the exact state of the UI at every given moment during the lifecycle of the application. The challenge is to represent the UI accurately after a possible flurry of user interactions.</p>
-<h4 id=plain-javascript-versus-react>Plain Javascript versus React</h4>
-<p>Pitting plain JS against React against Alexandria&rsquo;s initial requirements, React was the easy winner. Below is a summary of some of the differences between the two languages as it pertains to Alexandria.</p>
-<h5 id=rendering-efficiency>Rendering efficiency</h5>
-<p>With Javascript, UI is created in HTML on the server side, and sent to the browser. Each user interaction resulting in a data change requires an API call to the backend, and a re-rendering of the browser based on the new DOM. We briefly considered templating engines like Handlebars. While they are excellent choices for server-side rendering, they do not meet Alexandria&rsquo;s goal of delivering speedy incremental updates of the DOM, event-handling, or frontend to backend communication.</p>
-<p>On the other hand, React defines UI on the browser. An app starts with a blank container and loads the UI. The UI is defined by a component that returns the JSX - a HTML lookalike. The new component is rendered into the div contianer using the <code>ReactDOM</code> library, and the result will appear directly on the browser.</p>
-<p>Because each UI is broken into smaller components, each component can render independently due to its use of the virtual DOM. One change in a component does not result in the re-rendering of the entire page, merely the changed component, thus improving the front-end user experience significantly.</p>
-<h5 id=state-management>State management</h5>
-<p>In JS, an event listener is attached to a DOM element to listen for changes. With each state change, we track the value deviation function, re-run the deviation functions and track the changes in return value. Those changed values are passed to the appropriate DOM element through the DOM API.</p>
-<p>With React, the UI is set up to keep the entire state of a variable in the form of a &ldquo;controlled component&rdquo;, while an event (e.g. a button press) can be specified directly in the code, with no need for an event listener. The change to variable is registered, and the UI is updated automatically. There&rsquo;s no need to go into the DOM to find the variable to update.</p>
-<p>Being able to design components that hold state was fundamental to the design of Alexandria. Using React, each &ldquo;word&rdquo; residing within a piece of text can have it&rsquo;s own state (translation, learning stage, context). When a user changes a word&rsquo;s state, the result is displayed immediately on the DOM. In this case, the word would be highlighted, and its translation and context would be saved to the word&rsquo;s state.</p>
-<p>React&rsquo;s implementation of hooks and component state fit perfectly with this requirement.</p>
-<h5 id=maintainability-and-reusability>Maintainability and Reusability</h5>
-<p>In JS, the markup and functionality are kept separate. As apps grow bigger, this becomes a major source of complexity, where a developer needs to keep track of both sets of codes.</p>
-<p>In React, the app is split into components, where each component maintains the code required to both display and upates the UI. This also allows reusability of components, another benefit.</p>
-<h3 id=recoil>Recoil</h3>
-<p>When it comes to choosing a state management tool, we began by assessing what the application needed.</p>
-<p>It was immediately clear to us that users will be interacting intensively with highly dyanmic components: highlighted words, translations, status, and languages are all expected to change with every user interaction. Therefore, it was vital that after each update, each component state is accurately captured and rendered back to the users in the most efficient manner.</p>
-<p>Turning our attention to state management tools available on the market, we quickly realized although the number of libraries and packages are numerous, most belong to one of three categories in addition to the React natively supported Context API: Flux (Redux, Zustand), Proxy (Mobx, Valtio), or Atomic (Recoil, Jotai)
-<sup><a href=../references>[2]</a></sup>.</p>
-<p>Within the context of Alexandria, we took a closer look at three choices: React&rsquo;s Context API, Redux, and Recoil. Redux has long been the state management library of choice for applications of a certain size, while React&rsquo;s very own Context API provided state management directly from React itself. Adding to the mix, new kid on the block Recoil had been released by Facebook, and touted as a React-specific state management library maximizes developer happiness.</p>
-<p>Choosing the right tool for the job took some careful examination. While we did not perform an exhaustive benchmarking study, some initial sandboxing helped us arrive at the following observations.</p>
-<h4 id=context-api>Context API</h4>
-<h5 id=how-it-works>How it works</h5>
-<p>A context provider is created on the parent component where the global state sits. Data is passed down the tree to its children components. Those children components are able to access the context object from the parent through props drilling.</p>
-<p>This works great when the context data changes only occasionally. But the solution breaks down when we store substantive amount of data in the context. In the case of Alexandria, the context data would change every time the user interacts with one word or phrase in the text, and causes unnecessary re-rendering of all components of the provider, in this case, all of the words/phrases.</p>
-<p>Alternatively, the context object can be broken down into multiple states. This, however, introduces complexity into the codebase that could be avoided through another approach.</p>
-<h5 id=pros>Pros</h5>
-<ul>
-<li>Context API is part of React&rsquo;s built-in package, requiring no additional installation</li>
-<li>Relatively easy to set up and start working</li>
-<li>Great for static or rarely refreshed data</li>
-</ul>
-<h5 id=cons>Cons:</h5>
-<ul>
-<li>Excessive unnecessary re-rendering affects performance</li>
-</ul>
-<h4 id=redux>Redux</h4>
-<h5 id=how-it-works-1>How it works</h5>
-<p>Instead of changing state by propagating values through the component tree, Redux takes a different approach. When a component state changes, the component dispatch an action to a reducer. The reducer handles the action (e.g. change a word state), manipulates the old state to reflect the new state. The reducer goes to the central store, which that manages all the states of the application. The application subscribes to part or all of the store, which then passes updated states as props to components that subscribe to it. This is how the application handles a state change.</p>
-<h5 id=pros-1>Pros</h5>
-<ul>
-<li>Great for often-refreshed data, only listen to what has changed, only the value changed re-renders</li>
-<li>Integrates with <code>react-redux</code> library</li>
-<li>Server-side rendering possible</li>
-</ul>
-<h5 id=cons-1>Cons</h5>
-<ul>
-<li>Much more complicated to get started, introduces substantial complexity to application</li>
-</ul>
-<h4 id=recoil-1>Recoil</h4>
-<h5 id=how-it-works-2>How it works</h5>
-<p>Recoil was created to solve a number of challenges very specific to large and interactive apps, where issues of persistence and robustness are central. More specifically, how does one keep different branches of the tree in sync where components live in different branches of the tree? How does one avoid re-rendering mlutiple components when state change(s) are detected in the same provider?</p>
-<p>In order to meet these global state mangement challenges, Recoil implemented small, shared units of state named &ldquo;atoms&rdquo;, and derived states named &ldquo;selectors&rdquo;. Atoms are changeable and subscribable pieces of state. That is to say, one particular atom can be subscribed to by components, and atoms can be used to derive data from state. States are stored within the React tree, similar to how <code>useState</code> and <code>useContext</code> hooks function, making it easy to get started. Recoil encourages separation of state into separate pieces in order to route components. The existence of atoms is particularly well-suited for applications that receive a high frequency of updates.</p>
-<h5 id=pros-2>Pros</h5>
-<ul>
-<li>Easy to set up and implement, experience of working with <code>useRecoilState</code> similar to working with <code>useState</code></li>
-<li>Re-renders only components with changed state, improves performance</li>
-</ul>
-<h5 id=cons-2>Cons</h5>
-<ul>
-<li>Library still in beta</li>
-</ul>
-<h4 id=choosing-recoil>Choosing Recoil</h4>
-<p>Recoil became our state management library of choice based on two key considerations. One, it delivered optimal performance by rendering only component that changes upon user interaction. Two, it offered maximal developer happiness. The simplicty of set up and usage made state management a non-issue, where state changes are central to the viability of Alexandria.</p>
-<h3 id=heroku--netlify>Heroku + Netlify</h3>
-<p>Heroku offers an affordable, yet scalable way to deploy apps relying on a PostgreSQL database. It also has a CI/CD pipeline with automatic deployment from GitHub both for PR bases review apps and staging/production app.</p>
-<p>We decided to deliver the front end part of the app through Netlify, because we had separate GH repositories anyway and could decouple front end and back end development even more by having separate review apps.</p>
-<p>Also, we benefit from Netlify&rsquo;s CDN for the (admittedly sparse) static content.</p>
-<h3 id=backend-project-structure>Backend Project Structure</h3>
-<p>When we first start designing and implementing our backend, we started out with just two layers, routes and services. With this approach, we realized that we were ending up with bloated services as both the data access logic and the application logic resided in the service. Once we saw that this was becoming a problem, we did some research into the best way to structure the backend.</p>
-<p>We ended up deciding on a three layer design, involving routes, a services layer and a data access layer. This allowed us to separate concerns and create more reusable components.</p>
-<p>With this layout, when a request is made to a route, it calls the corresponding service, which in turn calls the data access layer. The data access layer simply queries the database and returns the result to the service layer. This means that we could put whatever logic was necessary in the service layer to parse the data, and then pass that data back to the route. The route then can be kept dumb and simply passes the data it recieves from the service back to the client.</p>
-<p>The advantage of this architecture is that the application logic can be kept out of the routes and data access layer. Unit testing is made easier as tests can be designed to test each part individually. This also has the added advantage that if we ever decided to change our database implementation, most of the changes would be confined to the data access layer.</p>
+<h1 id=technical-decisions>Technical Decisions</h1>
+<p>Every project starts with a couple of choices and ours is no different. From language, to database to front end we had to choose the technologies we felt were right for the scope and demands of our application.</p>
 <footer class=footline>
 </footer>
+</div>
 </main>
 </div>
 <div id=navigation>
 <a class="nav nav-prev" href=../competitors/ title="Competitor Analysis"><i class="fa fa-chevron-left"></i></a>
-<a class="nav nav-next" href=../database-api/ title="Database and API"><i class="fa fa-chevron-right"></i></a>
+<a class="nav nav-next" href=../decisions/typescript/ title="Choosing TypeScript"><i class="fa fa-chevron-right"></i></a>
 </div>
 </div>
 <div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
 <div style=border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px></div>
 </div>
-<script src=../js/clipboard.min.js?1641989671></script>
-<script src=../js/perfect-scrollbar.min.js?1641989671></script>
-<script src=../js/perfect-scrollbar.jquery.min.js?1641989671></script>
-<script src=../js/jquery.svg.pan.zoom.js?1641989671></script>
-<script src=../js/featherlight.min.js?1641989671></script>
-<script src=../js/modernizr.custom-3.6.0.js?1641989671></script>
-<script src=../js/mermaid.min.js?1641989671></script>
+<script src=../js/clipboard.min.js?1641997438></script>
+<script src=../js/perfect-scrollbar.min.js?1641997438></script>
+<script src=../js/perfect-scrollbar.jquery.min.js?1641997438></script>
+<script src=../js/jquery.svg.pan.zoom.js?1641997438></script>
+<script src=../js/featherlight.min.js?1641997438></script>
+<script src=../js/modernizr.custom-3.6.0.js?1641997438></script>
+<script src=../js/mermaid.min.js?1641997438></script>
 <script>typeof mermaid!='undefined'&&typeof mermaid.mermaidAPI!='undefined'&&mermaid.mermaidAPI.initialize(Object.assign({securityLevel:"antiscript"},JSON.parse('{ "startOnLoad": true }'),{startOnLoad:!1}))</script>
-<script src=../js/relearn.js?1641989671></script>
+<script src=../js/relearn.js?1641997438></script>
 </body>
 </html>

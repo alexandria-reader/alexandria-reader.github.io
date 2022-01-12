@@ -1,0 +1,233 @@
+<!doctype html><html lang=en class="js csstransforms3d">
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=generator content="Hugo 0.92.0">
+<meta name=generator content="Relearn 2.9.2
+">
+<meta name=description content="Design notes from development of the Alexandria language learning app.">
+<meta name=author content="Team Alexandria">
+<title>React and Recoil :: Alexandria Case Study</title>
+<link href=../../css/nucleus.css?1641997438 rel=stylesheet>
+<link href=../../css/fontawesome-all.min.css?1641997438 rel=stylesheet>
+<link href=../../css/featherlight.min.css?1641997438 rel=stylesheet>
+<link href=../../css/perfect-scrollbar.min.css?1641997438 rel=stylesheet>
+<link href=../../css/auto-complete.css?1641997438 rel=stylesheet>
+<link href=../../css/theme.css?1641997438 rel=stylesheet>
+<link href=../../css/theme-alexandria.css?1641997438 rel=stylesheet>
+<link href=../../css/variant.css?1641997438 rel=stylesheet>
+<link href=../../css/print.css?1641997438 rel=stylesheet media=print>
+<script src=../../js/jquery.min.js?1641997438></script>
+<style>:root #header+#content>#left>#rlblock_left{display:none!important}:not(pre)>code.copy-to-clipboard-inline+span.copy-to-clipboard{display:none}:not(pre)>code.copy-to-clipboard-inline{border-bottom-right-radius:2px;border-top-right-radius:2px;border-right-width:1px}</style>
+</head>
+<body data-url=../../decisions/react-recoil/>
+<script>var index_url="../../index.json",root_url="../../",baseUri=root_url.replace(/\/$/,'')</script>
+<nav id=sidebar>
+<div id=header-wrapper>
+<div id=header>
+<a href=../../><img src=../../images/logo-light.png alt="Alexandria logo"></a>
+</div>
+<div class=searchbox>
+<label for=search-by><i class="fas fa-search"></i></label>
+<input data-search-input id=search-by type=search placeholder=Search...>
+<span data-search-clear><i class="fas fa-times"></i></span>
+</div>
+<script src=../../js/lunr.min.js?1641997438></script>
+<script src=../../js/auto-complete.js?1641997438></script>
+<script src=../../js/search.js?1641997438></script>
+</div>
+<div id=homelinks>
+<ul>
+<li>
+<a class=padding href=../../><i class="fas fa-home"></i> Home</a>
+</li>
+</ul>
+</div>
+<div class=highlightable>
+<ul class=topics>
+<li data-nav-id=/competitors/ title="Competitor Analysis" class=dd-item><a href=../../competitors/>Competitor Analysis</a><ul></ul></li>
+<li data-nav-id=/decisions/ title="Technical Decisions" class="dd-item parent alwaysopen"><a href=../../decisions/>Technical Decisions</a><ul>
+<li data-nav-id=/decisions/typescript/ title="Choosing TypeScript" class=dd-item><a href=../../decisions/typescript/>Choosing TypeScript</a></li>
+<li data-nav-id=/decisions/sql/ title="SQL or NoSQL?" class=dd-item><a href=../../decisions/sql/>SQL or NoSQL?</a></li>
+<li data-nav-id=/decisions/backend/ title="3 Layers for the Back End" class=dd-item><a href=../../decisions/backend/>3 Layers for the Back End</a></li>
+<li data-nav-id=/decisions/react-recoil/ title="React and Recoil" class="dd-item active"><a href=../../decisions/react-recoil/>React and Recoil</a></li></ul></li>
+<li data-nav-id=/database-api/ title="Database and API" class="dd-item alwaysopen"><a href=../../database-api/>Database and API</a><ul>
+<li data-nav-id=/database-api/database/ title="Database Architecture" class=dd-item><a href=../../database-api/database/>Database Architecture</a></li>
+<li data-nav-id=/database-api/api/ title="API Design" class=dd-item><a href=../../database-api/api/>API Design</a></li></ul></li>
+<li data-nav-id=/challenges/ title="Challenges and Solutions" class="dd-item alwaysopen"><a href=../../challenges/>Challenges and Solutions</a><ul>
+<li data-nav-id=/challenges/automated-tests/ title="Automating Tests" class=dd-item><a href=../../challenges/automated-tests/>Automating Tests</a></li>
+<li data-nav-id=/challenges/text-parsing/ title="Text Parsing" class=dd-item><a href=../../challenges/text-parsing/>Text Parsing</a></li>
+<li data-nav-id=/challenges/phrase-selection/ title="Phrase selection UI" class=dd-item><a href=../../challenges/phrase-selection/>Phrase selection UI</a></li></ul></li>
+<li data-nav-id=/future/ title="MVP and Future Plans" class=dd-item><a href=../../future/>MVP and Future Plans</a><ul></ul></li>
+<li data-nav-id=/references/ title=References class=dd-item><a href=../../references/>References</a><ul></ul></li>
+</ul>
+<div id=shortcuts>
+<div class=nav-title>More</div>
+<ul>
+<li><a class=padding href=https://tryalexandria.com><i class="fas fa-fw fa-book"></i> Use the app, learn a language!</a></li>
+<li><a class=padding href=https://github.com/alexandria-reader><i class="fab fa-fw fa-github"></i> Alexandria on GitHub</a></li>
+</ul>
+</div>
+<div id=footer>
+<p>Built with <a href=https://github.com/McShelby/hugo-theme-relearn><i class="fas fa-heart"></i></a> by <a href=https://gohugo.io/>Hugo</a></p>
+</div>
+</div>
+</nav>
+<div id=body>
+<div id=overlay></div>
+<div class="padding highlightable">
+<div id=top-bar>
+<div id=breadcrumbs>
+<span id=sidebar-toggle-span>
+<a href=# id=sidebar-toggle data-sidebar-toggle>
+<i class="fas fa-bars"></i>
+</a>
+</span>
+<span id=toc-menu><i class="fas fa-list-alt"></i></span>
+<span class=links>
+React and Recoil
+</span>
+</div>
+<div class=progress>
+<div class=wrapper>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#project-requirements>Project requirements</a></li>
+<li><a href=#plain-javascript-versus-react>Plain Javascript versus React</a>
+<ul>
+<li><a href=#rendering-efficiency>Rendering efficiency</a></li>
+<li><a href=#state-management>State management</a></li>
+<li><a href=#maintainability-and-reusability>Maintainability and Reusability</a></li>
+</ul>
+</li>
+<li><a href=#recoil>Recoil</a>
+<ul>
+<li><a href=#context-api>Context API</a></li>
+<li><a href=#redux>Redux</a></li>
+<li><a href=#recoil-1>Recoil</a></li>
+<li><a href=#choosing-recoil>Choosing Recoil</a></li>
+</ul>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div id=head-tags>
+</div>
+<main id=body-inner>
+<h1>React and Recoil</h1>
+<h2 id=project-requirements>Project requirements</h2>
+<p>In order to achieve both performance and user experience objectives for Alexandria, we settled on a number of goals that we&rsquo;d like to fullfil at the initial stage.</p>
+<p>One of the key features of the app is to reflect the changes made by a particular user interaction immediately, without an additional page reload.</p>
+<p>Consider the following user actions and their effects on a piece of text. Our challenge is to make every user interaction feel instantaneous and seamless.</p>
+<table>
+<thead>
+<tr>
+<th>User action</th>
+<th>Immediate Rendering</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Click on word/phrase</td>
+<td>Translation input box available</td>
+</tr>
+<tr>
+<td>Click on highlighted word/phrase</td>
+<td>Translation and status displayed</td>
+</tr>
+<tr>
+<td>Update word/phrase status</td>
+<td>Highlighted colour on word changes</td>
+</tr>
+</tbody>
+</table>
+<p>Another challenge is the ability of the UI to keep in sync with state changes of variables. With increased complexity, it becomes harder to track the exact state of the UI at every given moment during the lifecycle of the application. The challenge is to represent the UI accurately after a possible flurry of user interactions.</p>
+<h2 id=plain-javascript-versus-react>Plain Javascript versus React</h2>
+<p>Pitting plain JS against React against Alexandria&rsquo;s initial requirements, React was the easy winner. Below is a summary of some of the differences between the two languages as it pertains to Alexandria.</p>
+<h3 id=rendering-efficiency>Rendering efficiency</h3>
+<p>With Javascript, UI is created in HTML on the server side, and sent to the browser. Each user interaction resulting in a data change requires an API call to the backend, and a re-rendering of the browser based on the new DOM. We briefly considered templating engines like Handlebars. While they are excellent choices for server-side rendering, they do not meet Alexandria&rsquo;s goal of delivering speedy incremental updates of the DOM, event-handling, or frontend to backend communication.</p>
+<p>On the other hand, React defines UI on the browser. An app starts with a blank container and loads the UI. The UI is defined by a component that returns the JSX - a HTML lookalike. The new component is rendered into the div container using the <code>ReactDOM</code> library, and the result will appear directly on the browser.</p>
+<p>Because each UI is broken into smaller components, each component can render independently due to its use of the virtual DOM. One change in a component does not result in the re-rendering of the entire page, merely the changed component, thus improving the front-end user experience significantly.</p>
+<h3 id=state-management>State management</h3>
+<p>In JS, an event listener is attached to a DOM element to listen for changes. With each state change, we track the value deviation function, re-run the deviation functions and track the changes in return value. Those changed values are passed to the appropriate DOM element through the DOM API.</p>
+<p>With React, the UI is set up to keep the entire state of a variable in the form of a &ldquo;controlled component&rdquo;, while an event (e.g. a button press) can be specified directly in the code, with no need for an event listener. The change to variable is registered, and the UI is updated automatically. There&rsquo;s no need to go into the DOM to find the variable to update.</p>
+<p>Being able to design components that hold state was fundamental to the design of Alexandria. Using React, each &ldquo;word&rdquo; residing within a piece of text can have it&rsquo;s own state (translation, learning stage, context). When a user changes a word&rsquo;s state, the result is displayed immediately on the DOM. In this case, the word would be highlighted, and its translation and context would be saved to the word&rsquo;s state.</p>
+<p>React&rsquo;s implementation of hooks and component state fit perfectly with this requirement.</p>
+<h3 id=maintainability-and-reusability>Maintainability and Reusability</h3>
+<p>In JS, the markup and functionality are kept separate. As apps grow bigger, this becomes a major source of complexity, where a developer needs to keep track of both sets of codes.</p>
+<p>In React, the app is split into components, where each component maintains the code required to both display and updates the UI. This also allows reusability of components, another benefit.</p>
+<h2 id=recoil>Recoil</h2>
+<p>When it comes to choosing a state management tool, we began by assessing what the application needed.</p>
+<p>It was immediately clear to us that users will be interacting intensively with highly dynamic components: highlighted words, translations, status, and languages are all expected to change with every user interaction. Therefore, it was vital that after each update, each component state is accurately captured and rendered back to the users in the most efficient manner.</p>
+<p>Turning our attention to state management tools available on the market, we quickly realized although the number of libraries and packages are numerous, most belong to one of three categories in addition to the React natively supported Context API: Flux (Redux, Zustand), Proxy (Mobx, Valtio), or Atomic (Recoil, Jotai)
+<sup><a href=../../references>[2]</a></sup>.</p>
+<p>Within the context of Alexandria, we took a closer look at three choices: React&rsquo;s Context API, Redux, and Recoil. Redux has long been the state management library of choice for applications of a certain size, while React&rsquo;s very own Context API provided state management directly from React itself. Adding to the mix, new kid on the block Recoil had been released by Facebook, and touted as a React-specific state management library maximizes developer happiness.</p>
+<p>Choosing the right tool for the job took some careful examination. While we did not perform an exhaustive benchmarking study, some initial sandboxing helped us arrive at the following observations.</p>
+<h3 id=context-api>Context API</h3>
+<h4 id=how-it-works>How it works</h4>
+<p>A context provider is created on the parent component where the global state sits. Data is passed down the tree to its children components. Those children components are able to access the context object from the parent through props drilling.</p>
+<p>This works great when the context data changes only occasionally. But the solution breaks down when we store substantive amount of data in the context. In the case of Alexandria, the context data would change every time the user interacts with one word or phrase in the text, and causes unnecessary re-rendering of all components of the provider, in this case, all of the words/phrases.</p>
+<p>Alternatively, the context object can be broken down into multiple states. This, however, introduces complexity into the codebase that could be avoided through another approach.</p>
+<h4 id=pros>Pros</h4>
+<ul>
+<li>Context API is part of React&rsquo;s built-in package, requiring no additional installation</li>
+<li>Relatively easy to set up and start working</li>
+<li>Great for static or rarely refreshed data</li>
+</ul>
+<h4 id=cons>Cons:</h4>
+<ul>
+<li>Excessive unnecessary re-rendering affects performance</li>
+</ul>
+<h3 id=redux>Redux</h3>
+<h4 id=how-it-works-1>How it works</h4>
+<p>Instead of changing state by propagating values through the component tree, Redux takes a different approach. When a component state changes, the component dispatch an action to a reducer. The reducer handles the action (e.g. change a word state), manipulates the old state to reflect the new state. The reducer goes to the central store, which that manages all the states of the application. The application subscribes to part or all of the store, which then passes updated states as props to components that subscribe to it. This is how the application handles a state change.</p>
+<h5 id=pros-1>Pros</h5>
+<ul>
+<li>Great for often-refreshed data, only listen to what has changed, only the value changed re-renders</li>
+<li>Integrates with <code>react-redux</code> library</li>
+<li>Server-side rendering possible</li>
+</ul>
+<h5 id=cons-1>Cons</h5>
+<ul>
+<li>Much more complicated to get started, introduces substantial complexity to application</li>
+</ul>
+<h3 id=recoil-1>Recoil</h3>
+<h4 id=how-it-works-2>How it works</h4>
+<p>Recoil was created to solve a number of challenges very specific to large and interactive apps, where issues of persistence and robustness are central. More specifically, how does one keep different branches of the tree in sync where components live in different branches of the tree? How does one avoid re-rendering multiple components when state change(s) are detected in the same provider?</p>
+<p>In order to meet these global state management challenges, Recoil implemented small, shared units of state named &ldquo;atoms&rdquo;, and derived states named &ldquo;selectors&rdquo;. Atoms are changeable and subscribable pieces of state. That is to say, one particular atom can be subscribed to by components, and atoms can be used to derive data from state. States are stored within the React tree, similar to how <code>useState</code> and <code>useContext</code> hooks function, making it easy to get started. Recoil encourages separation of state into separate pieces in order to route components. The existence of atoms is particularly well-suited for applications that receive a high frequency of updates.</p>
+<h4 id=pros-2>Pros</h4>
+<ul>
+<li>Easy to set up and implement, experience of working with <code>useRecoilState</code> similar to working with <code>useState</code></li>
+<li>Re-renders only components with changed state, improves performance</li>
+</ul>
+<h4 id=cons-2>Cons</h4>
+<ul>
+<li>Library still in beta</li>
+</ul>
+<h3 id=choosing-recoil>Choosing Recoil</h3>
+<p>Recoil became our state management library of choice based on two key considerations. One, it delivered optimal performance by rendering only component that changes upon user interaction. Two, it offered maximal developer happiness. The simplicity of set up and usage made state management a non-issue, where state changes are central to the viability of Alexandria.</p>
+<footer class=footline>
+</footer>
+</main>
+</div>
+<div id=navigation>
+<a class="nav nav-prev" href=../../decisions/backend/ title="3 Layers for the Back End"><i class="fa fa-chevron-left"></i></a>
+<a class="nav nav-next" href=../../database-api/ title="Database and API"><i class="fa fa-chevron-right"></i></a>
+</div>
+</div>
+<div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
+<div style=border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px></div>
+</div>
+<script src=../../js/clipboard.min.js?1641997438></script>
+<script src=../../js/perfect-scrollbar.min.js?1641997438></script>
+<script src=../../js/perfect-scrollbar.jquery.min.js?1641997438></script>
+<script src=../../js/jquery.svg.pan.zoom.js?1641997438></script>
+<script src=../../js/featherlight.min.js?1641997438></script>
+<script src=../../js/modernizr.custom-3.6.0.js?1641997438></script>
+<script src=../../js/mermaid.min.js?1641997438></script>
+<script>typeof mermaid!='undefined'&&typeof mermaid.mermaidAPI!='undefined'&&mermaid.mermaidAPI.initialize(Object.assign({securityLevel:"antiscript"},JSON.parse('{ "startOnLoad": true }'),{startOnLoad:!1}))</script>
+<script src=../../js/relearn.js?1641997438></script>
+</body>
+</html>
