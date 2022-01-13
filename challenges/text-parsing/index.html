@@ -8,16 +8,16 @@
 <meta name=description content="Design notes from development of the Alexandria language learning app.">
 <meta name=author content="Team Alexandria">
 <title>Text Parsing :: Alexandria Case Study</title>
-<link href=../../css/nucleus.css?1642073681 rel=stylesheet>
-<link href=../../css/fontawesome-all.min.css?1642073681 rel=stylesheet>
-<link href=../../css/featherlight.min.css?1642073681 rel=stylesheet>
-<link href=../../css/perfect-scrollbar.min.css?1642073681 rel=stylesheet>
-<link href=../../css/auto-complete.css?1642073681 rel=stylesheet>
-<link href=../../css/theme.css?1642073681 rel=stylesheet>
-<link href=../../css/theme-alexandria.css?1642073681 rel=stylesheet>
-<link href=../../css/variant.css?1642073681 rel=stylesheet>
-<link href=../../css/print.css?1642073681 rel=stylesheet media=print>
-<script src=../../js/jquery.min.js?1642073681></script>
+<link href=../../css/nucleus.css?1642076548 rel=stylesheet>
+<link href=../../css/fontawesome-all.min.css?1642076548 rel=stylesheet>
+<link href=../../css/featherlight.min.css?1642076548 rel=stylesheet>
+<link href=../../css/perfect-scrollbar.min.css?1642076548 rel=stylesheet>
+<link href=../../css/auto-complete.css?1642076548 rel=stylesheet>
+<link href=../../css/theme.css?1642076548 rel=stylesheet>
+<link href=../../css/theme-alexandria.css?1642076548 rel=stylesheet>
+<link href=../../css/variant.css?1642076548 rel=stylesheet>
+<link href=../../css/print.css?1642076548 rel=stylesheet media=print>
+<script src=../../js/jquery.min.js?1642076548></script>
 <style>:root #header+#content>#left>#rlblock_left{display:none!important}:not(pre)>code.copy-to-clipboard-inline+span.copy-to-clipboard{display:none}:not(pre)>code.copy-to-clipboard-inline{border-bottom-right-radius:2px;border-top-right-radius:2px;border-right-width:1px}</style>
 </head>
 <body data-url=../../challenges/text-parsing/>
@@ -32,9 +32,9 @@
 <input data-search-input id=search-by type=search placeholder=Search...>
 <span data-search-clear><i class="fas fa-times"></i></span>
 </div>
-<script src=../../js/lunr.min.js?1642073681></script>
-<script src=../../js/auto-complete.js?1642073681></script>
-<script src=../../js/search.js?1642073681></script>
+<script src=../../js/lunr.min.js?1642076548></script>
+<script src=../../js/auto-complete.js?1642076548></script>
+<script src=../../js/search.js?1642076548></script>
 </div>
 <div id=homelinks>
 <ul>
@@ -92,8 +92,8 @@ Text Parsing
 <div class=wrapper>
 <nav id=TableOfContents>
 <ul>
-<li><a href=#finding-the-words-and-phrases-in-the-text>Finding the words and phrases in the text</a></li>
-<li><a href=#parsing-the-text-into-react-and-html>Parsing the text into React and HTML</a></li>
+<li><a href=#finding-words-and-phrases-in-text>Finding words and phrases in text</a></li>
+<li><a href=#parsing-text-into-react-and-html>Parsing text into React and HTML</a></li>
 </ul>
 </nav>
 </div>
@@ -103,23 +103,23 @@ Text Parsing
 </div>
 <main id=body-inner>
 <h1>Text Parsing</h1>
-<h2 id=finding-the-words-and-phrases-in-the-text>Finding the words and phrases in the text</h2>
-<p>We have already discussed why we chose to work with a relational database as opposed to a document-based one. But our decision to use PostgreSQL brought another benefit with it, and that is the build in full text search which we put to good use to solve.</p>
-<p>On the front end, Alexandria highlights all the words and phrases that the user has already encountered. To find out whether a text contains words or phrases that the user has already marked, the words of the text have to be compared to all the user&rsquo;s words and phrases saved in the database.</p>
-<p>We were already working on a search algorithm using <a href=https://en.wikipedia.org/wiki/Trie><em>tries</em></a>, when we had a closer look at the PostgreSQL documentation and decided that its full text search was just what we needed, and that using it would bring a couple of advantages with it:</p>
+<h2 id=finding-words-and-phrases-in-text>Finding words and phrases in text</h2>
+<p>Our decision to work with a relational versus a document-based database gave us the flexibilty to perform complex queries. Our decision to use PostgreSQL specifically, brought another unexpected benefit: built-in full text search.</p>
+<p>On the front end, Alexandria highlights all the words and phrases a user has already encountered. To find out whether a text contains words or phrases that the user has already marked, the words of the text have to be compared to all the user&rsquo;s words and phrases saved in the database.</p>
+<p>While implementing a search algorithm using <a href=https://en.wikipedia.org/wiki/Trie><em>tries</em></a>, a closer look at the PostgreSQL documentation yielded the discovery that the database provided full text search. Not only were the search functionalities just what we needed, implementing this solution provided a number of additional advantages over a solution of our own:</p>
 <ul>
-<li>It is written in C and most likely faster than anything we would implement in TypeScript.</li>
-<li>It is happening at the starting point of the data chain, so no unnecessary data has to be transferred and processed by neither the server nor the client.</li>
+<li>Written in C, the database implementation to support search was likely faster than anything implemented in TypeScript.</li>
+<li>Since data would have been cleansed and filtered at the start of the chain, it was more efficient than having the entire data set transferred and processed by either server or client.</li>
 </ul>
-<p>PostgreSQL text search works by parsing and normalizing a text into a <em>text search vector</em> of the <code>tsvector</code> data type. Search terms on the other hand are parsed and normalized into <em>text search queries</em> of the <code>tsquery</code> type. The parser breaks a string (text or search term) into individual tokens, mostly words in our case.</p>
-<p>The normalization then removes common small words from the tokens and reduces the words to their stems according to language specific dictionaries. Heroku&rsquo;s PostgreSQL installation came with support for twenty languages.</p>
-<p>While this normalization step is very powerful, it is obviously geared for full text search, allowing for results like &ldquo;handling&rdquo; and &ldquo;handlebar&rdquo; when search term is &ldquo;handle&rdquo;. But this was a bit too lenient for our purpose. For the language learner &ldquo;handle&rdquo;, and &ldquo;handling&rdquo; should be considered as two words. Luckily, PostgreSQL also ships with a <code>simple</code> configuration that simple parses the text but leaves the tokens as they are, and that is the configuration we used.</p>
-<p>To save processing time, each text is parsed immediately into a <code>tsvector</code> when it is added to the database (or modified later). The vector is saved in a column of the <code>texts</code> table defined like this:</p>
+<p>PostgreSQL text search works by parsing and normalizing a text into a <em>text search vector</em> of the <code>tsvector</code> data type. Search terms on the other hand, are parsed and normalized into <em>text search queries</em> of the <code>tsquery</code> type. The parser breaks a string (text or search term) into individual tokens, mostly words in our case.</p>
+<p>Normalization removes common small words from tokens, and reduces words to their stems according to language specific dictionaries. Heroku&rsquo;s PostgreSQL installation came with support for twenty languages.</p>
+<p>While this normalization step is powerful, its default setting is geared for full text search, returning results including &ldquo;handling&rdquo; and &ldquo;handlebar&rdquo; when the original search term is &ldquo;handle&rdquo;. For a language learner, this was too lenient, as &ldquo;handle&rdquo; and &ldquo;handling&rdquo; are considered two distinct words. Luckily for our purposes, PostgreSQL also ships with a <code>simple</code> configuration that parses the text, but leaves the tokens as they are. This is the configuration implemented with Alexandria.</p>
+<p>To save processing time, each text is parsed immediately into a <code>tsvector</code> when added to the database (or modified later). The vector is saved in a column of the <code>texts</code> table defined like this:</p>
 <div class=highlight><pre tabindex=0 style=color:#e2e4e5;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sql data-lang=sql>        <span style=color:#ff6ac1>ALTER</span> <span style=color:#ff6ac1>TABLE</span> texts
          <span style=color:#ff6ac1>ADD</span> <span style=color:#ff6ac1>COLUMN</span> tsvector_simple tsvector 
 <span style=color:#ff6ac1>GENERATED</span> ALWAYS <span style=color:#ff6ac1>AS</span> (to_tsvector(<span style=color:#5af78e>&#39;simple&#39;</span>, title <span style=color:#ff6ac1>||</span> <span style=color:#5af78e>&#39; &#39;</span> <span style=color:#ff6ac1>||</span> body)) STORED
 </code></pre></div><p>In a similar fashion, every word or phrase added to the database also gets a column in which the parsed <code>tsquery</code> is saved.</p>
-<p>We then find all the words in text <code>5</code> that user <code>1</code> has in their vocabulary with this SQL query:</p>
+<p>We find all the words in text <code>5</code> that user <code>1</code> has in their vocabulary with this SQL query:</p>
 <div class=highlight><pre tabindex=0 style=color:#e2e4e5;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sql data-lang=sql>  <span style=color:#ff6ac1>SELECT</span> w.id, w.word, uw.word_status
     <span style=color:#ff6ac1>FROM</span> words <span style=color:#ff6ac1>AS</span> w 
     <span style=color:#ff6ac1>JOIN</span> users_words <span style=color:#ff6ac1>AS</span> uw <span style=color:#ff6ac1>ON</span> w.id <span style=color:#ff6ac1>=</span> uw.word_id 
@@ -130,19 +130,19 @@ Text Parsing
          <span style=color:#ff6ac1>AND</span>
          w.tsquery_simple <span style=color:#ff6ac1>@@</span> (<span style=color:#ff6ac1>SELECT</span> t.tsvector_simple <span style=color:#ff6ac1>FROM</span> texts <span style=color:#ff6ac1>AS</span> t 
                                <span style=color:#ff6ac1>WHERE</span> t.id <span style=color:#ff6ac1>=</span> <span style=color:#ff9f43>5</span>);        
-</code></pre></div><h2 id=parsing-the-text-into-react-and-html>Parsing the text into React and HTML</h2>
-<p>Eventually, thanks to the powers of PostgreSQL, a text and a list of words from the user&rsquo;s vocabulary will make their way to the client. The next step would then be combining these two in a user interface that satisfied these conditions:</p>
+</code></pre></div><h2 id=parsing-text-into-react-and-html>Parsing text into React and HTML</h2>
+<p>Leveraging the prowess of PostgreSQL, a user&rsquo;s texts and vocabulary list will make their way to the client. The front-end application kicks in at this stage to present these two sets of data, satisfying the following requirements:</p>
 <ul>
 <li>Every occurrence of a word from the list must be highlighted in the text according to its level of familiarity.</li>
 <li>Every occurrence of a phrases must be highlighted in the text according to its level of familiarity.</li>
-<li>Each word from the text must be, regardless of whether a word is highlighted, or whether it is part of a phrase.</li>
+<li>Each word from the text must be clickable, regardless of whether a word is highlighted, or whether it is part of a phrase.</li>
 <li>Each phrase must be clickable/selectable.</li>
 <li>Punctuation and spaces must be part of any words (with the exception of the apostrophe and hyphen).</li>
 <li>The text must be split into sentences to facilitate saving the context of a word when adding a new translation.</li>
-<li>Bonus: Phrases should be highlighted regardless of the punctuation with which is was saved previously or which is encountered in the text.</li>
+<li>Bonus: Phrases in the <code>userWords list</code> should be highlighted if found in text, regardless of whether phrase in the list or phrase in the text contains punctuation.</li>
 </ul>
-<p>It was clear from the beginning that on the lowest level it meant that words would end up nested in <code>&lt;span></code>s, and that a phrase meant another set of <code>&lt;span></code>s around those word <code>&lt;span></code>s . It was also clear that simply splitting the text at the whitespace characters would not do the trick because commas or exclamation marks would stick to their preceding word. As always in such cases, it was regular expressions to the rescue!</p>
-<p>From the full text body to the individual words the text is parsed and split up into React components and HTML elements in these steps.</p>
+<p>Due to the way the browser DOM handles <code>click</code> events, it was clear words would end up nested in <code>&lt;span></code>s. A phrase meant another set of <code>&lt;span></code>s around a word <code>&lt;span></code>s . Splitting the text at the whitespace characters did not suffice, since punctuation stuck to their preceding word. We approached the problem with regular expressions.</p>
+<p>Zooming in from the full text body down to individual words, text is parsed and split up into React components and HTML elements in these steps.</p>
 <ol>
 <li>
 <p>The text body is divided into <code>Paragraph</code> components, using the <code>split</code> string method.</p>
@@ -153,22 +153,23 @@ Text Parsing
 </code></pre></div><p>This expression splits sentences at <code>!</code> <code>?</code> <code>.</code> <code>:</code> <code>;</code> but not at an ellipsis <code>...</code></p>
 </li>
 <li>
-<p>At the sentence level it gets interesting. Sentences are split into tokens which can either be phrases, words, or spaces and punctuation.</p>
-<p>The corresponding regular expression matches all phrases as found on the list or alternatively any words or non-words (ie. spaces and punctuation). Here is an example with two phrases:</p>
+<p>Sentences are split into tokens that are either phrases and words, or spaces and punctuation.</p>
+<p>Corresponding regular expression matches 1) all phrases found on the list, 2) any words, 3) non-words (ie. spaces and punctuation).</p>
+<p>Here is an example with two phrases:</p>
 <div class=highlight><pre tabindex=0 style=color:#e2e4e5;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-js data-lang=js><span style=color:#5af78e>/of course|get up|(?&lt;words&gt;[\p{L}\p{M}\&#39;-]+)|(?&lt;nowords&gt;[^\\p{L}\\p{M}\&#39;-]+)/gui</span>
-</code></pre></div><p>It utilizes the unicode character class <code>\p</code> with the categories <em>Letter</em> <code>{L}</code> and <em>Mark</em> <code>{M}</code> to account for letters beyond the standard ASCII characters.</p>
+</code></pre></div><p>The Unicode character class <code>\p</code> is utilized with categories <em>Letter</em> <code>{L}</code> and <em>Mark</em> <code>{M}</code> to account for letters beyond standard ASCII characters.</p>
 </li>
 <li>
-<p>To satisfy the bonus criterion of finding phrases with any punctuation in them, the phrases at the beginning need to be replaces with</p>
+<p>To satisfy the bonus criterion of finding phrases with any punctuation in them, phrases at the beginning need to be replaces with:</p>
 <div class=highlight><pre tabindex=0 style=color:#e2e4e5;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-js data-lang=js><span style=color:#5af78e>/of[^\\p{Letter}\\p{Mark}\&#39;-]+course|get[^\\p{Letter}\\p{Mark}\&#39;-]+up/</span>
-</code></pre></div><p>to allow punctuation or spaces between the words that make up the phrase.</p>
-<p>Additionally, as preparation for the parsing all phrases from the users vocabulary for the are stripped off their punctuation.</p>
+</code></pre></div><p>to allow punctuation or spaces between words that make up the phrase.</p>
+<p>Additionally, in preparation for parsing all phrases from the users vocabulary, punctuation is stripped off of words.</p>
 </li>
 <li>
-<p>If a token is a phrase (simply checking for spaces suffices), it will be handed over to a <code>Phrase</code> component, Words go into <code>Word</code> components, and punctuation and spaces are unceremoniously wrapped into <code>&lt;span></code>s. That is necessary for selecting phrases from the text (see next section).</p>
+<p>If a token is a phrase (simply checking for spaces suffices), it will be handed over to a <code>Phrase</code> component. Words go into the <code>Word</code> components, and punctuation and spaces are wrapped into <code>&lt;span></code>s. That is necessary for selecting phrases from the text (see next section).</p>
 </li>
 <li>
-<p>In a <code>Phrase</code> component, the phrase wrapped into <code>&lt;span></code>s, and the parsing from steps 3 and 5 is repeated, just without phrases.</p>
+<p>In a <code>Phrase</code> component, phrase are wrapped into <code>&lt;span></code>s, and the parsing process from steps 3 and 5 is repeated without phrases.</p>
 </li>
 <li>
 <p>Finally, the <code>Word</code> component wraps <code>&lt;span></code>s around a word.</p>
@@ -187,14 +188,14 @@ Text Parsing
 <div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
 <div style=border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px></div>
 </div>
-<script src=../../js/clipboard.min.js?1642073681></script>
-<script src=../../js/perfect-scrollbar.min.js?1642073681></script>
-<script src=../../js/perfect-scrollbar.jquery.min.js?1642073681></script>
-<script src=../../js/jquery.svg.pan.zoom.js?1642073681></script>
-<script src=../../js/featherlight.min.js?1642073681></script>
-<script src=../../js/modernizr.custom-3.6.0.js?1642073681></script>
-<script src=../../js/mermaid.min.js?1642073681></script>
+<script src=../../js/clipboard.min.js?1642076548></script>
+<script src=../../js/perfect-scrollbar.min.js?1642076548></script>
+<script src=../../js/perfect-scrollbar.jquery.min.js?1642076548></script>
+<script src=../../js/jquery.svg.pan.zoom.js?1642076548></script>
+<script src=../../js/featherlight.min.js?1642076548></script>
+<script src=../../js/modernizr.custom-3.6.0.js?1642076548></script>
+<script src=../../js/mermaid.min.js?1642076548></script>
 <script>typeof mermaid!='undefined'&&typeof mermaid.mermaidAPI!='undefined'&&mermaid.mermaidAPI.initialize(Object.assign({securityLevel:"antiscript"},JSON.parse('{ "startOnLoad": true }'),{startOnLoad:!1}))</script>
-<script src=../../js/relearn.js?1642073681></script>
+<script src=../../js/relearn.js?1642076548></script>
 </body>
 </html>
