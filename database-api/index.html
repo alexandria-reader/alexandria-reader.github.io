@@ -9,16 +9,16 @@
 <meta name=description content="Design notes from development of the Alexandria language learning app.">
 <meta name=author content="Team Alexandria">
 <title>Database and API :: Alexandria Case Study</title>
-<link href=../css/nucleus.css?1642072484 rel=stylesheet>
-<link href=../css/fontawesome-all.min.css?1642072484 rel=stylesheet>
-<link href=../css/featherlight.min.css?1642072484 rel=stylesheet>
-<link href=../css/perfect-scrollbar.min.css?1642072484 rel=stylesheet>
-<link href=../css/auto-complete.css?1642072484 rel=stylesheet>
-<link href=../css/theme.css?1642072484 rel=stylesheet>
-<link href=../css/theme-alexandria.css?1642072484 rel=stylesheet>
-<link href=../css/variant.css?1642072484 rel=stylesheet>
-<link href=../css/print.css?1642072484 rel=stylesheet media=print>
-<script src=../js/jquery.min.js?1642072484></script>
+<link href=../css/nucleus.css?1642073681 rel=stylesheet>
+<link href=../css/fontawesome-all.min.css?1642073681 rel=stylesheet>
+<link href=../css/featherlight.min.css?1642073681 rel=stylesheet>
+<link href=../css/perfect-scrollbar.min.css?1642073681 rel=stylesheet>
+<link href=../css/auto-complete.css?1642073681 rel=stylesheet>
+<link href=../css/theme.css?1642073681 rel=stylesheet>
+<link href=../css/theme-alexandria.css?1642073681 rel=stylesheet>
+<link href=../css/variant.css?1642073681 rel=stylesheet>
+<link href=../css/print.css?1642073681 rel=stylesheet media=print>
+<script src=../js/jquery.min.js?1642073681></script>
 <style>:root #header+#content>#left>#rlblock_left{display:none!important}:not(pre)>code.copy-to-clipboard-inline+span.copy-to-clipboard{display:none}:not(pre)>code.copy-to-clipboard-inline{border-bottom-right-radius:2px;border-top-right-radius:2px;border-right-width:1px}</style>
 </head>
 <body data-url=../database-api/>
@@ -33,9 +33,9 @@
 <input data-search-input id=search-by type=search placeholder=Search...>
 <span data-search-clear><i class="fas fa-times"></i></span>
 </div>
-<script src=../js/lunr.min.js?1642072484></script>
-<script src=../js/auto-complete.js?1642072484></script>
-<script src=../js/search.js?1642072484></script>
+<script src=../js/lunr.min.js?1642073681></script>
+<script src=../js/auto-complete.js?1642073681></script>
+<script src=../js/search.js?1642073681></script>
 </div>
 <div id=homelinks>
 <ul>
@@ -94,8 +94,9 @@ Database and API
 <div id=chapter>
 <main id=body-inner>
 <h1 id=database-and-api>Database and API</h1>
-<p>With the technical decisions settled, it was time to design two vital aspects of the backend architecture: the database and the API.</p>
-<p>While a database of some form would always have been necessary, exposing an API was the result of going with a single page React app that talks to the server via API calls. This also opens the door for alternative front ends at a later stage - a mobile app could use the same back end. It is also in line with Alexandria being an open source project, allowing for decoupled contributions to front end or back end.</p>
+<p>Having settled on a tech stack, we turn our attention to two vital aspects of backend architecture: database and API design.</p>
+<p>With a multitude of objects to keep track of, we dive into the process of identifying tables and columns, their relationships with each other, and normalizing the resulting SQL database.</p>
+<p>One key aspect of Alexandria&rsquo;s initial goal is to provide an application that is highly interactive. This particular need is well served by a single page application. Working from those assumptions, it made sense to expose an API that allowed both our single page React app to talk to the server, as well as opening the door for alternative front ends at a future stage. A decoupling of front and end back allows not only for API calls made from, say, a mobile app later on, but also contributions from a different front end.</p>
 <footer class=footline>
 </footer>
 </div>
@@ -109,14 +110,14 @@ Database and API
 <div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
 <div style=border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px></div>
 </div>
-<script src=../js/clipboard.min.js?1642072484></script>
-<script src=../js/perfect-scrollbar.min.js?1642072484></script>
-<script src=../js/perfect-scrollbar.jquery.min.js?1642072484></script>
-<script src=../js/jquery.svg.pan.zoom.js?1642072484></script>
-<script src=../js/featherlight.min.js?1642072484></script>
-<script src=../js/modernizr.custom-3.6.0.js?1642072484></script>
-<script src=../js/mermaid.min.js?1642072484></script>
+<script src=../js/clipboard.min.js?1642073681></script>
+<script src=../js/perfect-scrollbar.min.js?1642073681></script>
+<script src=../js/perfect-scrollbar.jquery.min.js?1642073681></script>
+<script src=../js/jquery.svg.pan.zoom.js?1642073681></script>
+<script src=../js/featherlight.min.js?1642073681></script>
+<script src=../js/modernizr.custom-3.6.0.js?1642073681></script>
+<script src=../js/mermaid.min.js?1642073681></script>
 <script>typeof mermaid!='undefined'&&typeof mermaid.mermaidAPI!='undefined'&&mermaid.mermaidAPI.initialize(Object.assign({securityLevel:"antiscript"},JSON.parse('{ "startOnLoad": true }'),{startOnLoad:!1}))</script>
-<script src=../js/relearn.js?1642072484></script>
+<script src=../js/relearn.js?1642073681></script>
 </body>
 </html>
