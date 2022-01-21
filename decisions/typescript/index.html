@@ -8,16 +8,16 @@
 <meta name=description content="Design notes from development of the Alexandria language learning app.">
 <meta name=author content="Team Alexandria">
 <title>Choosing TypeScript :: Alexandria Case Study</title>
-<link href=../../css/nucleus.css?1642076548 rel=stylesheet>
-<link href=../../css/fontawesome-all.min.css?1642076548 rel=stylesheet>
-<link href=../../css/featherlight.min.css?1642076548 rel=stylesheet>
-<link href=../../css/perfect-scrollbar.min.css?1642076548 rel=stylesheet>
-<link href=../../css/auto-complete.css?1642076548 rel=stylesheet>
-<link href=../../css/theme.css?1642076548 rel=stylesheet>
-<link href=../../css/theme-alexandria.css?1642076548 rel=stylesheet>
-<link href=../../css/variant.css?1642076548 rel=stylesheet>
-<link href=../../css/print.css?1642076548 rel=stylesheet media=print>
-<script src=../../js/jquery.min.js?1642076548></script>
+<link href=../../css/nucleus.css?1642787851 rel=stylesheet>
+<link href=../../css/fontawesome-all.min.css?1642787851 rel=stylesheet>
+<link href=../../css/featherlight.min.css?1642787851 rel=stylesheet>
+<link href=../../css/perfect-scrollbar.min.css?1642787851 rel=stylesheet>
+<link href=../../css/auto-complete.css?1642787851 rel=stylesheet>
+<link href=../../css/theme.css?1642787851 rel=stylesheet>
+<link href=../../css/theme-alexandria.css?1642787851 rel=stylesheet>
+<link href=../../css/variant.css?1642787851 rel=stylesheet>
+<link href=../../css/print.css?1642787851 rel=stylesheet media=print>
+<script src=../../js/jquery.min.js?1642787851></script>
 <style>:root #header+#content>#left>#rlblock_left{display:none!important}:not(pre)>code.copy-to-clipboard-inline+span.copy-to-clipboard{display:none}:not(pre)>code.copy-to-clipboard-inline{border-bottom-right-radius:2px;border-top-right-radius:2px;border-right-width:1px}</style>
 </head>
 <body data-url=../../decisions/typescript/>
@@ -32,9 +32,9 @@
 <input data-search-input id=search-by type=search placeholder=Search...>
 <span data-search-clear><i class="fas fa-times"></i></span>
 </div>
-<script src=../../js/lunr.min.js?1642076548></script>
-<script src=../../js/auto-complete.js?1642076548></script>
-<script src=../../js/search.js?1642076548></script>
+<script src=../../js/lunr.min.js?1642787851></script>
+<script src=../../js/auto-complete.js?1642787851></script>
+<script src=../../js/search.js?1642787851></script>
 </div>
 <div id=homelinks>
 <ul>
@@ -124,7 +124,7 @@ Choosing TypeScript
 <p>If an attempt was made to add a property not yet declared on the type, for example, <code>language</code>, the compiler would warn us that the property <code>language</code> does not exist on type <code>UserWord</code>.</p>
 <p>Compiler warnings could alert us to the existence of bugs ranging from type-related bugs to misspelled variables, before the code was even run. Over the course of development, this could save significant time and frustration, as far fewer errors would make it into the codebase.</p>
 <h2 id=code-readability>Code readability</h2>
-<p>TypeScript has the potential to increases code readiability.</p>
+<p>TypeScript has the potential to increases code readability.</p>
 <p>Let&rsquo;s take a function that takes an object as a parameter. In JavaScript, a developer would have to be familiar with the object and its properties, or possibly log the object to the console to see what properties exist on the object. With TypeScript in VSCode, a developer can simply mouse over the type declaration to see a list of the properties that object will have, as well as the each property type.</p>
 <h2 id=easy-refactoring>Easy refactoring</h2>
 <p>Validating connections between different parts of a project is time consuming and error-prone, especially when one needs to refactor. By providing instant feedback during development, TypeScript makes refactoring a breeze. For example, if a function name is changed in one file but not in another, the TypeScript compiler will immediately alert developer to the issue, showing the exact file and line of code where the problem resides. This allows developers feel more confident in the code, and saves considerable time in validating no part of the project is broken during refactoring.</p>
@@ -148,14 +148,14 @@ Choosing TypeScript
 <div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
 <div style=border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px></div>
 </div>
-<script src=../../js/clipboard.min.js?1642076548></script>
-<script src=../../js/perfect-scrollbar.min.js?1642076548></script>
-<script src=../../js/perfect-scrollbar.jquery.min.js?1642076548></script>
-<script src=../../js/jquery.svg.pan.zoom.js?1642076548></script>
-<script src=../../js/featherlight.min.js?1642076548></script>
-<script src=../../js/modernizr.custom-3.6.0.js?1642076548></script>
-<script src=../../js/mermaid.min.js?1642076548></script>
+<script src=../../js/clipboard.min.js?1642787851></script>
+<script src=../../js/perfect-scrollbar.min.js?1642787851></script>
+<script src=../../js/perfect-scrollbar.jquery.min.js?1642787851></script>
+<script src=../../js/jquery.svg.pan.zoom.js?1642787851></script>
+<script src=../../js/featherlight.min.js?1642787851></script>
+<script src=../../js/modernizr.custom-3.6.0.js?1642787851></script>
+<script src=../../js/mermaid.min.js?1642787851></script>
 <script>typeof mermaid!='undefined'&&typeof mermaid.mermaidAPI!='undefined'&&mermaid.mermaidAPI.initialize(Object.assign({securityLevel:"antiscript"},JSON.parse('{ "startOnLoad": true }'),{startOnLoad:!1}))</script>
-<script src=../../js/relearn.js?1642076548></script>
+<script src=../../js/relearn.js?1642787851></script>
 </body>
 </html>
