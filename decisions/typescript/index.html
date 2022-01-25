@@ -8,16 +8,16 @@
 <meta name=description content="Design notes from development of the Alexandria language learning app.">
 <meta name=author content="Team Alexandria">
 <title>Choosing TypeScript :: Alexandria Case Study</title>
-<link href=../../css/nucleus.css?1643135002 rel=stylesheet>
-<link href=../../css/fontawesome-all.min.css?1643135002 rel=stylesheet>
-<link href=../../css/featherlight.min.css?1643135002 rel=stylesheet>
-<link href=../../css/perfect-scrollbar.min.css?1643135002 rel=stylesheet>
-<link href=../../css/auto-complete.css?1643135002 rel=stylesheet>
-<link href=../../css/theme.css?1643135002 rel=stylesheet>
-<link href=../../css/theme-alexandria.css?1643135002 rel=stylesheet>
-<link href=../../css/variant.css?1643135002 rel=stylesheet>
-<link href=../../css/print.css?1643135002 rel=stylesheet media=print>
-<script src=../../js/jquery.min.js?1643135002></script>
+<link href=../../css/nucleus.css?1643135368 rel=stylesheet>
+<link href=../../css/fontawesome-all.min.css?1643135368 rel=stylesheet>
+<link href=../../css/featherlight.min.css?1643135368 rel=stylesheet>
+<link href=../../css/perfect-scrollbar.min.css?1643135368 rel=stylesheet>
+<link href=../../css/auto-complete.css?1643135368 rel=stylesheet>
+<link href=../../css/theme.css?1643135368 rel=stylesheet>
+<link href=../../css/theme-alexandria.css?1643135368 rel=stylesheet>
+<link href=../../css/variant.css?1643135368 rel=stylesheet>
+<link href=../../css/print.css?1643135368 rel=stylesheet media=print>
+<script src=../../js/jquery.min.js?1643135368></script>
 <style>:root #header+#content>#left>#rlblock_left{display:none!important}:not(pre)>code.copy-to-clipboard-inline+span.copy-to-clipboard{display:none}:not(pre)>code.copy-to-clipboard-inline{border-bottom-right-radius:2px;border-top-right-radius:2px;border-right-width:1px}</style>
 </head>
 <body data-url=../../decisions/typescript/>
@@ -32,9 +32,9 @@
 <input data-search-input id=search-by type=search placeholder=Search...>
 <span data-search-clear><i class="fas fa-times"></i></span>
 </div>
-<script src=../../js/lunr.min.js?1643135002></script>
-<script src=../../js/auto-complete.js?1643135002></script>
-<script src=../../js/search.js?1643135002></script>
+<script src=../../js/lunr.min.js?1643135368></script>
+<script src=../../js/auto-complete.js?1643135368></script>
+<script src=../../js/search.js?1643135368></script>
 </div>
 <div id=homelinks>
 <ul>
@@ -110,7 +110,7 @@ Choosing TypeScript
 <p>Since its inception, TypeScript has been touted as a supercharged version of JavaScript that has the ability to spot common errors through a typed system, making the application more robust throughout its development.</p>
 <p>Prior to developing Alexandria, we looked into TypeScript as a feasible substitute to JavaScript.</p>
 <h2 id=static-typing>Static typing</h2>
-<p>JavaScript is dynamically typed. This means it is not aware of variable type before instantiating it at run time, where it may already be too late. TypeScript, on the other hand, is statically typed. Once an object&rsquo;s type is declared, it can no longer be changed and will only take certain values. Adding type support to JavaScript allows TypeScript to catch type errors during compilation. Bugs caused by false assumptions of variable type can potentially be completely eradicated.</p>
+<p>JavaScript is dynamically typed. Therefore, it is not aware of variable type before instantiation at run time. TypeScript, on the other hand, is statically typed. Once an object&rsquo;s type is declared, will only take certain values and can no longer be changed. Adding type support to JavaScript allows Typescript to catch type errors during compilation. Bugs caused by false assumptions of variable type are potentially eradicated.</p>
 <p>Suppose we want to create an object called <code>UserWord</code> that represents how a user is saved to the database by adding a translation and status.</p>
 <div class=highlight><pre tabindex=0 style=color:#e2e4e5;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#ff6ac1>type</span> UserWord <span style=color:#ff6ac1>=</span> {
   id?: <span style=color:#9aedfe>number</span>,
@@ -119,15 +119,15 @@ Choosing TypeScript
   translations: <span style=color:#9aedfe>Array</span>&lt;<span style=color:#ff6ac1>Translation</span>&gt;,
   languageId?: <span style=color:#9aedfe>string</span>
 };
-</code></pre></div><p>Type <code>UserWord</code> has 5 properties with predefined types. If <code>languageId</code> was added as number, TypeScript would immediately warn us about the wrong type.</p>
+</code></pre></div><p><code>UserWord</code> has 5 properties with predefined types. If <code>languageId</code> was added as a number type, TypeScript would immediately warn us.</p>
 <p>An even better example is the <code>translations</code> property, which takes an array of <code>Translation</code> type objects. If an attempt was made to add an object not of type <code>Translation</code>, we would again be warned by the compiler.</p>
 <p>If an attempt was made to add a property not yet declared on the type, for example, <code>language</code>, the compiler would warn us that the property <code>language</code> does not exist on type <code>UserWord</code>.</p>
 <p>Compiler warnings could alert us to the existence of bugs ranging from type-related bugs to misspelled variables, before the code was even run. Over the course of development, this could save significant time and frustration, as far fewer errors would make it into the codebase.</p>
 <h2 id=code-readability>Code readability</h2>
 <p>TypeScript has the potential to increases code readability.</p>
-<p>Let&rsquo;s take a function that takes an object as a parameter. In JavaScript, a developer would have to be familiar with the object and its properties, or possibly log the object to the console to see what properties exist on the object. With TypeScript in VSCode, a developer can simply mouse over the type declaration to see a list of the properties that object will have, as well as the each property type.</p>
+<p>Let&rsquo;s look at a function that takes an object as a parameter. In JavaScript, a developer would have to be familiar with the object and its properties, or possibly log the object to the console, in order to see what properties exist on the object. With TypeScript in VSCode, a developer can simply mouse over the type declaration to see a list of the properties that object will have, as well as the each property type.</p>
 <h2 id=easy-refactoring>Easy refactoring</h2>
-<p>Validating connections between different parts of a project is time consuming and error-prone, especially when one needs to refactor. By providing instant feedback during development, TypeScript makes refactoring a breeze. For example, if a function name is changed in one file but not in another, the TypeScript compiler will immediately alert developer to the issue, showing the exact file and line of code where the problem resides. This allows developers feel more confident in the code, and saves considerable time in validating no part of the project is broken during refactoring.</p>
+<p>Validating connections between different parts of a project is time consuming and error-prone, especially when one needs to refactor. By providing instant feedback during development, TypeScript makes refactoring a breeze. For example, if a function name is changed in one file but not in another, the TypeScript compiler will immediately alert developer to the issue, showing the exact file and line of code where the problem resides. This allows developers feel more confident in the code, and saves considerable time in ensuring no part of the project became broken during refactoring.</p>
 <h2 id=future-advantages>Future advantages</h2>
 <p>As the codebase grows, having knowledge over the properties of an object increases code stability, and makes it easier to onboard future contributors to Alexandria.</p>
 <h2 id=disadvantages-of-typescript>Disadvantages of TypeScript</h2>
@@ -148,14 +148,14 @@ Choosing TypeScript
 <div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
 <div style=border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px></div>
 </div>
-<script src=../../js/clipboard.min.js?1643135002></script>
-<script src=../../js/perfect-scrollbar.min.js?1643135002></script>
-<script src=../../js/perfect-scrollbar.jquery.min.js?1643135002></script>
-<script src=../../js/jquery.svg.pan.zoom.js?1643135002></script>
-<script src=../../js/featherlight.min.js?1643135002></script>
-<script src=../../js/modernizr.custom-3.6.0.js?1643135002></script>
-<script src=../../js/mermaid.min.js?1643135002></script>
+<script src=../../js/clipboard.min.js?1643135368></script>
+<script src=../../js/perfect-scrollbar.min.js?1643135368></script>
+<script src=../../js/perfect-scrollbar.jquery.min.js?1643135368></script>
+<script src=../../js/jquery.svg.pan.zoom.js?1643135368></script>
+<script src=../../js/featherlight.min.js?1643135368></script>
+<script src=../../js/modernizr.custom-3.6.0.js?1643135368></script>
+<script src=../../js/mermaid.min.js?1643135368></script>
 <script>typeof mermaid!='undefined'&&typeof mermaid.mermaidAPI!='undefined'&&mermaid.mermaidAPI.initialize(Object.assign({securityLevel:"antiscript"},JSON.parse('{ "startOnLoad": true }'),{startOnLoad:!1}))</script>
-<script src=../../js/relearn.js?1643135002></script>
+<script src=../../js/relearn.js?1643135368></script>
 </body>
 </html>

@@ -8,16 +8,16 @@
 <meta name=description content="Design notes from development of the Alexandria language learning app.">
 <meta name=author content="Team Alexandria">
 <title>3 Layers for the Back End :: Alexandria Case Study</title>
-<link href=../../css/nucleus.css?1643135002 rel=stylesheet>
-<link href=../../css/fontawesome-all.min.css?1643135002 rel=stylesheet>
-<link href=../../css/featherlight.min.css?1643135002 rel=stylesheet>
-<link href=../../css/perfect-scrollbar.min.css?1643135002 rel=stylesheet>
-<link href=../../css/auto-complete.css?1643135002 rel=stylesheet>
-<link href=../../css/theme.css?1643135002 rel=stylesheet>
-<link href=../../css/theme-alexandria.css?1643135002 rel=stylesheet>
-<link href=../../css/variant.css?1643135002 rel=stylesheet>
-<link href=../../css/print.css?1643135002 rel=stylesheet media=print>
-<script src=../../js/jquery.min.js?1643135002></script>
+<link href=../../css/nucleus.css?1643135367 rel=stylesheet>
+<link href=../../css/fontawesome-all.min.css?1643135367 rel=stylesheet>
+<link href=../../css/featherlight.min.css?1643135367 rel=stylesheet>
+<link href=../../css/perfect-scrollbar.min.css?1643135367 rel=stylesheet>
+<link href=../../css/auto-complete.css?1643135367 rel=stylesheet>
+<link href=../../css/theme.css?1643135367 rel=stylesheet>
+<link href=../../css/theme-alexandria.css?1643135367 rel=stylesheet>
+<link href=../../css/variant.css?1643135367 rel=stylesheet>
+<link href=../../css/print.css?1643135367 rel=stylesheet media=print>
+<script src=../../js/jquery.min.js?1643135367></script>
 <style>:root #header+#content>#left>#rlblock_left{display:none!important}:not(pre)>code.copy-to-clipboard-inline+span.copy-to-clipboard{display:none}:not(pre)>code.copy-to-clipboard-inline{border-bottom-right-radius:2px;border-top-right-radius:2px;border-right-width:1px}</style>
 </head>
 <body data-url=../../decisions/backend/>
@@ -32,9 +32,9 @@
 <input data-search-input id=search-by type=search placeholder=Search...>
 <span data-search-clear><i class="fas fa-times"></i></span>
 </div>
-<script src=../../js/lunr.min.js?1643135002></script>
-<script src=../../js/auto-complete.js?1643135002></script>
-<script src=../../js/search.js?1643135002></script>
+<script src=../../js/lunr.min.js?1643135367></script>
+<script src=../../js/auto-complete.js?1643135367></script>
+<script src=../../js/search.js?1643135367></script>
 </div>
 <div id=homelinks>
 <ul>
@@ -99,7 +99,7 @@
 <main id=body-inner>
 <h1>3 Layers for the Back End</h1>
 <p>Alexandria is built based on the principles of service-oriented architecture
-<sup><a href=../../references>[2]</a></sup>. In order to achieve readability, testability, and maintainability, we ensured a separation of concern when it came to implementing the back end.</p>
+<sup><a href=../../references>[2]</a></sup>. In order to achieve readability, testability, and maintainability, we ensured a separation of concerns when it came to implementing the back end.</p>
 <p>More specifically, we designed the back-end server in three layers.</p>
 <table>
 <thead>
@@ -111,17 +111,17 @@
 </thead>
 <tbody>
 <tr>
-<td>Responsible for accepting HTTP requests, validating for authentication and format, dispatch to correct logic function</td>
-<td>Algorithm which operates on the data in response to user input</td>
+<td>Responsible for accepting HTTP requests, authentication, validating format, dispatch to correct logic function</td>
+<td>Algorithm operates on the data in response to user input</td>
 <td>Reading and writing in-memory representation of records to and from database, performing complex queries over data</td>
 </tr>
 </tbody>
 </table>
 <p>Based on this three-layer design including routes, services layer and data access layer, business logic is extracted away from the API.</p>
 <p>When a request is made to a route, the corresponding service is called, which in turn calls the data access layer. The data access layer queries the database and returns the result to the service layer, which in turn parses the data and pass it back to the route. The route can be kept &ldquo;dumb&rdquo;, and simply relays the data it receives from the service back to the client.</p>
-<p>The separation of duties is particularly relevant when it comes to the service layer and the routing layer. The service layer should be framework agnostic, which encapsulates and abstracts business logic from the application. On the other hand, the routing layer is responsible for handling client requests and respond to them.</p>
+<p>The separation of duties is particularly relevant when it comes to the service layer and the routing layer. The service layer is framework agnostic, which encapsulates and abstracts business logic from the application. On the other hand, the routing layer is responsible for handling client requests and responding to them.</p>
 <p>We capture the business logic and leverage the data access layer to interact with the database. Keeping concerns separate means that it does not handle <code>request</code> or <code>response</code> objects, does not respond to clients, provide anything related to the HTTP layer, nor does it interact directly with the database. Services are leveraged by passing the data needed instead of <code>response</code> or <code>response</code> objects.</p>
-<p>In addition to keeping application logic out of the routes and data access layer, the three-layer approach also results in easier unit testing. Tests can now be designed to address each service function individually. Should we ever decided to change database implementation, most of the changes are confined to the data access layer.</p>
+<p>In addition to keeping application logic out of the routes and data access layers, the three-layer approach also results in easier unit testing. Tests are designed to address each service function individually. Should we ever decide to change Alexandria&rsquo;s database implementation, most of the changes will be confined to the data access layer.</p>
 <footer class=footline>
 </footer>
 </main>
@@ -134,14 +134,14 @@
 <div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
 <div style=border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px></div>
 </div>
-<script src=../../js/clipboard.min.js?1643135002></script>
-<script src=../../js/perfect-scrollbar.min.js?1643135002></script>
-<script src=../../js/perfect-scrollbar.jquery.min.js?1643135002></script>
-<script src=../../js/jquery.svg.pan.zoom.js?1643135002></script>
-<script src=../../js/featherlight.min.js?1643135002></script>
-<script src=../../js/modernizr.custom-3.6.0.js?1643135002></script>
-<script src=../../js/mermaid.min.js?1643135002></script>
+<script src=../../js/clipboard.min.js?1643135368></script>
+<script src=../../js/perfect-scrollbar.min.js?1643135368></script>
+<script src=../../js/perfect-scrollbar.jquery.min.js?1643135368></script>
+<script src=../../js/jquery.svg.pan.zoom.js?1643135368></script>
+<script src=../../js/featherlight.min.js?1643135368></script>
+<script src=../../js/modernizr.custom-3.6.0.js?1643135368></script>
+<script src=../../js/mermaid.min.js?1643135368></script>
 <script>typeof mermaid!='undefined'&&typeof mermaid.mermaidAPI!='undefined'&&mermaid.mermaidAPI.initialize(Object.assign({securityLevel:"antiscript"},JSON.parse('{ "startOnLoad": true }'),{startOnLoad:!1}))</script>
-<script src=../../js/relearn.js?1643135002></script>
+<script src=../../js/relearn.js?1643135368></script>
 </body>
 </html>

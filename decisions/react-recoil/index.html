@@ -8,16 +8,16 @@
 <meta name=description content="Design notes from development of the Alexandria language learning app.">
 <meta name=author content="Team Alexandria">
 <title>React and Recoil :: Alexandria Case Study</title>
-<link href=../../css/nucleus.css?1643135002 rel=stylesheet>
-<link href=../../css/fontawesome-all.min.css?1643135002 rel=stylesheet>
-<link href=../../css/featherlight.min.css?1643135002 rel=stylesheet>
-<link href=../../css/perfect-scrollbar.min.css?1643135002 rel=stylesheet>
-<link href=../../css/auto-complete.css?1643135002 rel=stylesheet>
-<link href=../../css/theme.css?1643135002 rel=stylesheet>
-<link href=../../css/theme-alexandria.css?1643135002 rel=stylesheet>
-<link href=../../css/variant.css?1643135002 rel=stylesheet>
-<link href=../../css/print.css?1643135002 rel=stylesheet media=print>
-<script src=../../js/jquery.min.js?1643135002></script>
+<link href=../../css/nucleus.css?1643135367 rel=stylesheet>
+<link href=../../css/fontawesome-all.min.css?1643135367 rel=stylesheet>
+<link href=../../css/featherlight.min.css?1643135367 rel=stylesheet>
+<link href=../../css/perfect-scrollbar.min.css?1643135367 rel=stylesheet>
+<link href=../../css/auto-complete.css?1643135367 rel=stylesheet>
+<link href=../../css/theme.css?1643135367 rel=stylesheet>
+<link href=../../css/theme-alexandria.css?1643135367 rel=stylesheet>
+<link href=../../css/variant.css?1643135367 rel=stylesheet>
+<link href=../../css/print.css?1643135367 rel=stylesheet media=print>
+<script src=../../js/jquery.min.js?1643135367></script>
 <style>:root #header+#content>#left>#rlblock_left{display:none!important}:not(pre)>code.copy-to-clipboard-inline+span.copy-to-clipboard{display:none}:not(pre)>code.copy-to-clipboard-inline{border-bottom-right-radius:2px;border-top-right-radius:2px;border-right-width:1px}</style>
 </head>
 <body data-url=../../decisions/react-recoil/>
@@ -32,9 +32,9 @@
 <input data-search-input id=search-by type=search placeholder=Search...>
 <span data-search-clear><i class="fas fa-times"></i></span>
 </div>
-<script src=../../js/lunr.min.js?1643135002></script>
-<script src=../../js/auto-complete.js?1643135002></script>
-<script src=../../js/search.js?1643135002></script>
+<script src=../../js/lunr.min.js?1643135367></script>
+<script src=../../js/auto-complete.js?1643135367></script>
+<script src=../../js/search.js?1643135367></script>
 </div>
 <div id=homelinks>
 <ul>
@@ -118,7 +118,7 @@ React and Recoil
 <main id=body-inner>
 <h1>React and Recoil</h1>
 <h2 id=project-requirements>Project requirements</h2>
-<p>In order to achieve both performance and user experience objectives for Alexandria, we settled on a number of goals that we&rsquo;d like to fulfil at the initial stage.</p>
+<p>In order to achieve both performance and user experience objectives for Alexandria, we settled on a number of goals to fullfil at the initial stages.</p>
 <p>One of the key features of the app is to reflect the changes made by a particular user interaction immediately, without an additional page reload.</p>
 <p>Consider the following user actions and their effects on a piece of text. Our challenge is to make every user interaction feel instantaneous and seamless.</p>
 <table>
@@ -145,7 +145,7 @@ React and Recoil
 </table>
 <p>Another challenge is the ability of the UI to keep in sync with state changes of variables. With increased complexity, it becomes harder to track the exact state of the UI at every given moment during the lifecycle of the application. The challenge is to represent the UI accurately after a possible flurry of user interactions.</p>
 <h2 id=plain-javascript-versus-react>Plain JavaScript versus React</h2>
-<p>Pitting plain JS against React against Alexandria&rsquo;s initial requirements, React was the easy winner. Below is a summary of some of the differences between the two languages as it pertains to Alexandria.</p>
+<p>Pitting plain JS and React against Alexandria&rsquo;s initial requirements, React was the easy winner. Below is a summary of some of the differences between the two languages pertaining to Alexandria.</p>
 <h3 id=rendering-efficiency>Rendering efficiency</h3>
 <p>With JavaScript, UI is created in HTML on the server side, and sent to the browser. Each user interaction resulting in a data change requires an API call to the back end, and a re-rendering of the browser based on the new DOM. We briefly considered templating engines like Handlebars. While they are excellent choices for server-side rendering, they do not meet Alexandria&rsquo;s goal of delivering speedy incremental updates of the DOM, event-handling, or front end to back end communication.</p>
 <p>On the other hand, React defines UI on the browser. An app starts with a blank container and loads the UI. The UI is defined by a component that returns the JSX - a HTML lookalike. The new component is rendered into the div container using the <code>ReactDOM</code> library, and the result will appear directly on the browser.</p>
@@ -153,17 +153,17 @@ React and Recoil
 <h3 id=state-management>State management</h3>
 <p>In JS, an event listener is attached to a DOM element to listen for changes. With each state change, we track the value deviation function, re-run the deviation functions and track the changes in return value. Those changed values are passed to the appropriate DOM element through the DOM API.</p>
 <p>With React, the UI is set up to keep the entire state of a variable in the form of a &ldquo;controlled component&rdquo;, while an event (e.g. a button press) can be specified directly in the code, with no need for an event listener. The change to variable is registered, and the UI is updated automatically. There&rsquo;s no need to go into the DOM to find the variable to update.</p>
-<p>Being able to design components that hold state was fundamental to the design of Alexandria. Using React, each &ldquo;word&rdquo; residing within a piece of text can have it&rsquo;s own state (translation, learning stage, context). When a user changes a word&rsquo;s state, the result is displayed immediately on the DOM. In this case, the word would be highlighted, and its translation and context would be saved to the word&rsquo;s state.</p>
+<p>Being able to design components that hold state was fundamental to the design of Alexandria. Using React, each &ldquo;word&rdquo; residing within a piece of text can have its own state (translation, learning stage, context). When a user changes a word&rsquo;s state, the result is displayed immediately on the DOM. In this case, the word would be highlighted, and its translation and context would be saved to the word&rsquo;s state.</p>
 <p>React&rsquo;s implementation of hooks and component state fit perfectly with this requirement.</p>
 <h3 id=maintainability-and-reusability>Maintainability and Reusability</h3>
 <p>In JS, the markup and functionality are kept separate. As apps grow bigger, this becomes a major source of complexity, where a developer needs to keep track of both sets of codes.</p>
 <p>In React, the app is split into components, where each component maintains the code required to both display and updates the UI. This also allows reusability of components, another benefit.</p>
 <h2 id=recoil>Recoil</h2>
 <p>When it comes to choosing a state management tool, we began by assessing what the application needed.</p>
-<p>It was immediately clear to us that users will be interacting intensively with highly dynamic components: highlighted words, translations, status, and languages are all expected to change with every user interaction. Therefore, it was vital that after each update, each component state is accurately captured and rendered back to the users in the most efficient manner.</p>
+<p>It was immediately clear to us that users will be interacting intensively with highly dynamic components: highlighted words, translations, status, and languages are all expected to change with every user interaction. Therefore, it was vital that after an update, each component state is accurately captured and rendered back to the users in the most efficient manner.</p>
 <p>Turning our attention to state management tools available on the market, we quickly realized although the number of libraries and packages are numerous, most belong to one of three categories in addition to the React natively supported Context API: Flux (Redux, Zustand), Proxy (Mobx, Valtio), or Atomic (Recoil, Jotai)
 <sup><a href=../../references>[3]</a></sup>.</p>
-<p>Within the context of Alexandria, we took a closer look at three choices: React&rsquo;s Context API, Redux, and Recoil. Redux has long been the state management library of choice for applications of a certain size, while React&rsquo;s very own Context API provided state management directly from React itself. Adding to the mix, new kid on the block Recoil had been released by Facebook, and touted as a React-specific state management library maximizes developer happiness.</p>
+<p>Within the context of Alexandria, we took a closer look at three choices: React&rsquo;s Context API, Redux, and Recoil. Redux has long been the state management library of choice for applications of a certain size, while React&rsquo;s very own Context API provided state management directly from React itself. Adding to the mix, new kid on the block Recoil had been released by Facebook, and touted as a React-specific state management library that maximizes developer happiness.</p>
 <p>Choosing the right tool for the job took some careful examination. While we did not perform an exhaustive benchmarking study, some initial sandboxing helped us arrive at the following observations.</p>
 <h3 id=context-api>Context API</h3>
 <h4 id=how-it-works>How it works</h4>
@@ -195,7 +195,7 @@ React and Recoil
 </ul>
 <h3 id=recoil-1>Recoil</h3>
 <h4 id=how-it-works-2>How it works</h4>
-<p>Recoil was created to solve a number of challenges very specific to large and interactive apps, where issues of persistence and robustness are central. More specifically, how does one keep different branches of the tree in sync where components live in different branches of the tree? How does one avoid re-rendering multiple components when state change(s) are detected in the same provider?</p>
+<p>Recoil was created to solve a number of specific challenges faced by large and/or interactive apps, where issues of persistence and robustness are central. More specifically, how does one keep different branches of the tree in sync where components live in different branches of the tree? How does one avoid re-rendering multiple components when state change(s) are detected in the same provider?</p>
 <p>In order to meet these global state management challenges, Recoil implemented small, shared units of state named &ldquo;atoms&rdquo;, and derived states named &ldquo;selectors&rdquo;. Atoms are changeable and subscribable pieces of state. That is to say, one particular atom can be subscribed to by components, and atoms can be used to derive data from state. States are stored within the React tree, similar to how <code>useState</code> and <code>useContext</code> hooks function, making it easy to get started. Recoil encourages separation of state into separate pieces in order to route components. The existence of atoms is particularly well-suited for applications that receive a high frequency of updates.</p>
 <h4 id=pros-2>Pros</h4>
 <ul>
@@ -207,7 +207,7 @@ React and Recoil
 <li>Library still in beta</li>
 </ul>
 <h3 id=choosing-recoil>Choosing Recoil</h3>
-<p>Recoil became our state management library of choice based on two key considerations. One, it delivered optimal performance by rendering only component that changes upon user interaction. Two, it offered maximal developer happiness. The simplicity of set up and usage made state management a non-issue, where state changes are central to the viability of Alexandria.</p>
+<p>Recoil became our state management library of choice based on two key considerations. One, it delivered optimal performance by rendering only component that changes upon user interaction. Two, its simplicity offered maximal developer happiness. The ease of set up and usage made state management a non-issue, where state changes are central to the viability of Alexandria.</p>
 <footer class=footline>
 </footer>
 </main>
@@ -220,14 +220,14 @@ React and Recoil
 <div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px>
 <div style=border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px></div>
 </div>
-<script src=../../js/clipboard.min.js?1643135002></script>
-<script src=../../js/perfect-scrollbar.min.js?1643135002></script>
-<script src=../../js/perfect-scrollbar.jquery.min.js?1643135002></script>
-<script src=../../js/jquery.svg.pan.zoom.js?1643135002></script>
-<script src=../../js/featherlight.min.js?1643135002></script>
-<script src=../../js/modernizr.custom-3.6.0.js?1643135002></script>
-<script src=../../js/mermaid.min.js?1643135002></script>
+<script src=../../js/clipboard.min.js?1643135367></script>
+<script src=../../js/perfect-scrollbar.min.js?1643135367></script>
+<script src=../../js/perfect-scrollbar.jquery.min.js?1643135367></script>
+<script src=../../js/jquery.svg.pan.zoom.js?1643135367></script>
+<script src=../../js/featherlight.min.js?1643135367></script>
+<script src=../../js/modernizr.custom-3.6.0.js?1643135367></script>
+<script src=../../js/mermaid.min.js?1643135367></script>
 <script>typeof mermaid!='undefined'&&typeof mermaid.mermaidAPI!='undefined'&&mermaid.mermaidAPI.initialize(Object.assign({securityLevel:"antiscript"},JSON.parse('{ "startOnLoad": true }'),{startOnLoad:!1}))</script>
-<script src=../../js/relearn.js?1643135002></script>
+<script src=../../js/relearn.js?1643135367></script>
 </body>
 </html>
